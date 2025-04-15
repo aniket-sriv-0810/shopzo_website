@@ -4,10 +4,10 @@ import {upload} from "../multer.js";
 import {validate} from '../middleware/validator.js';
 
 import {editVendorValidation} from '../test/vendorEdit.validator.js' ;
-import { getAllVendors,vendorAccountDetails ,   updateVendorById , getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData , addCategoriesToVendor , productOfVendorData} from "../controller/vendor.controller.js";
+import { getAllVendors,vendorAccountDetails ,   updateVendorById , getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData , addCategoriesToVendor , productOfVendorData } from "../controller/vendor.controller.js";
 import { reviewSchemaValidation } from '../test/review.validator.js';
 import { addReviewToVendor, getVendorReviews } from '../controller/review.controller.js';
-import { loginVendor, logOutAccount , checkVendorAuthentication } from '../controller/vendorAuth.controller.js';
+import { loginVendor, logOutAccount , checkVendorAuthentication , changePassword } from '../controller/vendorAuth.controller.js';
 import { loginVendorValidation } from '../test/loginVendor.validator.js';
 const router = express.Router();
 
@@ -27,6 +27,10 @@ router
 router
      .route('/check-auth')
      .get(checkVendorAuthentication)
+
+router
+     .route('/:id/account/change-password')
+     .put(changePassword)
 
 
 router

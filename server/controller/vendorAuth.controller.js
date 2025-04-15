@@ -273,4 +273,55 @@ const checkVendorAuthentication = asyncHandler(async (req, res) => {
     }
   });
   
-export { addNewVendor , loginVendor , logOutAccount , checkVendorAuthentication };
+  const changePassword = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { oldPassword, newPassword } = req.body;
+  
+      if (!oldPassword || !newPassword) {
+        return res.status(400).json({ error: "Both old and new passwords are required." });
+      }
+  
+      // 1. Find Vendor by ID
+      const vendor = await Vendor.findById(id);
+      if (!vendor) {
+        return res.status(404).json({ error: "Vendor not found!" });
+      }
+  
+      // 2. Authenticate old password and update Vendor password
+      await new Promise((resolve, reject) => {
+        vendor.changePassword(oldPassword, newPassword, async (err) => {
+          if (err) return reject("Incorrect old password.");
+          await vendor.save();
+          resolve();
+        });
+      });
+  
+      // 3. Find corresponding User by unique field (email or phone) and role === "vendor"
+      const user = await User.findOne({
+        role: "vendor",
+        $or: [{ email: vendor.email }, { phone: vendor.phone }],
+      });
+  
+      if (!user) {
+        return res.status(404).json({ error: "Linked user account not found!" });
+      }
+  
+      // 4. Set new password for the User model
+      await new Promise((resolve, reject) => {
+        user.setPassword(newPassword, async (err, updatedUser) => {
+          if (err) return reject("Error updating user password.");
+          await updatedUser.save();
+          resolve();
+        });
+      });
+  
+      return res.status(200).json({ message: "Password successfully changed for both Vendor and User." });
+  
+    } catch (error) {
+      console.error("Password Change Error:", error);
+      return res.status(500).json({ error: error.message || "Server Error" });
+    }
+  };
+  
+export { addNewVendor , loginVendor , logOutAccount , checkVendorAuthentication ,  changePassword};
