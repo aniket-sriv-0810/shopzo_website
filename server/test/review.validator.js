@@ -1,20 +1,27 @@
 import Joi from "joi";
 
+// Custom ObjectId validator
+const objectId = (value, helpers) => {
+  const isValid = /^[0-9a-fA-F]{24}$/.test(value);
+  if (!isValid) return helpers.error("any.invalid");
+  return value;
+};
 
 const reviewSchemaValidation = Joi.object({
   user: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/)
+    .custom(objectId)
     .required()
     .messages({
-      "string.pattern.base": "User ID must be a valid ObjectId.",
-      "any.required": "User details are required!",
+      "any.required": "User ID is required!",
+      "any.invalid": "User ID must be a valid ObjectId.",
     }),
+
   vendor: Joi.string()
-    .pattern(/^[0-9a-fA-F]{24}$/)
+    .custom(objectId)
     .required()
     .messages({
-      "string.pattern.base": "vendor ID must be a valid ObjectId.",
-      "any.required": "vendor details are required!",
+      "any.required": "Vendor ID is required!",
+      "any.invalid": "Vendor ID must be a valid ObjectId.",
     }),
 
   rating: Joi.number()
@@ -31,9 +38,11 @@ const reviewSchemaValidation = Joi.object({
   comment: Joi.string()
     .trim()
     .max(200)
-    .allow("") // Optional comment
+    .required()
     .messages({
+      "string.empty": "Comment can't be left empty! Please share your feedback!",
       "string.max": "Comment can't exceed 200 characters.",
+      "any.required": "Comment is required!",
     }),
 });
 

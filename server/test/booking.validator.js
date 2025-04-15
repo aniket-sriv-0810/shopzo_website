@@ -1,33 +1,36 @@
 import Joi from "joi";
 
-// Define objectId custom validation
+// Custom ObjectId validator
 const objectId = (value, helpers) => {
   const isValid = /^[0-9a-fA-F]{24}$/.test(value);
-  if (!isValid) {
-    return helpers.error("any.invalid");
-  }
+  if (!isValid) return helpers.error("any.invalid");
   return value;
 };
 
 const bookingValidationSchema = Joi.object({
   user: Joi.string().custom(objectId).required().messages({
     "any.required": "User ID is required",
-    "any.invalid": "Invalid user ID",
+    "any.invalid": "Invalid User ID",
   }),
 
   vendor: Joi.string().custom(objectId).required().messages({
     "any.required": "Vendor ID is required",
-    "any.invalid": "Invalid vendor ID",
+    "any.invalid": "Invalid Vendor ID",
   }),
 
   product: Joi.string().custom(objectId).required().messages({
     "any.required": "Product ID is required",
-    "any.invalid": "Invalid product ID",
+    "any.invalid": "Invalid Product ID",
   }),
 
   category: Joi.string().custom(objectId).required().messages({
     "any.required": "Category ID is required",
-    "any.invalid": "Invalid category ID",
+    "any.invalid": "Invalid Category ID",
+  }),
+
+  sizeSelected: Joi.string().required().messages({
+    "string.empty": "Size selection is required",
+    "any.required": "Size selection is required",
   }),
 
   quantity: Joi.number().min(1).required().messages({
@@ -42,12 +45,9 @@ const bookingValidationSchema = Joi.object({
     "any.required": "Total price is required",
   }),
 
-  status: Joi.string()
-    .valid("pending", "confirmed", "cancelled", "completed")
-    .optional()
-    .messages({
-      "any.only": "Invalid booking status",
-    }),
+  status: Joi.string().valid("pending", "cancelled", "completed").optional().messages({
+    "any.only": "Status must be 'pending', 'cancelled' or 'completed'",
+  }),
 
   bookingDate: Joi.date().optional(),
 });

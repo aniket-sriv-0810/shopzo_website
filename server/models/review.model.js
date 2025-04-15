@@ -10,7 +10,7 @@ const reviewSchema = new Schema ({
     vendor:{
         type:Schema.Types.ObjectId,
         ref:"Vendor",
-        required:[true,"User details are required !"]
+        required:[true,"Vendor details are required !"]
     },
     rating:{
         type:Number,
@@ -21,7 +21,8 @@ const reviewSchema = new Schema ({
     comment:{
         type:String,
         trim:true,
-        maxlength:[200,"Can't exceed 200 characters"]
+        maxlength:[200,"Can't exceed 200 characters"],
+        required:[true,"Comment can't be left empty ! Please share your feedback !"]
     }
 } ,
  {

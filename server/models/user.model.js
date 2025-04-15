@@ -31,8 +31,7 @@ const userSchema = new Schema(
     },
     image: {
       type: String,
-      default:
-        "https://media-hosting.imagekit.io//4bc72ff0889f4681/demo.png?Expires=1837020820&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=c3Nq6Mu7wtR7-l57wCuFJDWqnmAYe1mnhTV60rRh~Jbr8iEoriWR0qAXj7ZZTfT4XwDeVixlpLg0spaVCXXnT0PkgZgvPx8uAqEOl2brHCHXKkKbKmE3Szgkh6l~dfwmJhUcL1pLE0v23fLt6xcVnwglPQ~tZ1fmD02KYcjDD1cX8lTGmF2wSHJv0OVScK2Aw4mHuUSvWbBrDsRt7PpFfWskmXiWUG~QuWDgbcHuSrS2r2ffQ98PdMT96uhXeNRwZsmFs8BSzj15gVYC05hBdkk~7uKhWuA6rl5eSh61hqCLvkjElDrHe7wLa7tfJwUVYRcYicu6LTU0UIeNckAViw__",
+      default: "https://media-hosting.imagekit.io//4bc72ff0889f4681/demo.png?Expires=1837020820&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=c3Nq6Mu7wtR7-l57wCuFJDWqnmAYe1mnhTV60rRh~Jbr8iEoriWR0qAXj7ZZTfT4XwDeVixlpLg0spaVCXXnT0PkgZgvPx8uAqEOl2brHCHXKkKbKmE3Szgkh6l~dfwmJhUcL1pLE0v23fLt6xcVnwglPQ~tZ1fmD02KYcjDD1cX8lTGmF2wSHJv0OVScK2Aw4mHuUSvWbBrDsRt7PpFfWskmXiWUG~QuWDgbcHuSrS2r2ffQ98PdMT96uhXeNRwZsmFs8BSzj15gVYC05hBdkk~7uKhWuA6rl5eSh61hqCLvkjElDrHe7wLa7tfJwUVYRcYicu6LTU0UIeNckAViw__",
     },
     role: {
       type: String,
@@ -42,7 +41,7 @@ const userSchema = new Schema(
     bookings: [
       {
         type: Schema.Types.ObjectId,
-        ref: "Product", // or Booking
+        ref: "Booking",
       },
     ],
     reviews: [
@@ -51,10 +50,22 @@ const userSchema = new Schema(
         ref: "Review",
       },
     ],
+    feedbacks: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Contact",
+      },
+    ],
     wishlists: [
       {
         type: Schema.Types.ObjectId,
         ref: "Product",
+      },
+    ],
+    vendorWishlists: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Vendor",
       },
     ],
   },
@@ -63,7 +74,7 @@ const userSchema = new Schema(
   }
 );
 
-// Convert email to lowercase before saving
+// Convert email to lowercase
 userSchema.pre("save", function (next) {
   if (this.isModified("email")) {
     this.email = this.email.toLowerCase();
@@ -71,27 +82,33 @@ userSchema.pre("save", function (next) {
   next();
 });
 
-// Cleanup on user deletion
+// 🧹 Cleanup middleware on user deletion
 userSchema.pre("findOneAndDelete", async function (next) {
   const user = await this.model.findOne(this.getFilter());
   if (!user) return next();
 
-  await mongoose.model("Review").deleteMany({ _id: { $in: user.reviews } });
-  await mongoose.model("Product").updateMany(
-    { _id: { $in: user.wishlists } },
-    { $pull: { wishlists: user._id } }
-  );
-  await mongoose.model("Product").updateMany(
-    { _id: { $in: user.bookings } },
-    { $pull: { bookings: user._id } }
-  );
+  await Promise.all([
+    mongoose.model("Review").deleteMany({ _id: { $in: user.reviews } }),
+    mongoose.model("Booking").deleteMany({ _id: { $in: user.bookings } }),
+    mongoose.model("Contact").deleteMany({ _id: { $in: user.feedbacks } }),
+
+    mongoose.model("Product").updateMany(
+      { _id: { $in: user.wishlists } },
+      { $pull: { wishlists: user._id } }
+    ),
+
+    mongoose.model("Vendor").updateMany(
+      { _id: { $in: user.vendorWishlists } },
+      { $pull: { wishlists: user._id } }
+    ),
+  ]);
 
   next();
 });
 
-// 🔐 Use email as the login field instead of username
+// Use email for login
 userSchema.plugin(passportLocalMongoose, {
-  usernameField: "email", // tells the plugin to use email as username
+  usernameField: "email",
 });
 
 const User = mongoose.model("User", userSchema);

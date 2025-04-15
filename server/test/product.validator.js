@@ -9,11 +9,27 @@ const productSchemaValidation = Joi.object({
     "string.empty": "Product description is required!",
   }),
 
-  price: Joi.number().min(0).required().messages({
-    "number.base": "Product price must be a number.",
-    "number.min": "Price must be a positive number.",
-    "any.required": "Product price is required!",
+  originalPrice: Joi.number().min(0).required().messages({
+    "number.base": "Original price must be a number.",
+    "number.min": "Original price must be a positive number.",
+    "any.required": "Original price is required!",
   }),
+
+  discountedPrice: Joi.number()
+    .min(0)
+    .required()
+    .custom((value, helpers) => {
+      const { originalPrice } = helpers.state.ancestors[0];
+      if (originalPrice && value >= originalPrice) {
+        return helpers.message("Discounted price must be less than original price");
+      }
+      return value;
+    })
+    .messages({
+      "number.base": "Discounted price must be a number.",
+      "number.min": "Discounted price must be a positive number.",
+      "any.required": "Discounted price is required!",
+    }),
 
   images: Joi.array()
     .items(Joi.string().uri().messages({ "string.uri": "Each image must be a valid URL." }))
@@ -26,10 +42,10 @@ const productSchemaValidation = Joi.object({
     }),
 
   sizes: Joi.array()
-    .items(Joi.string().valid("xs", "s", "m", "l", "xl", "xxl", "xxxl"))
-    .default(["m"])
+    .items(Joi.string().valid("XS", "S", "M", "L", "XL", "XXL", "XXXL"))
+    .default("M")
     .messages({
-      "any.only": "Invalid size. Allowed: xs, s, m, l, xl, xxl, xxxl.",
+      "any.only": "Invalid size. Allowed: XS, S, M, L, XL, XXL, XXXL.",
     }),
 
   category: Joi.string()
@@ -50,7 +66,11 @@ const productSchemaValidation = Joi.object({
 
   vendor: Joi.array()
     .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-    .required(),
+    .required()
+    .messages({
+      "string.pattern.base": "Each vendor ID must be a valid ObjectId.",
+      "any.required": "Vendor reference is required.",
+    }),
 
   bookings: Joi.array()
     .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))

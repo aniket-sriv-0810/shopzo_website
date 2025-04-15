@@ -1,5 +1,7 @@
 import Joi from "joi";
 
+const objectIdPattern = /^[0-9a-fA-F]{24}$/;
+
 const categorySchemaValidation = Joi.object({
   title: Joi.string().trim().required().messages({
     "string.empty": "Category title is required!",
@@ -7,12 +9,7 @@ const categorySchemaValidation = Joi.object({
 
   description: Joi.string().trim().optional(),
 
-  image: Joi.string()
-    .uri()
-    .default("https://media-hosting.imagekit.io//4bc72ff0889f4681/demo.png")
-    .messages({
-      "string.uri": "Image must be a valid URL.",
-    }),
+  image: Joi.any(),
 
   tag: Joi.string()
     .valid("male", "female")
@@ -23,17 +20,17 @@ const categorySchemaValidation = Joi.object({
     }),
 
   products: Joi.array()
-    .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+    .items(Joi.string().regex(objectIdPattern))
     .optional()
     .messages({
       "string.pattern.base": "Each product ID must be a valid ObjectId.",
     }),
 
-  owner: Joi.array()
-    .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
+  vendors: Joi.array()
+    .items(Joi.string().regex(objectIdPattern))
     .optional()
     .messages({
-      "string.pattern.base": "Each owner ID must be a valid ObjectId.",
+      "string.pattern.base": "Each vendor ID must be a valid ObjectId.",
     }),
 });
 

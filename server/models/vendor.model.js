@@ -21,6 +21,7 @@ const vendorSchema = new Schema(
       trim: true,
       unique: true,
       required: [true, "Email is required!"],
+      lowercase: true,
       validate: {
         validator: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v),
         message: "Invalid email format",
@@ -43,10 +44,10 @@ const vendorSchema = new Schema(
       country: { type: String, required: true },
     },
     image: {
-        type: String,
-        default:
-          "https://media-hosting.imagekit.io//4bc72ff0889f4681/demo.png",
-      },
+      type: String,
+      default: "https://media-hosting.imagekit.io//4bc72ff0889f4681/demo.png",
+      required: [true, "Vendor Image is required!"],
+    },
     role: {
       type: String,
       enum: ["vendor"],
@@ -70,20 +71,16 @@ const vendorSchema = new Schema(
         ref: "Review",
       },
     ],
+    vendor_wishlists: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     bookings: [
       {
-        user: {
-          type: Schema.Types.ObjectId,
-          ref: "User",
-        },
-        product: {
-          type: Schema.Types.ObjectId,
-          ref: "Product",
-        },
-        bookedAt: {
-          type: Date,
-          default: Date.now,
-        },
+        type: Schema.Types.ObjectId,
+        ref: "User",
       },
     ],
   },
@@ -92,23 +89,46 @@ const vendorSchema = new Schema(
   }
 );
 
-// Normalize email and username
+// Normalize username and email before saving
 vendorSchema.pre("save", function (next) {
-  if (this.isModified("email")) this.email = this.email.toLowerCase();
   if (this.isModified("username")) this.username = this.username.toLowerCase();
+  if (this.isModified("email")) this.email = this.email.toLowerCase();
   next();
 });
 
-// Clean up associated data on delete (optional, depending on your logic)
-// vendorSchema.pre("findOneAndDelete", async function (next) {
-//   const vendor = await this.model.findOne(this.getFilter());
-//   if (!vendor) return next();
-//   await mongoose.model("Product").deleteMany({ _id: { $in: vendor.products } });
-//   next();
-// });
+// 🧹 Cleanup middleware before deletion
+vendorSchema.pre("findOneAndDelete", async function (next) {
+  const vendor = await this.model.findOne(this.getFilter());
+  if (!vendor) return next();
 
-// Add username/password auth via passport-local-mongoose
-vendorSchema.plugin(passportLocalMongoose); // defaults to username+password
+  const { products, reviews, bookings } = vendor;
+
+  await mongoose.model("Product").deleteMany({ _id: { $in: products } });
+  await mongoose.model("Review").deleteMany({ _id: { $in: reviews } });
+  await mongoose.model("User").deleteMany({ _id: { $in: bookings } });
+
+  // Optional: remove vendor reference from categories
+  await mongoose.model("Category").updateMany(
+    { vendors: vendor._id },
+    { $pull: { vendors: vendor._id } }
+  );
+
+  // Optional: remove vendor from user wishlists
+  await mongoose.model("User").updateMany(
+    { vendor_wishlists: vendor._id },
+    { $pull: { vendor_wishlists: vendor._id } }
+  );
+
+  next();
+});
+
+// Enable username/password authentication
+vendorSchema.plugin(passportLocalMongoose, {
+  usernameField: "username", // could use "email" if desired
+  errorMessages: {
+    UserExistsError: "A vendor with the given username already exists.",
+  },
+});
 
 const Vendor = mongoose.model("Vendor", vendorSchema);
 export { Vendor };

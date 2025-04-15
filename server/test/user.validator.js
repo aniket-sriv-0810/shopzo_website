@@ -1,7 +1,8 @@
 import Joi from "joi";
 import { User } from "../models/user.model.js";
 
-// ✅ Basic synchronous Joi schema
+const objectIdPattern = /^[0-9a-fA-F]{24}$/;
+
 const userSchemaValidation = Joi.object({
   name: Joi.string().trim().required().messages({
     "string.empty": "Name is required!",
@@ -27,32 +28,24 @@ const userSchemaValidation = Joi.object({
     "string.empty": "Password is required.",
   }),
 
-  image: Joi.string()
-    .uri()
-    .optional()
-    .default("https://media-hosting.imagekit.io/demo.png")
-    .messages({
-      "string.uri": "Image must be a valid URL.",
-    }),
+  image: Joi.any(),
 
   role: Joi.string().valid("admin", "user", "vendor").default("user").messages({
     "any.only": "Role must be either 'admin', 'user', or 'vendor'.",
   }),
 
-  bookings: Joi.array()
-    .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-    .optional(),
+  bookings: Joi.array().items(Joi.string().regex(objectIdPattern)).optional(),
 
-  reviews: Joi.array()
-    .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-    .optional(),
+  reviews: Joi.array().items(Joi.string().regex(objectIdPattern)).optional(),
 
-  wishlists: Joi.array()
-    .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-    .optional(),
+  feedbacks: Joi.array().items(Joi.string().regex(objectIdPattern)).optional(),
+
+  wishlists: Joi.array().items(Joi.string().regex(objectIdPattern)).optional(),
+
+  vendorWishlists: Joi.array().items(Joi.string().regex(objectIdPattern)).optional(),
 });
 
-// ✅ External async checks for uniqueness
+// ✅ Async uniqueness checks
 const userSchemaWithAsyncChecks = userSchemaValidation.external(async (value) => {
   const emailExists = await User.findOne({ email: value.email });
   if (emailExists) {
@@ -65,4 +58,4 @@ const userSchemaWithAsyncChecks = userSchemaValidation.external(async (value) =>
   }
 });
 
-export { userSchemaValidation };
+export { userSchemaValidation, userSchemaWithAsyncChecks };
