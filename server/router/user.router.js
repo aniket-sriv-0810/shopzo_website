@@ -27,7 +27,7 @@ router
 // Logout of the registered user Route
 router
      .route('/logout')
-     .post(isLoggedIn , logOutUser);
+     .post(logOutUser);
 
 
 // Check for the user authentication Route
