@@ -5,7 +5,8 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js"; // assuming you use
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import mongoose from "mongoose";
-// Controller: Add New Category
+
+// 📌 Create Category Controller
 const createCategory = asyncHandler(async (req, res) => {
   try {
     const {
@@ -16,7 +17,7 @@ const createCategory = asyncHandler(async (req, res) => {
       products,
     } = req.body;
 
-    // 🔍 Check if category with the same title already exists
+    // 🔍 Check for duplicate title
     const existingCategory = await Category.findOne({ title: title.trim() });
     if (existingCategory) {
       return res.status(400).json(
@@ -24,15 +25,22 @@ const createCategory = asyncHandler(async (req, res) => {
       );
     }
 
-    // ☁️ Upload image if a file is provided (Cloudinary or any service)
-    const imageUrl = req.file ? await uploadOnCloudinary(req.file.path) : null;
+    // ❌ If image file not uploaded, throw error
+    if (!req.file) {
+      return res.status(400).json(
+        new ApiError(400, ["Image is required!"], "Validation Error")
+      );
+    }
 
-    // ✅ Create the new category
+    // ☁️ Upload image
+    const imageUrl = await uploadOnCloudinary(req.file.path);
+
+    // ✅ Create new category
     const newCategory = new Category({
       title: title.trim(),
       description: description || "",
       tag,
-      image: imageUrl?.url || image || "https://media-hosting.imagekit.io//4bc72ff0889f4681/demo.png",
+      image: imageUrl.url,
       products: products || [],
     });
 

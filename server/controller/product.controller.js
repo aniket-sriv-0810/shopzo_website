@@ -10,26 +10,43 @@ const addProductController = async (req, res) => {
     let {
       title,
       description,
-      price,
+      originalPrice,
+      discountedPrice,
       sizes,
       category,
       tag,
-      vendor
+      vendor,
     } = req.body;
 
-    // Convert price to number
-    price = Number(price);
+    // Parse and validate pricing
+    originalPrice = Number(originalPrice);
+    discountedPrice = Number(discountedPrice);
 
-    // Fix for sizes: multer/form-data sends string if only one value selected
+    // Parse sizes properly
     if (typeof sizes === "string") {
       sizes = [sizes];
     }
 
-    // Check required fields
-    if (!title || !description || !price || !category || !tag || !vendor) {
+    if (!req.files || req.files.length === 0) {
       return res.status(400).json({
         success: false,
-        message: "Please fill all required fields.",
+        message: "At least one product image is required.",
+      });
+    }
+
+    // Upload images to Cloudinary
+    const images = [];
+    for (const file of req.files) {
+      const uploaded = await uploadOnCloudinary(file.path);
+      if (uploaded?.secure_url) {
+        images.push(uploaded.secure_url);
+      }
+    }
+
+    if (images.length === 0) {
+      return res.status(500).json({
+        success: false,
+        message: "Image upload failed. Please try again.",
       });
     }
 
@@ -38,41 +55,32 @@ const addProductController = async (req, res) => {
     if (!existingCategory) {
       return res.status(400).json({
         success: false,
-        message: "Category not found!",
+        message: "Selected category not found.",
       });
-    }
-
-    let images = [];
-    if (req.files && req.files.length > 0) {
-      for (const file of req.files) {
-        const cloudinaryResult = await uploadOnCloudinary(file.path);
-        if (cloudinaryResult?.secure_url) {
-          images.push(cloudinaryResult.secure_url);
-        }
-      }
     }
 
     const newProduct = new Product({
       title,
       description,
-      price,
-      images: images.length > 0 ? images : undefined,
+      originalPrice,
+      discountedPrice,
+      images,
       sizes,
       category,
       tag,
       vendor,
     });
 
-    await newProduct.save();
+    const savedProduct = await newProduct.save();
 
     // Push product ID to category
-    existingCategory.products.push(newProduct._id);
+    existingCategory.products.push(savedProduct._id);
     await existingCategory.save();
 
     res.status(201).json({
       success: true,
       message: "Product added successfully!",
-      product: newProduct,
+      product: savedProduct,
     });
   } catch (err) {
     console.error("❌ Error in addProductController:", err);
@@ -82,6 +90,7 @@ const addProductController = async (req, res) => {
     });
   }
 };
+
 
 
 // GET /api/products/:productId

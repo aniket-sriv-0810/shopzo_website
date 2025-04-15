@@ -64,13 +64,13 @@ const productSchemaValidation = Joi.object({
       "any.required": "Tag (male or female) is required.",
     }),
 
-  vendor: Joi.array()
-    .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
-    .required()
-    .messages({
-      "string.pattern.base": "Each vendor ID must be a valid ObjectId.",
-      "any.required": "Vendor reference is required.",
-    }),
+vendor: Joi.string()
+  .regex(/^[0-9a-fA-F]{24}$/)
+  .required()
+  .messages({
+    "string.pattern.base": "Vendor ID must be a valid ObjectId.",
+    "any.required": "Vendor reference is required.",
+  }),
 
   bookings: Joi.array()
     .items(Joi.string().regex(/^[0-9a-fA-F]{24}$/))
