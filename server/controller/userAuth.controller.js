@@ -105,7 +105,7 @@ const loginUser = asyncHandler(async (req, res) => {
       }
   
       // Step 3: Authenticate using passport-local strategy
-      passport.authenticate("local", (err, user, info) => {
+      passport.authenticate("user-local", (err, user, info) => {
         if (err) {
           console.error("❌ Error during passport authentication:", err);
           return res.status(500).json(
