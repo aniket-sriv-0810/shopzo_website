@@ -35,32 +35,48 @@ router
      .route('/auth')
      .get(checkAuthentication)
 
+// Check for the user Account Route
 router
      .route('/:id/account')
      .get(isLoggedIn , userAccountDetails);
 
+// Check for the user Wishlists Route
 router
      .route('/:id/account/wishlists')
      .get(isLoggedIn , getUserWishlists);
 
+
+// Check for the user vendors Wishlists Route
 router
-     .route('/:id/account/wishlist')
+     .route('/:id/account/vendor-wishlists')
+     .get(isLoggedIn , getUserWishlists);
+
+// ADD/REMOVE the user Vendor wishlists Route
+router
+     .route('/:id/account/vendor-wishlist')
      .post( isLoggedIn,toggleProductWishlist)
 
-
+// Check for the user Bookings Route
 router
      .route('/:id/account/bookings')
      .get(isLoggedIn , getUserBookings);
 
+// Cancel the user bookings Route
 router
       .route('/:userId/:productId')
       .delete( isLoggedIn, cancelUserBooking);
 
-
+// Change the user Account Details Route
 router
      .route('/:id/account/edit')
      .put(isLoggedIn , upload.single("image"), validate(userEditValidationSchema) , editUserDetails);
 
+// Change the user password Route
+router
+     .route('/:id/account/change-password')
+     .put(isLoggedIn , validate(userEditValidationSchema) , editUserDetails);
+
+// Delete the user Account Route
 router
      .route('/:id/account/delete')
      .delete(isLoggedIn , deleteUserAccount);

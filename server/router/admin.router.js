@@ -44,34 +44,38 @@ router
      .route("/feedbacks")
      .get(isLoggedIn , isAdmin , adminFeedbackData)
 
-
+// Check for Adding categories Route
 router
      .route("/add-category")
      .post(isLoggedIn , isAdmin , upload.single('image') , validate(categorySchemaValidation) , createCategory)
 
+// Check for Editing categories Route
 router
      .route("category/:id/edit")
      .put(isLoggedIn , isAdmin , upload.single('image') , validate(updateCategorySchemaValidation) , editCategory)
 
+// Check for the Deleting categories Route
 router
      .route("category/:id/delete")
      .delete(isLoggedIn ,  isAdmin , deleteCategory)
 
-
+//check for Adding  product Route
 router
      .route("/add-product")
      .post(isLoggedIn , isAdmin , upload.array("images" , 7) ,
          validate(productSchemaValidation) , addProductController)
 
+//check for the particular product Edit Route
 router
      .route("product/:id/edit")
      .put(isLoggedIn , isAdmin , upload.array("images", 7) , validate(editProductSchemaValidation) , updateProductById )
 
+//check for the particular product Delete Route
 router
      .route("product/:id/delete")
      .delete(isLoggedIn , isAdmin , deleteProductById)
 
-
+// Adding Vendor Route
 router
      .route("/add-vendor")
      .post(isLoggedIn , upload.single("image") ,  validate(vendorSchemaValidation) , addNewVendor)
@@ -81,8 +85,9 @@ router
       .route("/add-category-to-vendor/:vendorId")
       .post( isAdmin, addCategoryToVendor);
 
+// Deleting a  vendor Account Route
 router
-     .route("/:id/account/delete")
+     .route("vendor/:id/account/delete")
      .delete(isLoggedIn, deleteVendorById);
 
 

@@ -10,7 +10,7 @@ const router = express.Router();
 
 // CORE router - /api/product
 
-
+//check for the particular product Route
 router
      .route("/:id")
      .get(getProductById)
