@@ -7,7 +7,8 @@ import {editVendorValidation} from '../test/vendorEdit.validator.js' ;
 import { getAllVendors,vendorAccountDetails ,   updateVendorById , getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData} from "../controller/vendor.controller.js";
 import { reviewSchemaValidation } from '../test/review.validator.js';
 import { addReviewToVendor, getVendorReviews } from '../controller/review.controller.js';
-
+import { loginVendor, logOutAccount , checkVendorAuthentication } from '../controller/vendorAuth.controller.js';
+import { loginVendorValidation } from '../test/loginVendor.validator.js';
 const router = express.Router();
 
 //Core router - /api/vendor
@@ -15,7 +16,18 @@ const router = express.Router();
 // Check for the All vendors Route
 router
      .route('/login')
-     .get(getAllVendors)
+     .post(validate(loginVendorValidation) ,loginVendor)
+
+
+router
+     .route('/logout')
+     .post(logOutAccount)
+
+
+router
+     .route('/check-auth')
+     .get(checkVendorAuthentication)
+
 
 router
      .route('/all-vendors')

@@ -1,29 +1,40 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import passport from "passport";
+import { Strategy as LocalStrategy } from "passport-local";
+import { User } from "../models/user.model.js";
+import { Vendor } from "../models/vendor.model.js";
 
-import passport from 'passport';
-import { Strategy as LocalStrategy } from 'passport-local'; // ✅ Correct import
-import { User } from '../models/user.model.js';
+// 📌 USER Local Strategy
+passport.use("user-local", new LocalStrategy(
+  { usernameField: "email" , passwordField : "password" },
+  User.authenticate()
+));
 
-// ✅ Local Strategy with email + custom password check
-passport.use(
-  new LocalStrategy(
-    { usernameField: "email", passwordField: "password" }, // 👈 explicitly set field names
-    User.authenticate()
-  )
-);
+// 📌 VENDOR Local Strategy
+passport.use("vendor-local", new LocalStrategy(
+  { usernameField: "username" , passwordField : "password"},
+  Vendor.authenticate()
+));
 
-// ✅ Serialize
-passport.serializeUser((user, done) => done(null, user._id));
+// 📌 Serialize (store ID + type in session)
+passport.serializeUser((entity, done) => {
+  let userType = entity instanceof Vendor ? "vendor" : "user";
+  done(null, { id: entity.id, type: userType });
+});
 
-// ✅ Deserialize
-passport.deserializeUser(async (id, done) => {
+// 📌 Deserialize (based on type, fetch correct model)
+passport.deserializeUser(async (key, done) => {
   try {
-    const user = await User.findById(id);
-    console.log("Deserializing user:", user); 
-    done(null, user);
+    if (key.type === "user") {
+      const user = await User.findById(key.id);
+      return done(null, user);
+    } else if (key.type === "vendor") {
+      const vendor = await Vendor.findById(key.id);
+      return done(null, vendor);
+    } else {
+      return done(new Error("Unknown user type"));
+    }
   } catch (err) {
-    done(err, null);
+    return done(err);
   }
 });
 

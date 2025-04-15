@@ -82,65 +82,6 @@ const vendorAccountDetails = asyncHandler(async (req, res) => {
   }
 });
 
-const addNewVendor = asyncHandler(async (req, res) => {
-  const {
-    name,
-    username,
-    email,
-    phone,
-    password,
-    role,
-    products,
-    categories,
-    reviews,
-    bookings,
-
-    // Destructure address parts
-    address: {
-      area,
-      city,
-      pincode,
-      state,
-      country,
-    } = {}, // Default to empty object if not provided
-  } = req.body;
-
-  // Handle image (uploaded or fallback URL)
-  const image = req.file?.path || req.body.image;
-
-  try {
-    const newVendor = new Vendor({
-      name,
-      username,
-      email,
-      phone,
-      address: {
-        area,
-        city,
-        pincode,
-        state,
-        country,
-      },
-      image,
-      role: role || "vendor",
-      products: products || [],
-      categories: categories || [],
-      reviews: reviews || [],
-      bookings: bookings || [],
-    });
-
-    const registeredVendor = await Vendor.register(newVendor, password);
-
-    return res.status(201).json(
-      new ApiResponse(201, registeredVendor, "Vendor registered successfully")
-    );
-  } catch (error) {
-    console.error("❌ Error in vendor registration:", error);
-    return res.status(500).json(
-      new ApiError(500, error.message, "Vendor registration failed")
-    );
-  }
-});
 
 const updateVendorById = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -298,4 +239,4 @@ const getVendorDashboardData = async (req, res) => {
     });
   }
 };
-export {getAllVendors,  vendorAccountDetails , addNewVendor , updateVendorById , deleteVendorById ,getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData };
+export {getAllVendors,  vendorAccountDetails  , updateVendorById , deleteVendorById ,getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData };
