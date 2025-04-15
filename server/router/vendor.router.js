@@ -4,7 +4,7 @@ import {upload} from "../multer.js";
 import {validate} from '../middleware/validator.js';
 
 import {editVendorValidation} from '../test/vendorEdit.validator.js' ;
-import { getAllVendors,vendorAccountDetails ,   updateVendorById , getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData} from "../controller/vendor.controller.js";
+import { getAllVendors,vendorAccountDetails ,   updateVendorById , getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData , addCategoriesToVendor , productOfVendorData} from "../controller/vendor.controller.js";
 import { reviewSchemaValidation } from '../test/review.validator.js';
 import { addReviewToVendor, getVendorReviews } from '../controller/review.controller.js';
 import { loginVendor, logOutAccount , checkVendorAuthentication } from '../controller/vendorAuth.controller.js';
@@ -54,7 +54,11 @@ router
 // Check for the  vendor account categories Route
 router
      .route("/:id/account/categories-listed")
-     .get(isLoggedIn , vendorAccountDetails)
+     .get(isLoggedIn , vendorCategoriesData)
+
+router
+     .route("/:vendorId/account/categories")
+     .post(isLoggedIn , addCategoriesToVendor)
 
 
 // Check for the  vendor account products Route
@@ -77,7 +81,7 @@ router
 // Check for the  vendor account all particular products having the particular vendor/category/tag Route
 router
      .route("/:id/account/:categoryId/:tag/all-products")
-     .get(isLoggedIn , vendorAccountDetails)
+     .get(isLoggedIn , productOfVendorData)
 
 
 // Fetch all products by vendor + category + tag Route

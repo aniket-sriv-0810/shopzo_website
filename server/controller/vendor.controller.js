@@ -239,4 +239,127 @@ const getVendorDashboardData = async (req, res) => {
     });
   }
 };
-export {getAllVendors,  vendorAccountDetails  , updateVendorById , deleteVendorById ,getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData };
+
+const vendorCategoriesData = async (req, res) => {
+  const { id } = req.params; // Get the vendor ID from the URL parameter
+
+  try {
+    // Fetch the products for the vendor by the vendor ID
+    const products = await Product.find({ vendor: id })
+      .populate("category", "title") // Populate the category field with only the title
+      .exec();
+
+    if (!products || products.length === 0) {
+      return res.status(404).json({
+        status: "error",
+        message: "No products found for this vendor.",
+      });
+    }
+
+    // Extract the category IDs and avoid duplicates
+    const categoryIds = [...new Set(products.map(product => product.category._id.toString()))];
+
+    // Fetch the category details for those IDs
+    const categories = await Category.find({ _id: { $in: categoryIds } })
+      .select("title _id")
+      .exec();
+
+    if (!categories || categories.length === 0) {
+      return res.status(404).json({
+        status: "error",
+        message: "No categories found for this vendor's products.",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      categories,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "error",
+      message: "Something went wrong while fetching the categories.",
+    });
+  }
+};
+
+const addCategoriesToVendor = async (req, res) => {
+  const { vendorId } = req.params; // Vendor ID
+  const { categoryIds } = req.body; // Array of category IDs selected by the vendor
+
+  try {
+    // Ensure the vendor exists
+    const vendor = await Vendor.findById(vendorId);
+    if (!vendor) {
+      return res.status(404).json({
+        status: "error",
+        message: "Vendor not found",
+      });
+    }
+
+    // Fetch the categories from the database
+    const categories = await Category.find({ _id: { $in: categoryIds } });
+    if (!categories || categories.length !== categoryIds.length) {
+      return res.status(404).json({
+        status: "error",
+        message: "One or more categories not found",
+      });
+    }
+
+    // Add vendor to the selected categories' vendors array
+    await Category.updateMany(
+      { _id: { $in: categoryIds } },
+      { $addToSet: { vendors: vendorId } }
+    );
+
+    // Add selected categories to the vendor's categories array
+    vendor.categories.push(...categoryIds);
+    await vendor.save();
+
+    res.status(200).json({
+      status: "success",
+      message: "Categories added successfully to the vendor",
+      vendor,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "error",
+      message: "Something went wrong while adding categories to the vendor.",
+    });
+  }
+};
+
+const productOfVendorData = async (req, res) => {
+  try {
+    const { id: vendorId, categoryId, tag } = req.params;
+
+    // Validate tag input
+    if (!["male", "female"].includes(tag)) {
+      return res.status(400).json({ error: "Invalid tag value" });
+    }
+
+    const products = await Product.find({
+      vendor: vendorId,
+      category: categoryId,
+      tag: tag.toLowerCase(),
+    })
+      .populate("category", "title tag")
+      .populate("vendor", "name username email image");
+
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      products,
+    });
+  } catch (err) {
+    console.error("Error fetching vendor/category/tag products:", err);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: err.message,
+    });
+  }
+};
+export {getAllVendors,  vendorAccountDetails  , updateVendorById , deleteVendorById ,getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData ,addCategoriesToVendor , productOfVendorData };
