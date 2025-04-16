@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import InputField from "./InputField";
 import { validateForm } from "./validateForm";
-import { FaUser, FaEnvelope, FaPhone, FaLock } from "react-icons/fa";
+import { FaUser, FaEnvelope, FaPhoneAlt, FaLock } from "react-icons/fa";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../../../components/UserContext/userContext";
+
 const Signup = () => {
-  const {setUser} = useUser();
+  const { setUser } = useUser();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -14,6 +15,7 @@ const Signup = () => {
     password: "",
   });
 
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,23 +23,16 @@ const Signup = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value, // ✅ this line updates the actual field
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setServerError("");
 
-    const validationErrors = validateForm(
-      formData,
-      ["name", "email", "phone", "password"]
-    );
-
+    const validationErrors = validateForm(formData, ["name", "email", "phone", "password"]);
+    if (!agreeToTerms) validationErrors.agreeToTerms = "You must agree to the terms.";
 
     if (Object.keys(validationErrors).length > 0) {
       return setErrors(validationErrors);
@@ -50,34 +45,48 @@ const Signup = () => {
         formData,
         { withCredentials: true }
       );
-      // After successful registration, update the UserContext immediately
-    const { user } = res.data.data; // Assuming the user data is here
-    setUser(user);  // Directly update the user context
-    console.log("User registered:", res.data);
-      console.log("User registered:", res.data);
+      setUser(res.data.data.user);
       navigate("/auth/successfully");
     } catch (err) {
-      setServerError(err.response?.data?.message || "Registration failed. Try again.");
+      const details = err.response?.data?.details;
+    
+      // If server returns specific field errors
+      if (Array.isArray(details)) {
+        const fieldErrors = {};
+        details.forEach((msg) => {
+          if (msg.toLowerCase().includes("email")) {
+            fieldErrors.email = msg;
+          } else if (msg.toLowerCase().includes("phone")) {
+            fieldErrors.phone = msg;
+          } else {
+            fieldErrors.general = msg;
+          }
+        });
+    
+        setErrors((prev) => ({ ...prev, ...fieldErrors }));
+      } else {
+        setServerError(err.response?.data?.message || "Registration failed. Try again.");
+      }
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center  bg-gradient-to-br from-gray-900 via-gray-800 to-black px-4">
-      <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl border border-gray-100">
-        <h2 className="text-xl sm:text-3xl font-bold text-center text-gray-800 mb-6">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-indigo-700 via-purple-800 to-gray-800 px-4">
+      <div className="w-full max-w-lg bg-white/18 backdrop-blur-2xl rounded-3xl shadow-xl border border-white/20 p-8 sm:p-10">
+        <h2 className="text-2xl font-extrabold text-white text-center mb-6 tracking-tight">
           Create your Account
         </h2>
 
-        <form onSubmit={handleSubmit} noValidate className="space-y-5">
+        <form onSubmit={handleSubmit} noValidate className="space-y-6">
           <InputField
             label="Full Name"
             name="name"
             type="text"
             value={formData.name}
             onChange={handleChange}
-            placeholder="enter your full name"
+            placeholder="Enter your full name"
             icon={FaUser}
             error={errors.name}
           />
@@ -87,7 +96,7 @@ const Signup = () => {
             type="email"
             value={formData.email}
             onChange={handleChange}
-            placeholder="enter your email id"
+            placeholder="Enter your email"
             icon={FaEnvelope}
             error={errors.email}
           />
@@ -97,8 +106,8 @@ const Signup = () => {
             type="tel"
             value={formData.phone}
             onChange={handleChange}
-            placeholder="enter your contact no"
-            icon={FaPhone}
+            placeholder="Enter your phone number"
+            icon={FaPhoneAlt}
             error={errors.phone}
           />
           <InputField
@@ -107,59 +116,59 @@ const Signup = () => {
             type="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="set 6 digit password"
+            placeholder="Set a 6 digit strong password"
             icon={FaLock}
             error={errors.password}
           />
 
           {/* Terms & Conditions */}
-          <div className="flex items-start gap-2 text-sm">
+          <div className="flex items-start gap-2 text-sm text-white">
             <input
               type="checkbox"
-              name="agreeToTerms"
               id="agreeToTerms"
-              className="mt-1"
-              required
+              checked={agreeToTerms}
+              onChange={(e) => setAgreeToTerms(e.target.checked)}
+              className="mt-1 accent-blue-500 scale-125"
             />
-            <label htmlFor="agreeToTerms" className="text-gray-600">
-              I agree to the{" "}
-              <a
-                href="/policies"
+            <label htmlFor="agreeToTerms">
+              I agree to all the{" "}
+              <Link
+                to="/policies"
                 target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 font-semibold hover:underline"
+                className="text-yellow-400 font-semibold hover:underline"
               >
                 Terms & Conditions
-              </a>
+              </Link>
+              {" "}of The Shopzo
             </label>
           </div>
           {errors.agreeToTerms && (
-            <p className="text-red-500 text-xs mt-1">{errors.agreeToTerms}</p>
+            <p className="text-red-400 text-sm mt-1 animate-pulse">{errors.agreeToTerms}</p>
           )}
 
           {serverError && (
-            <p className="text-red-500 text-sm text-center">{serverError}</p>
+            <p className="text-red-500 text-center text-sm font-medium">{serverError}</p>
           )}
 
           <button
-  type="submit"
-  disabled={loading}
-  className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 flex items-center justify-center gap-2 disabled:opacity-50"
->
-  {loading ? (
-    <>
-      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-      Signing up...
-    </>
-  ) : (
-    "Sign Up"
-  )}
-</button>
+            type="submit"
+            disabled={loading}
+            className="w-full hover:cursor-pointer bg-gradient-to-r from-blue-600 to-purple-700 hover:from-blue-700 hover:to-purple-800 text-white py-3 rounded-xl font-bold tracking-wide shadow-lg transition-all duration-300 disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {loading ? ( 
+              <>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Signing up...
+              </>
+            ) : (
+              "Create Account"
+            )}
+          </button>
         </form>
 
-        <p className="text-sm text-center text-gray-500 mt-6">
+        <p className="text-sm text-center text-gray-300 mt-6">
           Already have an account?{" "}
-          <Link to="/login" className="text-blue-600 hover:underline">
+          <Link to="/login" className="text-green-500 font-semibold hover:underline">
             Log in
           </Link>
         </p>

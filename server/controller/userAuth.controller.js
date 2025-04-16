@@ -41,18 +41,11 @@ const createNewUser = asyncHandler(async (req, res) => {
       role: role || "user",
     });
 
-    // 🔐 Register using passport-local-mongoose
+    // 🔐 Register user using passport-local-mongoose
     const registeredUser = await User.register(newUser, password);
-    if (!registeredUser) {
-      return res.status(400).json(
-        new ApiError(400, ["User registration failed"], "Validation Error")
-      );
-    }
 
-    console.log("✅ User registered successfully!");
-
-    // 🔑 Auto login after registration
-    req.login(registeredUser, { session: true }, (err) => {
+    // ✅ Login using correct { id, type } format for deserializeUser
+    req.login({ id: registeredUser._id, type: "user" }, { session: true }, (err) => {
       if (err) {
         return res.status(500).json(
           new ApiError(500, err, "Auto-login after registration failed!")
@@ -77,6 +70,7 @@ const createNewUser = asyncHandler(async (req, res) => {
     );
   }
 });
+
 
 
 // Login the Registered User

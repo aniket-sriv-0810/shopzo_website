@@ -17,8 +17,17 @@ passport.use("vendor-local", new LocalStrategy(
 
 // 📌 Serialize (store ID + type in session)
 passport.serializeUser((entity, done) => {
-  let userType = entity instanceof Vendor ? "vendor" : "user";
-  done(null, { id: entity.id, type: userType });
+  // Default to "user" unless proven otherwise
+  if (entity instanceof Vendor) {
+    done(null, { id: entity.id, type: "vendor" });
+  } else if (entity instanceof User) {
+    done(null, { id: entity.id, type: "user" });
+  } else if (entity?.type && entity?.id) {
+    // Handles custom objects passed manually (like in req.login)
+    done(null, entity);
+  } else {
+    done(new Error("Cannot serialize unknown entity"));
+  }
 });
 
 // 📌 Deserialize (based on type, fetch correct model)
