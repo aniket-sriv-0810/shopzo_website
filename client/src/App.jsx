@@ -45,6 +45,8 @@ import SuccessLoader from './pages/Loaders/SuccessLoader';
 import ContactUsLoader from './pages/Loaders/ContactUsLoader';
 import UserBooking from './pages/User/UserBooking';
 import './App.css';
+import ErrorToast from './components/Popups/ErrorToast';
+import ErrorPopup from './components/Popups/ErrorPopUp';
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -142,6 +144,11 @@ function App() {
       <UserWishlists />
       </PrivateRoute>
       }  />
+    <Route path="/user/:id/account/vendor-wishlists" element={
+      <PrivateRoute>
+      <UserWishlists />
+      </PrivateRoute>
+      }  />
     <Route path="/user/:id/account/bookings" element={
       <PrivateRoute>
       <UserBooking />
@@ -193,6 +200,8 @@ function App() {
             <SuccessLoader />
             </PrivateRoute>
             } />
+
+          <Route path="/error" element={<ErrorPopup />} />
           <Route path="*" element={<PageNotFound />} />
       </Routes>
       )}

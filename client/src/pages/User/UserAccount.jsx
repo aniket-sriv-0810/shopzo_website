@@ -1,12 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import UserNavbar from '../../components/Navbars/UserNavbar/UserNavbar';
+import UserNavbar from "../../components/Navbars/UserNavbar/UserNavbar";
 import UserProfile from "../../components/User/UserAccount/UserProfile";
 import UserDetailsForm from "../../components/User/UserAccount/UserDetailsForm";
 import UserActions from "../../components/User/UserAccount/UserActions";
 import SkeletonForm from "../../components/LoadingSkeleton/SkeletonForm";
-
+import ErrorPopup from "../../components/Popups/ErrorPopUp";
 const UserAccount = () => {
   const [showUser, setShowUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -14,7 +14,7 @@ const UserAccount = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const userDetails = async () => {
+  const fetchUserDetails = async () => {
     setLoading(true);
     try {
       const { data } = await axios.get(
@@ -23,49 +23,59 @@ const UserAccount = () => {
       );
       setShowUser(data.data.userInfo);
     } catch (err) {
-      setError("Error in fetching user details");
+      setError("Error fetching user details.");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    userDetails();
+    fetchUserDetails();
   }, [id]);
-
 
   return (
     <>
-    <div className="bg-gray-200">
+    <div className="bg-gray-100">
       <UserNavbar />
     </div>
-      
-      {loading ? (
-        <div className="flex justify-center items-center mt-10">
-          <SkeletonForm/>
-        </div>
-      ) : (
-        <div className="bg-gray-100 min-h-screen flex flex-col md:flex-row">
-          <UserProfile user={showUser} />
-
-          <div className="flex-1 bg-white p-6 md:p-12">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl font-bold text-center text-zinc-800 mb-6 tracking-wide" >
-                My Account
-              </h2>
-
-              {showUser ? (
-                <>
-                  <UserDetailsForm user={showUser} />
-                  <UserActions navigate={navigate} />
-                </>
-              ) : (
-                <p className="text-gray-500 text-lg text-center">User details not found.</p>
-              )}
+      <div className="bg-gray-50 h-max">
+        {loading ? (
+          <div className="flex justify-center items-center py-16">
+            <SkeletonForm />
+          </div>
+        ) : (
+          <div className="flex flex-col lg:flex-row min-h-[calc(100vh-64px)]">
+            <UserProfile user={showUser} />
+            <div className="flex-1 px-4 md:px-10 py-8 bg-white">
+              <div className="max-w-5xl mx-auto">
+                <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-10 tracking-wide">
+                  My Account
+                </h2>
+                {showUser ? (
+                  <>
+                    <UserDetailsForm user={showUser} />
+                    <div className="mt-8">
+                      <UserActions navigate={navigate} />
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-center text-gray-500 text-lg">User details not found.</p>
+                )}
+                 {/* Error Popup for any kind of error */}
+        {error && !loading && (
+          <ErrorPopup
+            message={error}
+            onClose={() => {
+              setError("");
+              navigate("/"); // Optional: redirect or reload logic
+            }}
+          />
+        )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </>
   );
 };

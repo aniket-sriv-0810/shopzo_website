@@ -6,7 +6,7 @@ import {userSchemaValidation} from '../test/user.validator.js' ;
 import {userEditValidationSchema} from '../test/userEdit.validator.js' ;
 import { loginUserValidation } from '../test/login.validator.js';
 import { createNewUser , loginUser , logOutUser , checkAuthentication } from '../controller/userAuth.controller.js';
-import {userAccountDetails , getUserWishlists , toggleProductWishlist , editUserDetails , deleteUserAccount, getUserBookings , cancelUserBooking} from "../controller/user.controller.js";
+import {userAccountDetails , getUserWishlists , toggleProductWishlist , editUserDetails , deleteUserAccount, getUserBookings , cancelUserBooking ,getUserVendorWishlists , toggleVendorWishlist} from "../controller/user.controller.js";
 const router = express.Router();
 
 
@@ -46,15 +46,19 @@ router
      .get(isLoggedIn , getUserWishlists);
 
 
-// Check for the user vendors Wishlists Route
+// Check for the user Wishlists Route
 router
-     .route('/:id/account/vendor-wishlists')
-     .get(isLoggedIn , getUserWishlists);
+     .route('/:id/account/wishlist')
+     .post(isLoggedIn , toggleProductWishlist);
 
-// ADD/REMOVE the user Vendor wishlists Route
+// ✅ Vendor Wishlist Routes
 router
-     .route('/:id/account/vendor-wishlist')
-     .post( isLoggedIn,toggleProductWishlist)
+  .route("/:id/account/vendor-wishlists")
+  .get(isLoggedIn, getUserVendorWishlists);
+
+router
+  .route("/:id/account/vendor-wishlist")
+  .post(isLoggedIn, toggleVendorWishlist);
 
 // Check for the user Bookings Route
 router

@@ -1,4 +1,5 @@
 import { User } from "../models/user.model.js";
+import {Vendor} from '../models/vendor.model.js';
 import { Product } from "../models/product.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -7,7 +8,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import mongoose from "mongoose";
 
 
-// 👤 User Account Details Controller
+// 👤 User Account Details Controller (/api/user/:id/account)
 const userAccountDetails = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
@@ -164,6 +165,63 @@ const toggleProductWishlist = asyncHandler(async (req, res) => {
     }
   });
   
+// 🧾 Get all Vendor Wishlists for a User
+ const getUserVendorWishlists = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json(new ApiError(400, "Invalid or missing User ID"));
+  }
+
+  const user = await User.findById(id)
+    .populate({
+      path: "vendorWishlists",
+      select: "-__v -createdAt -updatedAt", // customize fields
+    })
+    .select("vendorWishlists");
+
+  if (!user || !user.vendorWishlists?.length) {
+    return res.status(200).json(new ApiResponse(200, { vendorWishlists: [] }, "No vendors in wishlist."));
+  }
+
+  return res.status(200).json(new ApiResponse(200, { vendorWishlists: user.vendorWishlists }, "Vendor wishlist fetched successfully."));
+});
+
+// 🔁 Add / Remove Vendor from Wishlist
+ const toggleVendorWishlist = asyncHandler(async (req, res) => {
+  const { id } = req.params;           // user ID
+  const { vendorId } = req.body;       // vendor ID
+
+  if (!id || !vendorId || 
+      !mongoose.Types.ObjectId.isValid(id) || 
+      !mongoose.Types.ObjectId.isValid(vendorId)) {
+    return res.status(400).json(new ApiError(400, "Invalid or missing User/Vendor ID"));
+  }
+
+  const user = await User.findById(id);
+  const vendor = await Vendor.findById(vendorId);
+
+  if (!user) return res.status(404).json(new ApiError(404, "User not found"));
+  if (!vendor) return res.status(404).json(new ApiError(404, "Vendor not found"));
+
+  const userIndex = user.vendorWishlists.indexOf(vendorId);
+  const vendorIndex = vendor.vendor_wishlists.indexOf(id);
+
+  if (userIndex === -1) {
+    user.vendorWishlists.push(vendorId);
+    vendor.vendor_wishlists.push(id);
+  } else {
+    user.vendorWishlists.splice(userIndex, 1);
+    vendor.vendor_wishlists.splice(vendorIndex, 1);
+  }
+
+  await user.save();
+  await vendor.save();
+
+  return res.status(200).json(
+    new ApiResponse(200, { vendorWishlists: user.vendorWishlists }, "Vendor wishlist updated successfully!")
+  );
+});
 // ✏️ Edit User Controller
 const editUserDetails = asyncHandler(async (req, res) => {
     const { id } = req.params;
@@ -335,4 +393,4 @@ const cancelUserBooking = asyncHandler(async (req, res) => {
     new ApiResponse(200, {}, "Booking cancelled successfully.")
   );
 });
-export { userAccountDetails  , getUserWishlists , toggleProductWishlist , editUserDetails , deleteUserAccount , getUserBookings , cancelUserBooking};
+export { userAccountDetails  , getUserWishlists , toggleProductWishlist , getUserVendorWishlists , toggleVendorWishlist ,editUserDetails , deleteUserAccount , getUserBookings , cancelUserBooking};

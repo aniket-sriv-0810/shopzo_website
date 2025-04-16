@@ -49,7 +49,7 @@ const UserBooking = () => {
 <div className="bg-gray-200">
     <UserNavbar/>
   </div>
-    <div className="bg-gray-100 min-h-screen">
+    <div className="bg-gray-100 h-max">
 
       {loading ? (
         <div className="flex-col justify-center items-center mt-10  md:flex-row">

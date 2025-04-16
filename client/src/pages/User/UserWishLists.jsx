@@ -46,7 +46,7 @@ const UserWishlists = () => {
   <div className="bg-gray-200">
     <UserNavbar/>
   </div>
-    <div className="bg-gray-100 min-h-screen">
+    <div className="bg-gray-100 h-max">
 
 
       {loading ? (
@@ -55,7 +55,7 @@ const UserWishlists = () => {
         </div>
       ) : (
         <div className="overflow-x-hidden">
-          <h2 className="text-center text-3xl font-bold text-gray-900 mt-10 mb-6">My Wishlists</h2>
+          <h2 className="text-center text-3xl font-bold text-gray-900 mt-10 mb-6">My Product Wishlists</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-full px-6 md:px-10 lg:px-20 py-10">
             {wishlists.length > 0 ? (
@@ -63,7 +63,7 @@ const UserWishlists = () => {
                 <UserWishlistProductCard key={product._id} product={product} />
               ))
             ) : (
-              <div className="col-span-full text-center text-lg font-semibold text-gray-700">
+              <div className="col-span-full  text-center text-lg font-semibold text-gray-700">
               <NotAvailable content={"No Product Found"} tagline={" Oops! It looks like your wishlist is empty . Why not explore our amazing collection and add something special to your list?"} />
               </div>
             )}
