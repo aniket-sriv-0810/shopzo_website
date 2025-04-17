@@ -57,4 +57,12 @@
   html, body {
     scroll-padding-top: 80px; /* Adjust based on navbar height */
   }
-  
+  /* Hide scrollbar but still allow scrolling */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}

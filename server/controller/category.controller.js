@@ -59,27 +59,28 @@ const createCategory = asyncHandler(async (req, res) => {
 
 // Controller: Get All Categories
 const getAllCategories = asyncHandler(async (req, res) => {
-    try {
-      const categories = await Category.find({})
-        .populate("products") // optional: remove if not needed  // optional: remove if not needed
-        .sort({ createdAt: -1 }); // newest first
-  
-      if (!categories || categories.length === 0) {
-        return res
-          .status(404)
-          .json(new ApiError(404, "No categories found."));
-      }
-  
+  try {
+    const categories = await Category.find({})
+      .populate("products") // Remove this if you don't need product data here
+      .sort({ createdAt: -1 });
+
+    if (categories.length === 0) {
       return res
-        .status(200)
-        .json(new ApiResponse(200, { categories }, "Categories fetched successfully!"));
-    } catch (error) {
-      console.error("❌ Error while fetching categories:", error);
-      return res
-        .status(500)
-        .json(new ApiError(500, error.message, "Failed to fetch categories"));
+        .status(404)
+        .json(new ApiError(404, "No categories found."));
     }
-  });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, { categories }, "Categories fetched successfully!"));
+  } catch (error) {
+    console.error("❌ Error while fetching categories:", error);
+    return res
+      .status(500)
+      .json(new ApiError(500, error.message, "Failed to fetch categories"));
+  }
+});
+
   const getCategoryById = asyncHandler(async (req, res) => {
     const { id } = req.params;
   
