@@ -83,7 +83,7 @@ const ProductCard = ({ product }) => {
 
         {/* Checkout Button */}
         <button
-          onClick={() => navigate(`/product/${product._id}`)}
+          onClick={() => navigate(`/vendor/${product.vendor}/${product.category._id}/${product.tag}/all-products`)}
           className="mt-1 w-full bg-gradient-to-r from-red-600 to-fuchsia-600 hover:from-blue-700 hover:to-red-800 text-white font-semibold py-2 rounded-xl shadow-md transition duration-200 transform hover:scale-105 hover:cursor-pointer"
         >
           View Product

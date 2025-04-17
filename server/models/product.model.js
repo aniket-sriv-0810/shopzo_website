@@ -72,8 +72,7 @@ const productSchema = new Schema(
       },
     ],
 
-    vendor: 
-      {
+    vendor: {
         type: Schema.Types.ObjectId,
         ref: "Vendor",
         required: [true, "Vendor is required"],

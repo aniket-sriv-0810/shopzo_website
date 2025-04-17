@@ -1,13 +1,13 @@
-import  React from 'react';
-import {useLocation } from "react-router-dom";
+import React from "react";
+import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { useUser } from './components/UserContext/userContext';
-import Home from "./pages/Home"
-import {Routes , Route} from "react-router-dom";
+import { useUser } from "./components/UserContext/userContext";
+import Home from "./pages/Home";
+import { Routes, Route } from "react-router-dom";
 import About from "./pages/Navigation/About/About";
 import Contact from "./pages/Navigation/Contact/Contact";
-import Policies from './pages/Navigation/Policies/Policies';
+import Policies from "./pages/Navigation/Policies/Policies";
 import Login from "./pages/Authentication/Login/Login";
 import SignUp from "./pages/Authentication/SignUp/SignUp";
 import Logout from "./components/Logout/Logout";
@@ -40,21 +40,22 @@ import PrivateRoute from "./components/UserContext/PrivateRoute";
 import IsAdmin from "./components/UserContext/IsAdmin";
 import AdminRoute from "./components/UserContext/AdminRoute";
 import PageNotFound from "./pages/Loaders/PageNotFound";
-import AuthSuccessPopup from './pages/Loaders/AuthSuccessPopup';
-import SuccessLoader from './pages/Loaders/SuccessLoader';
-import ContactUsLoader from './pages/Loaders/ContactUsLoader';
-import UserBooking from './pages/User/UserBooking';
-import './App.css';
-import ErrorToast from './components/Popups/ErrorToast';
-import ErrorPopup from './components/Popups/ErrorPopUp';
-import UserPasswordChange from './pages/User/UserPasswordChange';
-import VendorLoginForm from './pages/Authentication/VendorLogin/VendorLoginForm';
-import AddCategoryToVendor from './pages/Vendor/AddCategoriesToVendor';
-import VendorAccount from './pages/Vendor/VendorAccount/VendorAccount';
-import VendorCategories from './pages/Vendor/VendorCategories/VendorCategories';
-import VendorProducts from './pages/Vendor/VendorProducts/VendorProducts';
-import VendorFilteredProducts from './pages/Vendor/VendorFilteredProducts/VendorFilteredProduct';
-import UserVendorWishlists from './pages/User/UserVendorWishlists';
+import AuthSuccessPopup from "./pages/Loaders/AuthSuccessPopup";
+import SuccessLoader from "./pages/Loaders/SuccessLoader";
+import ContactUsLoader from "./pages/Loaders/ContactUsLoader";
+import UserBooking from "./pages/User/UserBooking";
+import "./App.css";
+import ErrorToast from "./components/Popups/ErrorToast";
+import ErrorPopup from "./components/Popups/ErrorPopUp";
+import UserPasswordChange from "./pages/User/UserPasswordChange";
+import VendorLoginForm from "./pages/Authentication/VendorLogin/VendorLoginForm";
+import AddCategoryToVendor from "./pages/Vendor/AddCategoriesToVendor";
+import VendorAccount from "./pages/Vendor/VendorAccount/VendorAccount";
+import VendorCategories from "./pages/Vendor/VendorCategories/VendorCategories";
+import VendorProducts from "./pages/Vendor/VendorProducts/VendorProducts";
+import VendorFilteredProducts from "./pages/Vendor/VendorFilteredProducts/VendorFilteredProduct";
+import UserVendorWishlists from "./pages/User/UserVendorWishlists";
+import ShowVendorProducts from "./components/Vendors/VendorShow/ShowVendorProducts";
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -82,10 +83,9 @@ function App() {
     }
   }, [setUser]);
 
-
   return (
     <>
-     {isLoading ? (
+      {isLoading ? (
         // Display loading animation while isLoading is true
         <div className="loading-page flex flex-col justify-center gap-6 items-center h-screen">
           <DotLottieReact
@@ -98,140 +98,187 @@ function App() {
             Loading...
           </p>
         </div>
-      ) : 
-      (
-      <Routes>
-    <Route path="/" element={<Home/>} />
-    <Route path="/home" element={<Home/>} />
-    <Route path="/about" element={<About/>} />
-    <Route path="/contact" element={
-<PrivateRoute>
-    <Contact/>
-</PrivateRoute>
-    } />
-    <Route path="/contact/confirmed" element={
-      <PrivateRoute>
-    <ContactUsLoader/>
-      </PrivateRoute>
-    } />
-    
-    <Route path="/policies" element={<Policies/>} />
-
-    <Route path="/login" element={<Login/>} />
-    <Route path="/register" element={<SignUp/>} />
-    <Route path="/logout" element={<Logout/>} />
-
-
-    
+      ) : (
+        <Routes>
+          {/* Home & Other Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/policies" element={<Policies />} />
+          <Route
+            path="/contact"
+            element={
+              <PrivateRoute>
+                <Contact />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/contact/confirmed"
+            element={
+              <PrivateRoute>
+                <ContactUsLoader />
+              </PrivateRoute>
+            }
+          />
 
 
-    <Route path="/product/:id" element={<ShowProduct />}  />
+
+          {/* User Authentication Routes*/}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<SignUp />} />
+          <Route path="/logout" element={<Logout />} />
 
 
-    <Route path="/vendor/:id/details" element={<ShowVendor />}  />
+              {/* Product Routes - CLIENT Side */}
+          <Route path="/product/:id" element={<ShowProduct />} />
+        
+              {/* Category Routes - CLIENT Side */}
+          <Route path="/categories" element={<AllCategories />} />
+          <Route path="/category" element={<AllCategories />} />
+          <Route path="/category/:id/:tag/products" element={<ShowCategory />} />
 
-    <Route path="/category/:id/:tag/products" element={<ShowCategory />}  />
-    <Route path="/user/:id/account/delete" element={
-      <PrivateRoute>
-      <UserAccountDelete />
-      </PrivateRoute>
-}  />
-    <Route path="/user/:id/account" element={
-      <PrivateRoute>
-      <UserAccount />
-      </PrivateRoute>
-      }  />
-    <Route path="/user/:id/account/edit" element={
-      <PrivateRoute>
-      <UserAccountEdit />
-      </PrivateRoute>
-      }  />
-    <Route path="/user/:id/account/change-password" element={
-      <PrivateRoute>
-      <UserPasswordChange />
-      </PrivateRoute>
-      }  />
-    <Route path="/user/:id/account/wishlists" element={
-      <PrivateRoute>
-      <UserWishlists />
-      </PrivateRoute>
-      }  />
-    <Route path="/user/:id/account/vendor-wishlists" element={
-      <PrivateRoute>
-      <UserVendorWishlists />
-      </PrivateRoute>
-      }  />
-    <Route path="/user/:id/account/bookings" element={
-      <PrivateRoute>
-      <UserBooking />
-      </PrivateRoute>
-      }  />
+            {/* User Routes - CLIENT Side */}
+          <Route
+            path="/user/:id/account"
+            element={
+              <PrivateRoute>
+                <UserAccount />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/user/:id/account/edit"
+            element={
+              <PrivateRoute>
+                <UserAccountEdit />
+              </PrivateRoute>
+            }
+          />
+           <Route
+            path="/user/:id/account/delete"
+            element={
+              <PrivateRoute>
+                <UserAccountDelete />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/user/:id/account/change-password"
+            element={
+              <PrivateRoute>
+                <UserPasswordChange />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/user/:id/account/wishlists"
+            element={
+              <PrivateRoute>
+                <UserWishlists />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/user/:id/account/vendor-wishlists"
+            element={
+              <PrivateRoute>
+                <UserVendorWishlists />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/user/:id/account/bookings"
+            element={
+              <PrivateRoute>
+                <UserBooking />
+              </PrivateRoute>
+            }
+          />
+ 
+              {/* Admin Routes - ADMIN Side */}
+          <Route
+            path="/admin/dashboard"
+            element={
+              <PrivateRoute>
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
+              </PrivateRoute>
+            }
+          />
 
-    <Route path="/admin/dashboard" element={
-      <PrivateRoute>
-      <AdminRoute>
-      <AdminDashboard />
-      </AdminRoute>
-      </PrivateRoute>
-      }  />
-  
-    <Route
+          <Route
             path="/admin"
             element={
               <PrivateRoute>
-              <IsAdmin>
+                <IsAdmin>
                   <AdminHome />
-              </IsAdmin>
+                </IsAdmin>
               </PrivateRoute>
             }
           >
-          
             <Route path="users" element={<AdminUser />} />
             <Route path="vendors" element={<AdminVendor />} />
             <Route path="categories" element={<AdminCategory />} />
             <Route path="products" element={<AdminProduct />} />
             <Route path="bookings" element={<AdminBooking />} />
             <Route path="feedbacks" element={<AdminFeedback />} />
-            <Route path="add-category" element={<AddCategoryForm />}  />
-            <Route path="category/:id/edit-category" element={<EditCategory />}  />
-            <Route path="category/:id/delete-category" element={<DeleteCategory />}  />
-            <Route path="add-product" element={<AddProductForm />}  />
-            <Route path="product/:id/edit" element={<EditProduct />}  />
-            <Route path="add-vendor" element={<AddVendor />}  />
-            <Route path="vendor/:id/account/delete" element={<DeleteVendor />}  />
+            <Route path="add-category" element={<AddCategoryForm />} />
+            <Route path="add-product" element={<AddProductForm />} />
+            <Route path="add-vendor" element={<AddVendor />} />
+            <Route
+              path="category/:id/edit-category"
+              element={<EditCategory />}
+            />
+            <Route
+              path="category/:id/delete-category"
+              element={<DeleteCategory />}
+            />
+            <Route path="product/:id/edit" element={<EditProduct />} />
+            <Route path="product/:id/delete" element={<EditProduct />} />
+            <Route
+            path="vendor/:vendorId/add-category"
+            element={<AddCategoryToVendor />}
+          />
+            <Route
+              path="vendor/:id/account/delete"
+              element={<DeleteVendor />}
+            />
           </Route>
 
-
-            <Route path="/vendor/login" element={<VendorLoginForm />} />
-
-
-
-            <Route path="/vendors" element={<AllVendors />} />
-            <Route path="/all-vendors" element={<AllVendors />} />
-            <Route path="/vendor" element={<AllVendors />} />
-            <Route path="/categories" element={<AllCategories />} />
-            <Route path="/category" element={<AllCategories />} />
-              {/* 404 Page Not Found Route */}
-          <Route path="/auth/successfully" element={
-            <AuthSuccessPopup />} />
-          <Route path="/saved/successfully" element={
-            <PrivateRoute>
-            <SuccessLoader />
-            </PrivateRoute>
-            } />
-<Route path="/admin/vendors/:vendorId/add-category" element={<AddCategoryToVendor />} />
-
-          {/* Vendor Personal Accounts  */}
+            {/* Vendor Routes - VENDOR Side */}
+          <Route path="/vendor/login" element={<VendorLoginForm />} />
           <Route path="/vendor/:id/account" element={<VendorAccount />} />
-          <Route path="/vendor/:id/account/categories-listed" element={<VendorCategories />} />
-          <Route path="/vendor/:id/account/products-listed" element={<VendorProducts />} />
-          <Route path="/vendor/:id/:categoryId/:tag/all-products" element={<VendorFilteredProducts />} />
+          <Route path="/vendor/:id/account/categories-listed" element={<VendorCategories />}/>
+          <Route path="/vendor/:id/account/products-listed" element={<VendorProducts />}/>
+          <Route path="/vendor/:id/:categoryId/:tag/all-products" element={<VendorFilteredProducts />}/>
+
+             {/* Vendor Routes - CLIENT Side */}
+          <Route path="/vendors" element={<AllVendors />} />
+          <Route path="/all-vendors" element={<AllVendors />} />
+          <Route path="/vendor" element={<AllVendors />} />
+          <Route path="/vendor/:id/details" element={<ShowVendor />} />
+          <Route path="/vendor/:id/details/:categoryId/:tag/all-products" element={<ShowVendorProducts />} />
+          <Route path="/vendor/:id/details" element={<ShowVendor />} />
+          
+          {/*Loader Routes */}
+          <Route path="/auth/successfully" element={<AuthSuccessPopup />} />
+          <Route
+            path="/saved/successfully"
+            element={
+              <PrivateRoute>
+                <SuccessLoader />
+              </PrivateRoute>
+            }
+          />
           <Route path="/error" element={<ErrorPopup />} />
+          {/* 404 Page Not Found Route */}
           <Route path="*" element={<PageNotFound />} />
-      </Routes>
+        </Routes>
       )}
     </>
-  )
+  );
 }
 
-export default App
+export default App;

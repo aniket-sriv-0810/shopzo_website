@@ -5,6 +5,7 @@ import AllCategories from "../../components/Category/AllCategory/AllCategory";
 import SkeletonForm from "../../components/LoadingSkeleton/SkeletonForm";
 import Navbar from "../../components/Navbars/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
+import ShowVendorCategory from "../../components/Vendors/VendorShow/ShowVendorCategory";
 const ShowVendor = () => {
   const { id } = useParams();
   const [vendor, setVendor] = useState(null);
@@ -96,8 +97,13 @@ const ShowVendor = () => {
         </div>
       </div>
 
-      {/* Categories Section */}
-      <AllCategories />
+       {/* Vendor's Categories */}
+       <section className="max-w-7xl mx-auto px-4 mt-16">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+          Categories Listed by this Vendor
+        </h2>
+        <ShowVendorCategory />
+      </section>
       <div className="mt-20">
         <Footer/>
       </div>

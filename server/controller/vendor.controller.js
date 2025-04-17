@@ -241,12 +241,12 @@ const getVendorDashboardData = async (req, res) => {
 };
 
 const vendorCategoriesData = async (req, res) => {
-  const { id } = req.params; // Get the vendor ID from the URL parameter
+  const { id } = req.params;
 
   try {
-    // Fetch the products for the vendor by the vendor ID
+    // Get all products for the vendor
     const products = await Product.find({ vendor: id })
-      .populate("category", "title") // Populate the category field with only the title
+      .populate("category") // no field selection, fetch full category info
       .exec();
 
     if (!products || products.length === 0) {
@@ -256,15 +256,19 @@ const vendorCategoriesData = async (req, res) => {
       });
     }
 
-    // Extract the category IDs and avoid duplicates
-    const categoryIds = [...new Set(products.map(product => product.category._id.toString()))];
+    // Extract full unique category objects from products
+    const uniqueCategoriesMap = new Map();
 
-    // Fetch the category details for those IDs
-    const categories = await Category.find({ _id: { $in: categoryIds } })
-      .select("title _id")
-      .exec();
+    products.forEach((product) => {
+      const category = product.category;
+      if (category && !uniqueCategoriesMap.has(category._id.toString())) {
+        uniqueCategoriesMap.set(category._id.toString(), category);
+      }
+    });
 
-    if (!categories || categories.length === 0) {
+    const categories = Array.from(uniqueCategoriesMap.values());
+
+    if (categories.length === 0) {
       return res.status(404).json({
         status: "error",
         message: "No categories found for this vendor's products.",
@@ -276,7 +280,7 @@ const vendorCategoriesData = async (req, res) => {
       categories,
     });
   } catch (error) {
-    console.error(error);
+    console.error("🔴 Error fetching vendor categories:", error);
     res.status(500).json({
       status: "error",
       message: "Something went wrong while fetching the categories.",

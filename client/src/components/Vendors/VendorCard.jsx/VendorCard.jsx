@@ -65,7 +65,7 @@ const VendorCard = ({ vendor }) => {
         {/* CTA Button */}
         <div className="pt-4">
           <Link
-            to={`/vendor/${vendor._id}/account`}
+            to={`/vendor/${vendor._id}/details`}
             className="w-full inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-red-600 to-fuchsia-600 rounded-full  hover:from-red-600 hover:to-indigo-500 transition duration-300"
           >
             View Products
