@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { IoHomeSharp } from "react-icons/io5";
-import { FaUserCircle, FaUser, FaBars, FaTimes, FaPaperPlane , FaCalendarCheck ,FaPowerOff , FaStoreAlt , FaStore, FaTags } from "react-icons/fa";
-import { RiQuestionAnswerFill, RiShieldUserLine, RiArticleFill } from "react-icons/ri";
-import { TiShoppingCart } from "react-icons/ti";
+import {  FaUser, FaBars, FaTimes,   FaCalendarCheck ,FaPowerOff } from "react-icons/fa";
 import { MdAdminPanelSettings } from "react-icons/md";
-import { PiUserCirclePlusBold } from "react-icons/pi";
 import { useUser } from "../../UserContext/userContext";
 import { IoHeartCircleOutline } from "react-icons/io5";
+import { FaHeart, FaStore } from "react-icons/fa6";
 
 const MobileNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -18,9 +15,9 @@ const MobileNavbar = () => {
 
 
   const menuItems = [
-    { to: "/admin", label: "Admin Dashboard", tooltip: "Admin" ,icon: <MdAdminPanelSettings />, role: "admin" },
     { to: `/user/${user?._id}/account`, label: "My Account", tooltip: "My Account"  , icon: <FaUser />},
-    { to: `/user/${user?._id}/account/wishlists`, label: "My Wishlists", tooltip: "Wishlists" ,icon: <IoHeartCircleOutline /> },
+    { to: `/user/${user?._id}/account/wishlists`, label: "My Wishlists", tooltip: "Wishlists" ,icon: <FaHeart /> },
+    { to: `/user/${user?._id}/account/vendor-wishlists`, label: "My Vendors", tooltip: "My Wishlists" ,icon: <FaStore /> },
     { to: `/user/${user?._id}/account/bookings`, label: "My Bookings", tooltip: "Bookings" , icon: <FaCalendarCheck /> },
   ];
 
@@ -28,7 +25,7 @@ const MobileNavbar = () => {
     <>
       {/* Hamburger Icon */}
       <button
-        className="absolute right-4 sm:right-8 lg:hidden text-black focus:outline-none "
+        className="absolute right-4 sm:right-8 lg:hidden text-white focus:outline-none "
         onClick={toggleMenu}
         data-aos="fade-up"
       >

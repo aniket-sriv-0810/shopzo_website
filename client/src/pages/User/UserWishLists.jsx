@@ -43,7 +43,7 @@ const UserWishlists = () => {
 
   return (
     <>
-  <div className="bg-gray-200">
+  <div className="bg-gradient-to-tl from-gray-600 to-slate-800">
     <UserNavbar/>
   </div>
     <div className="bg-gray-100 h-max">

@@ -35,7 +35,7 @@ const UserAccount = () => {
 
   return (
     <>
-    <div className="bg-gray-100">
+    <div className="bg-gradient-to-tl from-gray-600 to-slate-800">
       <UserNavbar />
     </div>
       <div className="bg-gray-50 h-max">

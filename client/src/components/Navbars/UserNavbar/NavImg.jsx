@@ -1,6 +1,6 @@
 import React  from 'react'
 import { NavLink } from 'react-router-dom';
-import WebsiteLogo from '../../../assets/black-website-logo.png';
+import WebsiteLogo from '../../../assets/white-website-logo.png';
 
 const NavImg = () => {
 
@@ -11,6 +11,7 @@ const NavImg = () => {
               src={WebsiteLogo}
               alt="The Shopzo"
               className="w-16 sm:w-20 lg:w-24"
+              data-aos="fade-down"
               />
           </NavLink>
 

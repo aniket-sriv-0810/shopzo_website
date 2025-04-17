@@ -54,6 +54,7 @@ import VendorAccount from './pages/Vendor/VendorAccount/VendorAccount';
 import VendorCategories from './pages/Vendor/VendorCategories/VendorCategories';
 import VendorProducts from './pages/Vendor/VendorProducts/VendorProducts';
 import VendorFilteredProducts from './pages/Vendor/VendorFilteredProducts/VendorFilteredProduct';
+import UserVendorWishlists from './pages/User/UserVendorWishlists';
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -157,7 +158,7 @@ function App() {
       }  />
     <Route path="/user/:id/account/vendor-wishlists" element={
       <PrivateRoute>
-      <UserWishlists />
+      <UserVendorWishlists />
       </PrivateRoute>
       }  />
     <Route path="/user/:id/account/bookings" element={

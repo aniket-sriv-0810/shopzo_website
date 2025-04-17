@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import UserWishlistVendorCard from "../../components/User/UserWishlist/UserWishlistVendorCard";
+import VendorCard from "../../components/Vendors/VendorCard.jsx/VendorCard";
 import UserNavbar from "../../components/Navbars/UserNavbar/UserNavbar";
 import SkeletonList from '../../components/LoadingSkeleton/SkeletonList';
 import NotAvailable from "../Loaders/NotAvailable";
@@ -42,7 +42,7 @@ const UserVendorWishlists = () => {
 
   return (
     <>
-      <div className="bg-gray-200">
+      <div className="bg-gradient-to-tl from-gray-600 to-slate-800">
         <UserNavbar />
       </div>
       <div className="bg-gray-100 h-max">
@@ -57,7 +57,7 @@ const UserVendorWishlists = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-full px-6 md:px-10 lg:px-20 py-10">
               {vendors.length > 0 ? (
                 vendors.map((vendor) => (
-                  <UserWishlistVendorCard key={vendor._id} vendor={vendor} />
+                  <VendorCard key={vendor._id} vendor={vendor} />
                 ))
               ) : (
                 <div className="col-span-full text-center text-lg font-semibold text-gray-700">
