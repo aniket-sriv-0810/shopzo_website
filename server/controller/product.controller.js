@@ -4,7 +4,7 @@ import {ApiError} from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js"; // Adjust the path as needed
-
+import mongoose from "mongoose";
 const addProductController = async (req, res) => {
   try {
     let {
@@ -94,29 +94,52 @@ const addProductController = async (req, res) => {
 
 
 // GET /api/products/:productId
+// GET /api/products/:productId
 const getProductById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
+  // ✅ Validate MongoDB ObjectId early
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json(new ApiError(400, "Invalid product ID format"));
+  }
+
   try {
-    const product = await Product.findById(id).populate("category", "title tag");
+    const product = await Product.findById(id)
+      .populate("category", "title tag")
+      .populate("vendor", "name image"); // ✅ Optionally add vendor fields if needed
 
     if (!product) {
       return res.status(404).json(new ApiError(404, "Product not found"));
     }
 
+    // ✅ Explicitly convert fields to avoid accidental undefined/null leaks
+    const {
+      _id,
+      title,
+      description,
+      originalPrice,
+      discountedPrice,
+      images,
+      sizes,
+      tag,
+      category,
+      vendor,
+    } = product;
+
     return res.status(200).json(
       new ApiResponse(
         200,
         {
-          _id: product._id,
-          title: product.title,
-          description: product.description,
-          price: product.price,
-          images: product.images,
-          sizes: product.sizes,
-          tag: product.tag,
-          category: product.category,
-          vendor: product.vendor,
+          _id,
+          title,
+          description,
+          originalPrice: Number(originalPrice),
+          discountedPrice: Number(discountedPrice),
+          images: images || [],
+          sizes: sizes || [],
+          tag,
+          category,
+          vendor,
         },
         "Product fetched successfully"
       )
@@ -125,7 +148,7 @@ const getProductById = asyncHandler(async (req, res) => {
     console.error("❌ Error fetching product:", error);
     return res
       .status(500)
-      .json(new ApiError(500, error.message, "Internal Server Error"));
+      .json(new ApiError(500, error.message || "Internal Server Error"));
   }
 });
 

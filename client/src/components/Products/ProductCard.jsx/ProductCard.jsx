@@ -9,10 +9,15 @@ const ProductCard = ({ product }) => {
   const { user } = useUser();
   const navigate = useNavigate();
 
+  const originalPrice = product.originalPrice;
+  const discountedPrice = product.discountedPrice;
+  const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
+
   return (
-    <div className="bg-white border border-gray-200 shadow-lg hover:shadow-2xl rounded-2xl overflow-hidden transition-transform duration-300 hover:scale-[1.02] w-full sm:max-w-[320px] mx-auto">
-      {/* Image Section */}
-      <div className="relative">
+    <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl border border-gray-200 overflow-hidden transition-transform duration-300 hover:scale-[1.02] w-full sm:max-w-[320px] mx-auto flex flex-col">
+      
+      {/* Image Section (70%) */}
+      <div className="relative h-[70%]">
         {/* Share Button */}
         <div className="absolute top-3 left-3 z-10">
           <ShareBtn
@@ -29,49 +34,60 @@ const ProductCard = ({ product }) => {
           />
         </div>
 
+        {/* Discount Badge */}
+        {discount > 0 && (
+          <div className="absolute bottom-3 left-3 bg-red-600 text-white px-3 py-2 rounded-full text-xs font-bold shadow-md animate-bounce">
+            {discount}% OFF
+          </div>
+        )}
+
         <img
           src={product.images[0]}
           alt={product.title}
-          className="w-full h-60 object-cover group-hover:brightness-90 transition-all duration-300"
+          className="w-full h-[300px] object-cover bg-amber-100 transition-all duration-300"
         />
       </div>
 
-      {/* Content Section */}
-      <div className="p-4 sm:p-6 space-y-3">
+      {/* Content Section (30%) */}
+      <div className="p-4 sm:p-3 bg-amber-50 space-y-3 flex-grow flex flex-col justify-between">
+        
         {/* Title */}
-        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 line-clamp-2">
+        <h2 className="text-lg sm:text-xl capitalize font-bold text-gray-900 line-clamp-2">
           {product.title}
         </h2>
 
         {/* Price */}
-        <p className="text-md font-medium text-gray-800 flex items-center gap-1">
-          <FaRupeeSign className="text-green-600" />
-          {product.price}
-        </p>
+        <div className="flex items-center gap-2 text-md sm:text-base">
+          <span className="flex items-center text-xl text-green-600 font-bold">
+            <FaRupeeSign className="" />
+            {discountedPrice.toFixed(0)}
+          </span>
+          <span className="flex items-center text-gray-400 line-through">
+            {originalPrice.toFixed(0)}
+          </span>
+        </div>
 
-        {/* Category and Tag */}
-        <div className="flex flex-wrap gap-3 text-sm mt-2">
+        {/* Category & Tag */}
+        <div className="flex flex-wrap gap-2 text-xs mt-1">
           {product.category?.title && (
-            <span className="bg-teal-600 text-gray-100 px-3 py-1 rounded-full font-medium">
+            <span className="bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white px-3 py-1 rounded-full font-medium">
               {product.category.title}
             </span>
           )}
           {product.tag && (
-            <span className="bg-cyan-600 text-gray-100 px-3 py-1 rounded-full font-medium capitalize">
+            <span className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full font-medium capitalize">
               {product.tag}
             </span>
           )}
         </div>
 
         {/* Checkout Button */}
-        <div className="pt-4">
-          <button
-            onClick={() => navigate(`/product/${product._id}`)}
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-700 hover:bg-gradient-to-r hover:from-blue-700 hover:to-indigo-800 text-white font-semibold py-2 rounded-lg shadow-md transition duration-200 transform hover:scale-105 hover:cursor-pointer"
-          >
-            Checkout
-          </button>
-        </div>
+        <button
+          onClick={() => navigate(`/product/${product._id}`)}
+          className="mt-1 w-full bg-gradient-to-r from-red-600 to-fuchsia-600 hover:from-blue-700 hover:to-red-800 text-white font-semibold py-2 rounded-xl shadow-md transition duration-200 transform hover:scale-105 hover:cursor-pointer"
+        >
+          View Product
+        </button>
       </div>
     </div>
   );
