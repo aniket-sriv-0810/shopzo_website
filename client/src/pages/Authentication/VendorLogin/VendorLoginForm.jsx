@@ -43,7 +43,7 @@ const VendorLoginForm = () => {
         const vendorData = response.data.data.vendor;
         setUser(vendorData);
         localStorage.setItem("vendor", JSON.stringify(vendorData));
-        navigate("/");
+        navigate(`/vendor/${vendorData._id}/account`);
       }
     } catch (error) {
       const details = error.response?.data?.details;

@@ -50,6 +50,8 @@ import ErrorPopup from './components/Popups/ErrorPopUp';
 import UserPasswordChange from './pages/User/UserPasswordChange';
 import VendorLoginForm from './pages/Authentication/VendorLogin/VendorLoginForm';
 import AddCategoryToVendor from './pages/Vendor/AddCategoriesToVendor';
+import VendorAccount from './pages/Vendor/VendorAccount/VendorAccount';
+import VendorCategories from './pages/Vendor/VendorCategories/VendorCategories';
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -216,6 +218,9 @@ function App() {
             </PrivateRoute>
             } />
 <Route path="/admin/vendors/:vendorId/add-category" element={<AddCategoryToVendor />} />
+
+          <Route path="/vendor/:id/account" element={<VendorAccount />} />
+          <Route path="/vendor/:id/account/categories-listed" element={<VendorCategories />} />
           <Route path="/error" element={<ErrorPopup />} />
           <Route path="*" element={<PageNotFound />} />
       </Routes>
