@@ -52,6 +52,7 @@ import VendorLoginForm from './pages/Authentication/VendorLogin/VendorLoginForm'
 import AddCategoryToVendor from './pages/Vendor/AddCategoriesToVendor';
 import VendorAccount from './pages/Vendor/VendorAccount/VendorAccount';
 import VendorCategories from './pages/Vendor/VendorCategories/VendorCategories';
+import VendorProducts from './pages/Vendor/VendorProducts/VendorProducts';
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -221,6 +222,7 @@ function App() {
 
           <Route path="/vendor/:id/account" element={<VendorAccount />} />
           <Route path="/vendor/:id/account/categories-listed" element={<VendorCategories />} />
+          <Route path="/vendor/:id/account/products-listed" element={<VendorProducts />} />
           <Route path="/error" element={<ErrorPopup />} />
           <Route path="*" element={<PageNotFound />} />
       </Routes>

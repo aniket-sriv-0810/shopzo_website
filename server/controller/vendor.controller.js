@@ -362,4 +362,34 @@ const productOfVendorData = async (req, res) => {
     });
   }
 };
-export {getAllVendors,  vendorAccountDetails  , updateVendorById , deleteVendorById ,getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData ,addCategoriesToVendor , productOfVendorData };
+
+const allProductsOfVendor = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const products = await Product.find({ vendor: id })
+      .populate("category", "title")
+      .select("title description images originalPrice discountedPrice sizes tag category")
+      .exec();
+
+    if (!products || products.length === 0) {
+      return res.status(404).json({
+        status: "error",
+        message: "No products found for this vendor.",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      products,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      status: "error",
+      message: "Error fetching products for the vendor.",
+    });
+  }
+};
+
+export {getAllVendors,  vendorAccountDetails  , updateVendorById , deleteVendorById ,getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData ,addCategoriesToVendor , productOfVendorData , allProductsOfVendor };

@@ -4,7 +4,7 @@ import {upload} from "../multer.js";
 import {validate} from '../middleware/validator.js';
 
 import {editVendorValidation} from '../test/vendorEdit.validator.js' ;
-import { getAllVendors,vendorAccountDetails ,   updateVendorById , getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData , addCategoriesToVendor , productOfVendorData } from "../controller/vendor.controller.js";
+import { getAllVendors,vendorAccountDetails ,   updateVendorById , getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData , addCategoriesToVendor , productOfVendorData, allProductsOfVendor } from "../controller/vendor.controller.js";
 import { reviewSchemaValidation } from '../test/review.validator.js';
 import { addReviewToVendor, getVendorReviews } from '../controller/review.controller.js';
 import { loginVendor, logOutAccount , checkVendorAuthentication , changePassword } from '../controller/vendorAuth.controller.js';
@@ -66,7 +66,7 @@ router
 // Check for the  vendor account products Route
 router
      .route("/:id/account/products-listed")
-     .get(isLoggedIn , vendorAccountDetails)
+     .get(isLoggedIn , allProductsOfVendor)
 
 // Check for the  vendor account Route
 router
