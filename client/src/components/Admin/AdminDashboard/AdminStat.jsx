@@ -13,7 +13,7 @@ const AdminStat = ({ adminData }) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-6 mt-10 px-2 sm:px-5">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
       {stats.map(({ id, count, label, icon, link }) => (
         <div
           key={id}
@@ -32,7 +32,7 @@ const AdminStat = ({ adminData }) => {
           </h2>
           <p className="text-gray-600 font-medium text-lg">{label}</p>
           <NavLink to={link}>
-            <button className="mt-4 bg-gradient-to-tr from-blue-500 to-purple-800 text-white px-6 py-2 rounded-full hover:scale-110 transition shadow-md">
+          <button className="mt-4 bg-blue-600 text-white font-medium px-5 py-2 rounded-xl hover:bg-blue-700 transition-shadow shadow">
               View All
             </button>
           </NavLink>

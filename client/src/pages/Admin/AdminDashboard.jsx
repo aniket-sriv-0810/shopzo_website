@@ -23,9 +23,14 @@ const AdminDashboard = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-gray-200 to-slate-300 py-10 px-4 sm:px-10">
-      <AdminInfo user={user} />
-      <AdminStat adminData={adminData} />
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-gray-200 to-slate-300 py-10 px-4 sm:px-10 space-y-10">
+    
+        <AdminInfo user={user} />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-3">
+          <AdminStat adminData={adminData} />
+        </div>
+      </div>
     </div>
   );
 };

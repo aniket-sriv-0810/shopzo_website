@@ -1,14 +1,32 @@
 import React from "react";
+import { FaEnvelope, FaPhone, FaUser, FaIdBadge } from "react-icons/fa";
 
 const AdminInfo = ({ user }) => {
+  if (!user) return null;
+
   return (
-    <div className="bg-white rounded-2xl shadow-lg px-6 py-5 sm:px-10 sm:py-8">
-      <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
-        Welcome Back, <span className="text-blue-600">{user?.name || "Admin"}</span> 👋
-      </h1>
-      <p className="text-gray-600 text-base sm:text-lg mt-1">
-        Here's an overview of everything happening on your platform.
-      </p>
+    <div className="bg-white rounded-2xl shadow-lg p-6">
+      <h2 className="text-2xl font-bold text-gray-900 mb-4 border-b pb-2">
+        Admin Profile
+      </h2>
+      <div className="space-y-4 text-gray-700 text-base">
+        <div className="flex items-center gap-3">
+          <FaUser className="text-blue-600" />
+          <span className="font-medium">Name:</span> {user.name || "N/A"}
+        </div>
+        <div className="flex items-center gap-3">
+          <FaEnvelope className="text-green-600" />
+          <span className="font-medium">Email:</span> {user.email || "N/A"}
+        </div>
+        <div className="flex items-center gap-3">
+          <FaPhone className="text-pink-500" />
+          <span className="font-medium">Phone:</span> {user.phone || "N/A"}
+        </div>
+        <div className="flex items-center gap-3">
+          <FaIdBadge className="text-yellow-600" />
+          <span className="font-medium">User ID:</span> {user._id || "N/A"}
+        </div>
+      </div>
     </div>
   );
 };
