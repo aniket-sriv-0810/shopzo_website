@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import UserNavbar from '../../../components/Navbars/UserNavbar/UserNavbar'
+import VendorNavbar from '../../../components/Navbars/VendorNavbar/VendorNavbar';
 import VendorProfile from "../../../components/Vendors/VendorAccount/VendorProfile";
 import VendorDetailsForm from "../../../components/Vendors/VendorAccount/VendorDetailsForm";
 import VendorActions from "../../../components/Vendors/VendorAccount/VendorActions";
@@ -36,8 +36,8 @@ const VendorAccount = () => {
 
   return (
     <>
-      <div className="bg-gray-100">
-        <UserNavbar />
+      <div className="bg-gradient-to-tl from-gray-600 to-slate-800">
+        <VendorNavbar />
       </div>
       <div className="bg-gray-50 h-max">
         {loading ? (

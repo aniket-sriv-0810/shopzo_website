@@ -1,12 +1,9 @@
 import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { IoHomeSharp } from "react-icons/io5";
-import { FaUserCircle, FaUser, FaBars, FaTimes, FaPaperPlane , FaPowerOff , FaStoreAlt , FaStore, FaTags } from "react-icons/fa";
-import { RiQuestionAnswerFill, RiShieldUserLine, RiArticleFill } from "react-icons/ri";
-import { TiShoppingCart } from "react-icons/ti";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
+import {  FaUser, FaBars, FaTimes,   FaPowerOff ,  FaTags } from "react-icons/fa";
 import { MdAdminPanelSettings } from "react-icons/md";
-import { PiUserCirclePlusBold } from "react-icons/pi";
 import { useUser } from "../../UserContext/userContext";
+import { FaBoxOpen, FaClipboardCheck } from "react-icons/fa6";
 
 
 const MobileNavbar = () => {
@@ -15,21 +12,20 @@ const MobileNavbar = () => {
   const navigate = useNavigate();
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
-
+  const {id} = useParams();
 
   const menuItems = [
-      { to: "/vendor", label: "Vendor Dashboard", tooltip: "Admin" ,icon: <MdAdminPanelSettings />, role: "admin" },
-      { to: "account", label: "Account Details", tooltip: "Account" , icon: <FaUser />},
-    { to: "categories", label: "AllCategories Details", tooltip: "Categories" , icon: <FaUser /> },
-    { to: "products", label: "All Products Details", tooltip: "Products" , icon: <FaUser />},
-    { to: "bookings", label: "All Bookings Details", tooltip: "Bookings" , icon: <FaUser />},
+    { to: `/vendor/${id}/account`, label: "My Account", tooltip: "Account" , icon: <FaUser />},
+    { to: `/vendor/${id}/account/categories-listed`, label: "My Categories", tooltip: "Categories" , icon: <FaTags /> },
+    { to: `/vendor/${id}/account/products-listed`, label: "My Products ", tooltip: "Products" , icon: <FaBoxOpen />},
+    { to: `/vendor/${id}/account/all-bookings`, label: "My Bookings", tooltip: "Bookings" , icon: <FaClipboardCheck />},
   ];
 
   return (
     <>
       {/* Hamburger Icon */}
       <button
-        className="absolute right-4 sm:right-8 2xl:hidden text-black focus:outline-none "
+        className="absolute right-4 sm:right-8 2xl:hidden text-white focus:outline-none "
         onClick={toggleMenu}
         data-aos="fade-up"
       >
@@ -47,8 +43,8 @@ const MobileNavbar = () => {
             {user?.role === "vendor" && (
               <li className="opacity-80 flex items-center justify-center p-2.5 gap-2 bg-gray-800 rounded-2xl w-60 hover:text-yellow-400">
                 <MdAdminPanelSettings className="text-xl" />
-                <NavLink to="/vendor" onClick={toggleMenu}>
-                  Vendor Panel
+                <NavLink to="/vendor/dashboard" onClick={toggleMenu}>
+                  My Dashboard
                 </NavLink>
               </li>
             )}
@@ -62,16 +58,6 @@ const MobileNavbar = () => {
             ))}
 
            {/* Button Group */}
-           
-             <button
-                       onClick={() => navigate("add-category")}
-                       className=" bg-purple-600 bg-opacity-50 p-2.5 text-sm rounded-lg hover:shadow-md hover:bg-opacity-80 text-white flex justify-end items-center gap-2"
-                     >
-                       Add Categories <FaUser className="w-5 h-5" />
-                     </button>
-           
-           
-           
                     <button
                                    onClick={() => navigate("/logout")}
                                    className="bg-red-500 px-4 py-2 rounded-lg w-48 hover:bg-red-600 flex justify-center items-center gap-2 sm:w-60"
