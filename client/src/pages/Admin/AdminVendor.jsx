@@ -24,15 +24,12 @@ const AdminVendor = () => {
   const fetchCategories = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/category`);
-      if (res.status === 200) {
-        setCategories(res.data.categories || []);
-      }
-      console.log("category value =" , res.data.data.categories);
-      
+      setCategories(res.data.data.categories || []);
     } catch (err) {
-      console.error("Failed to fetch categories");
+      console.error("Failed to fetch categories:", err);
     }
   };
+  
 
   const fetchAll = async () => {
     setLoading(true);

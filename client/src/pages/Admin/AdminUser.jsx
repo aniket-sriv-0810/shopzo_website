@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import UserTable from "../../components/Admin/AdminUser/UserTable";
-import { useUser } from "../../components/UserContext/UserContext";
+import { useUser } from "../../components/UserContext/userContext";
 import { useNavigate } from "react-router-dom";
 
 const AdminUser = () => {

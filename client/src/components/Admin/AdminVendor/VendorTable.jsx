@@ -14,7 +14,7 @@ const VendorTable = ({ vendors, categories, refreshVendors }) => {
             <th className="px-4 py-3 border">Phone</th>
             <th className="px-4 py-3 border">Email</th>
             <th className="px-4 py-3 border">Address</th>
-            <th className="px-4 py-3 border">Add Category</th>
+            <th className="px-4 py-3 border">Add Category</th> {/* New column */}
           </tr>
         </thead>
         <tbody>

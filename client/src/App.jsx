@@ -49,6 +49,7 @@ import ErrorToast from './components/Popups/ErrorToast';
 import ErrorPopup from './components/Popups/ErrorPopUp';
 import UserPasswordChange from './pages/User/UserPasswordChange';
 import VendorLoginForm from './pages/Authentication/VendorLogin/VendorLoginForm';
+import AddCategoryToVendor from './pages/Vendor/AddCategoriesToVendor';
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -169,7 +170,7 @@ function App() {
       </AdminRoute>
       </PrivateRoute>
       }  />
-
+  
     <Route
             path="/admin"
             element={
@@ -180,6 +181,7 @@ function App() {
               </PrivateRoute>
             }
           >
+          
             <Route path="users" element={<AdminUser />} />
             <Route path="vendors" element={<AdminVendor />} />
             <Route path="categories" element={<AdminCategory />} />
@@ -213,7 +215,7 @@ function App() {
             <SuccessLoader />
             </PrivateRoute>
             } />
-
+<Route path="/admin/vendors/:vendorId/add-category" element={<AddCategoryToVendor />} />
           <Route path="/error" element={<ErrorPopup />} />
           <Route path="*" element={<PageNotFound />} />
       </Routes>

@@ -23,10 +23,9 @@ const AddCategoryForm = () => {
     if (name === "image" && files[0]) {
       const file = files[0];
       setFormData((prev) => ({ ...prev, image: file }));
+
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
+      reader.onloadend = () => setImagePreview(reader.result);
       reader.readAsDataURL(file);
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
@@ -69,7 +68,7 @@ const AddCategoryForm = () => {
         setSuccessMsg("✅ Category added successfully!");
         setFormData({ title: "", description: "", tag: "", image: null });
         setImagePreview(null);
-        setTimeout(() => navigate('/saved/successfully'), 1000);
+        setTimeout(() => navigate("/saved/successfully"), 1000);
       }
     } catch (err) {
       const details = err.response?.data?.details;
@@ -90,14 +89,21 @@ const AddCategoryForm = () => {
 
   return (
     <form
-      onSubmit={handleSubmit}
-      className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-md space-y-6 transition-all duration-300"
-    >
-      <h2 className="text-3xl font-bold text-center text-gray-800">Add Category</h2>
-
-      {formErrors.global && <ErrorMessage message={formErrors.global} />}
-      {successMsg && <p className="text-green-600 text-center">{successMsg}</p>}
-
+    onSubmit={handleSubmit}
+    className="max-w-3xl mx-auto px-6 py-10 bg-white rounded-3xl shadow-2xl space-y-10 transition-all duration-300 border border-gray-100"
+  >
+    <h2 className="text-3xl sm:text-4xl font-bold text-center text-green-700 tracking-tight">
+      Create New Category
+    </h2>
+  
+    {formErrors.global && <ErrorMessage message={formErrors.global} />}
+    {successMsg && (
+      <div className="flex items-center justify-center bg-green-50 border border-green-300 text-green-700 py-3 px-5 rounded-lg shadow-sm text-sm font-medium transition-all">
+        {successMsg}
+      </div>
+    )}
+  
+    <div className="space-y-6">
       <InputField
         label="Title"
         name="title"
@@ -105,7 +111,7 @@ const AddCategoryForm = () => {
         onChange={handleChange}
         error={formErrors.title}
       />
-
+  
       <InputField
         label="Description"
         name="description"
@@ -114,56 +120,68 @@ const AddCategoryForm = () => {
         error={formErrors.description}
         textarea
       />
-
-      <div className="flex flex-col">
-        <label htmlFor="tag" className="text-gray-700 font-medium mb-1">Tag</label>
+  
+      {/* Tag Selector */}
+      <div className="flex flex-col gap-1">
+        <label htmlFor="tag" className="text-gray-800 font-medium mb-1">
+          Tag <span className="text-red-500">*</span>
+        </label>
         <select
           id="tag"
           name="tag"
           value={formData.tag}
           onChange={handleChange}
-          className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          className={`p-3 rounded-lg shadow-sm bg-white border focus:outline-none focus:ring-2 focus:ring-green-500 ${
+            formErrors.tag ? "border-red-400" : "border-gray-300"
+          }`}
         >
-          <option value="">Select Tag</option>
+          <option value="">Select a tag</option>
           <option value="male">Male</option>
           <option value="female">Female</option>
         </select>
-        {formErrors.tag && <p className="text-sm text-red-500 mt-1">{formErrors.tag}</p>}
+        {formErrors.tag && <p className="text-sm text-red-500">{formErrors.tag}</p>}
       </div>
-
-      <div className="flex flex-col">
-        <label htmlFor="image" className="text-gray-700 font-medium mb-1">Image</label>
+  
+      {/* Image Upload */}
+      <div className="flex flex-col gap-3">
+        <label htmlFor="image" className="text-gray-800 font-medium">
+          Upload Image <span className="text-red-500">*</span>
+        </label>
         <input
           type="file"
           name="image"
           id="image"
           accept="image/*"
           onChange={handleChange}
-          className="p-2 border border-gray-300 rounded-md bg-white file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:bg-green-50 file:text-green-700 hover:file:bg-green-100 transition"
+          className="file:px-4 file:py-2 file:border-0 file:rounded file:bg-green-100 file:text-green-800 hover:file:bg-green-200 transition duration-300 border border-gray-300 rounded-md p-2 bg-white"
         />
-        {formErrors.image && <p className="text-sm text-red-500 mt-1">{formErrors.image}</p>}
-
+        {formErrors.image && <p className="text-sm text-red-500">{formErrors.image}</p>}
+  
         {imagePreview && (
-          <img
-            src={imagePreview}
-            alt="Preview"
-            className="mt-4 w-full max-w-sm mx-auto rounded-md shadow-sm border border-gray-200"
-          />
+          <div className="mt-3 flex justify-center">
+            <img
+              src={imagePreview}
+              alt="Preview"
+              className="rounded-xl border border-gray-200 shadow-lg w-48 h-48 object-cover object-center"
+            />
+          </div>
         )}
       </div>
-
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className={`w-full py-3 text-lg font-semibold text-white rounded-md transition duration-300 ${
-          isSubmitting
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300"
-        }`}
-      >
-        {isSubmitting ? "Adding..." : "Add Category"}
-      </button>
-    </form>
+    </div>
+  
+    <button
+      type="submit"
+      disabled={isSubmitting}
+      className={`w-full py-3 rounded-xl font-semibold text-lg transition duration-300 shadow-lg ${
+        isSubmitting
+          ? "bg-gray-400 text-white cursor-not-allowed"
+          : "bg-gradient-to-r from-teal-600 to-green-600 text-white hover:from-green-600 hover:to-green-700 focus:ring-4 focus:ring-green-300 hover:cursor-pointer"
+      }`}
+    >
+      {isSubmitting ? "Adding Category..." : "Add Category"}
+    </button>
+  </form>
+  
   );
 };
 

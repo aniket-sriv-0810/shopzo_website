@@ -60,9 +60,7 @@ router
      .route("/:id/account/categories-listed")
      .get(isLoggedIn , vendorCategoriesData)
 
-router
-     .route("/:vendorId/account/categories")
-     .post(isLoggedIn , addCategoriesToVendor)
+
 
 
 // Check for the  vendor account products Route

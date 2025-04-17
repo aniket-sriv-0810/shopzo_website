@@ -1,4 +1,4 @@
-cat id : 67fe6ca8d2b43b0f05634baf
-vend id: 67fe671883b7346284169f05 ( vendor(u) , vendor@vendor.com(e) , vendor(p))
-prd id : 67fe702030e0df1fe911b962  67fe712a491617cca83cf3a6
+cat id :
+vend id:  ( vendor(u) , vendor@vendor.com(e) , vendor(p))
+prd id :
 user id : 67ff8d61d9b868462edc53c5  67ff93d9d9b868462edc53fe  67ff925cd9b868462edc53e5

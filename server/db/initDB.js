@@ -74,14 +74,14 @@ const initDB = async() => {
     // await User.deleteMany({});
     // await Booking.deleteMany({});
     // await Review.deleteMany({});
-    // await Category.deleteMany({});
+    await Category.deleteMany({});
+    console.log("Category deleted successfully 01 !");
+    await Vendor.deleteMany({});
+    console.log("Vendor deleted successfully 01 !");
+    // await Faq.deleteMany({});
     // console.log("Data deleted successfully 01 !");
-    // await Vendor.deleteMany({});
-    // console.log("Data deleted successfully 01 !");
-    await Faq.deleteMany({});
-    console.log("Data deleted successfully 01 !");
-    // await Product.deleteMany({});
-    // console.log("Data deleted successfully 01 !");
+    await Product.deleteMany({});
+    console.log("Product deleted successfully 01 !");
     // await Hotel.insertMany(sampleData);
     // await Category.insertMany(categories);
     // console.log("Data inserted successfully 01 !");
@@ -89,8 +89,8 @@ const initDB = async() => {
     // console.log("Data inserted successfully  02 !");
     // await Product.insertMany(products);
     // console.log("Data inserted successfully 03!");
-    await Faq.insertMany(faqData);
-    console.log("Data inserted successfully 03!");
+    // await Faq.insertMany(faqData);
+    // console.log("Data inserted successfully 03!");
     // await Blog.deleteMany({});
 }
 

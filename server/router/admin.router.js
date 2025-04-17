@@ -6,7 +6,7 @@ import { isAdmin } from '../middleware/admin.middleware.js';
 import { adminBookingData, adminCategoryData, adminDashboardData, adminFeedbackData, adminProductData, adminUserData, adminVendorData , addCategoryToVendor} from '../controller/admin.controller.js';
 import { createCategory ,  editCategory, deleteCategory } from '../controller/category.controller.js';
 import {addProductController  , updateProductById , deleteProductById} from "../controller/product.controller.js";
-import { deleteVendorById} from "../controller/vendor.controller.js";
+import { addCategoriesToVendor, deleteVendorById} from "../controller/vendor.controller.js";
 import { addNewVendor } from '../controller/vendorAuth.controller.js';
 import { categorySchemaValidation } from "../test/category.validator.js";
 import { updateCategorySchemaValidation } from "../test/categoryEdit.validator.js";
@@ -23,7 +23,7 @@ router
 
 router
      .route("/users")
-     .get(isLoggedIn , isAdmin ,adminUserData)
+     .get(  isLoggedIn ,isAdmin , adminUserData)
 
 router
      .route("/vendors")
@@ -49,6 +49,10 @@ router
 router
      .route("/add-category")
      .post(isLoggedIn , isAdmin , upload.single('image') , validate(categorySchemaValidation) , createCategory)
+
+router
+     .route("/vendor/:vendorId/add-categories")
+     .post(isLoggedIn , addCategoriesToVendor)
 
 // Check for Editing categories Route
 router

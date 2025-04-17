@@ -14,23 +14,24 @@ const AddVendor = () => {
     pincode: "",
     state: "",
     country: "",
-    image: null, // file
+    image: null,
   });
+
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState({});
   const [imagePreview, setImagePreview] = useState(null);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
+
     if (name === "image") {
       const file = files[0];
       setFormData({ ...formData, image: file });
       if (file) {
         const reader = new FileReader();
-        reader.onloadend = () => {
-          setImagePreview(reader.result);
-        };
+        reader.onloadend = () => setImagePreview(reader.result);
         reader.readAsDataURL(file);
       } else {
         setImagePreview(null);
@@ -38,38 +39,35 @@ const AddVendor = () => {
     } else {
       setFormData({ ...formData, [name]: value });
     }
+
+    setErrors((prev) => ({ ...prev, [name]: null }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
+    setErrors({});
 
     const payload = new FormData();
-    payload.append("name", formData.name);
-    payload.append("username", formData.username);
-    payload.append("email", formData.email);
-    payload.append("phone", formData.phone);
-    payload.append("password", formData.password);
-
-    // Address fields in nested format
-    payload.append("address[area]", formData.area);
-    payload.append("address[city]", formData.city);
-    payload.append("address[pincode]", formData.pincode);
-    payload.append("address[state]", formData.state);
-    payload.append("address[country]", formData.country);
-
-    // Image if uploaded
-    if (formData.image) {
-      payload.append("image", formData.image);
-    }
+    Object.entries(formData).forEach(([key, value]) => {
+      if (["area", "city", "pincode", "state", "country"].includes(key)) {
+        payload.append(`address[${key}]`, value);
+      } else if (key === "image" && value) {
+        payload.append("image", value);
+      } else if (key !== "image") {
+        payload.append(key, value);
+      }
+    });
 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/admin/add-vendor`, payload, {
-        withCredentials: true, // if using cookies
-      });
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/admin/add-vendor`,
+        payload,
+        { withCredentials: true }
+      );
 
-      setMessage("✅ Vendor added successfully!");
+      setMessage("Vendor added successfully!");
       setFormData({
         name: "",
         username: "",
@@ -83,156 +81,118 @@ const AddVendor = () => {
         country: "",
         image: null,
       });
-      navigate('/saved/successfully');
+      setImagePreview(null);
+      navigate("/saved/successfully");
     } catch (err) {
-      console.error("Error adding vendor:", err);
+      const backendErrors = err?.response?.data?.errors || [];
+      const newErrors = {};
+      backendErrors.forEach((msg) => {
+        const lower = msg.toLowerCase();
+        if (lower.includes("email")) newErrors.email = msg;
+        else if (lower.includes("username")) newErrors.username = msg;
+        else if (lower.includes("phone")) newErrors.phone = msg;
+        else if (lower.includes("password")) newErrors.password = msg;
+        else if (lower.includes("image")) newErrors.image = msg;
+        else if (lower.includes("area")) newErrors.area = msg;
+        else if (lower.includes("city")) newErrors.city = msg;
+        else if (lower.includes("pincode")) newErrors.pincode = msg;
+        else if (lower.includes("state")) newErrors.state = msg;
+        else if (lower.includes("country")) newErrors.country = msg;
+      });
+
+      setErrors(newErrors);
       setMessage(err?.response?.data?.message || "Failed to add vendor.");
     } finally {
       setLoading(false);
     }
   };
 
+  const renderInput = (label, name, type = "text", placeholder = "") => (
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+      <input
+        type={type}
+        name={name}
+        value={formData[name]}
+        onChange={handleChange}
+        required
+        placeholder={placeholder}
+        className={`w-full p-3 rounded-lg border ${
+          errors[name] ? "border-red-500" : "border-gray-300"
+        } focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white`}
+      />
+      {errors[name] && <p className="text-sm text-red-500 mt-1">{errors[name]}</p>}
+    </div>
+  );
+
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-lg space-y-6">
-      <h2 className="text-3xl font-semibold text-center mb-6">Add New Vendor</h2>
-      <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-6">
-        {/* Basic Inputs */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 transition duration-300"
-            required
-          />
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={formData.username}
-            onChange={handleChange}
-            className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 transition duration-300"
-            required
-          />
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-blue-100 px-4">
+      <div className="w-full max-w-4xl bg-white/60 backdrop-blur-md shadow-2xl rounded-2xl p-8 sm:p-12 space-y-6">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Add Vendor</h2>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email Address"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 transition duration-300"
-            required
-          />
-          <input
-            type="tel"
-            name="phone"
-            placeholder="Phone Number"
-            value={formData.phone}
-            onChange={handleChange}
-            className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 transition duration-300"
-            required
-          />
-        </div>
+        {message && (
+          <div
+            className={`text-center text-sm font-semibold p-2 rounded ${
+              message.includes("success")
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            {message}
+          </div>
+        )}
 
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 transition duration-300"
-          required
-        />
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {renderInput("Full Name", "name", "text", "Enter full name")}
+          {renderInput("Username", "username", "text", "Choose a unique username")}
+          {renderInput("Email", "email", "email", "Enter vendor email")}
+          {renderInput("Phone", "phone", "tel", "e.g. +1 123 456 7890")}
+          {renderInput("Password", "password", "password", "Create a password")}
+          {renderInput("Area", "area", "text", "Enter area/street")}
+          {renderInput("City", "city", "text", "Enter city")}
+          {renderInput("Pincode", "pincode", "text", "Enter postal code")}
+          {renderInput("State", "state", "text", "Enter state")}
+          {renderInput("Country", "country", "text", "Enter country")}
 
-        {/* Address Inputs */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <input
-            type="text"
-            name="area"
-            placeholder="Area"
-            value={formData.area}
-            onChange={handleChange}
-            className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 transition duration-300"
-            required
-          />
-          <input
-            type="text"
-            name="city"
-            placeholder="City"
-            value={formData.city}
-            onChange={handleChange}
-            className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 transition duration-300"
-            required
-          />
-        </div>
+          {/* Image Upload */}
+          <div className="sm:col-span-2">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Upload Image
+            </label>
+            <input
+              type="file"
+              name="image"
+              accept="image/*"
+              onChange={handleChange}
+              required
+              className={`w-full p-3 rounded-lg border ${
+                errors.image ? "border-red-500" : "border-gray-300"
+              } focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white`}
+            />
+            {errors.image && <p className="text-sm text-red-500 mt-1">{errors.image}</p>}
+            {imagePreview && (
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="mt-4 rounded-lg max-h-48 border shadow"
+              />
+            )}
+          </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <input
-            type="text"
-            name="pincode"
-            placeholder="Pincode"
-            value={formData.pincode}
-            onChange={handleChange}
-            className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 transition duration-300"
-            required
-          />
-          <input
-            type="text"
-            name="state"
-            placeholder="State"
-            value={formData.state}
-            onChange={handleChange}
-            className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 transition duration-300"
-            required
-          />
-        </div>
-
-        <input
-          type="text"
-          name="country"
-          placeholder="Country"
-          value={formData.country}
-          onChange={handleChange}
-          className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 transition duration-300"
-          required
-        />
-
-        {/* File Upload */}
-        <input
-          type="file"
-          name="image"
-          accept="image/*"
-          onChange={handleChange}
-          className="w-full border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500 transition duration-300"
-        />
-{imagePreview && (
-  <div className="w-full flex justify-center">
-    <img
-      src={imagePreview}
-      alt="Preview"
-      className="max-w-xs max-h-60 mt-4 rounded-md border border-gray-300 shadow-md"
-    />
-  </div>
-)}
-        {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition duration-300"
-        >
-          {loading ? "Submitting..." : "Add Vendor"}
-        </button>
-      </form>
-
-      {/* Message */}
-      {message && (
-        <p className="text-center text-sm text-red-500 mt-4">{message}</p>
-      )}
+          {/* Submit Button */}
+          <div className="sm:col-span-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full py-3 rounded-lg font-semibold text-white transition ${
+                loading ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+              }`}
+            >
+              {loading ? "Submitting..." : "Add Vendor"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
