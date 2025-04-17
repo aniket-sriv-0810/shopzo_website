@@ -48,6 +48,7 @@ import './App.css';
 import ErrorToast from './components/Popups/ErrorToast';
 import ErrorPopup from './components/Popups/ErrorPopUp';
 import UserPasswordChange from './pages/User/UserPasswordChange';
+import VendorLoginForm from './pages/Authentication/VendorLogin/VendorLoginForm';
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -193,6 +194,12 @@ function App() {
             <Route path="add-vendor" element={<AddVendor />}  />
             <Route path="vendor/:id/account/delete" element={<DeleteVendor />}  />
           </Route>
+
+
+            <Route path="/vendor/login" element={<VendorLoginForm />} />
+
+
+
             <Route path="/vendors" element={<AllVendors />} />
             <Route path="/all-vendors" element={<AllVendors />} />
             <Route path="/vendor" element={<AllVendors />} />
