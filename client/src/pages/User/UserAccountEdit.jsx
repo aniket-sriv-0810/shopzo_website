@@ -5,6 +5,7 @@ import { useUser } from "../../components/UserContext/userContext";
 import UserProfileImage from "../../components/User/UserAccountEdit/UserProfileImage";
 import UserAccountForm from "../../components/User/UserAccountEdit/UserAccountForm";
 import SkeletonForm from "../../components/LoadingSkeleton/SkeletonForm";
+import  validateEditForm  from "../../components/User/UserAccountEdit/editValidator";
 const UserAccountEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ const UserAccountEdit = () => {
   const [loading, setLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -63,13 +65,22 @@ const UserAccountEdit = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFieldErrors({});
+    setError("");
+  
+    const validationErrors = validateEditForm(userData);
+    if (Object.keys(validationErrors).length > 0) {
+      setFieldErrors(validationErrors);
+      return;
+    }
+  
     setSubmitLoading(true);
     const formData = new FormData();
     Object.entries(userData).forEach(([key, value]) => {
       formData.append(key, value);
     });
     if (image) formData.append("image", image);
-
+  
     try {
       await axios.put(
         `${import.meta.env.VITE_API_URL}/api/user/${id}/account/edit`,
@@ -78,8 +89,21 @@ const UserAccountEdit = () => {
       );
       navigate(`/user/${id}/account`);
     } catch (err) {
-      setError("Failed to update user. Please try again.");
-    } finally {
+      const message = err?.response?.data?.message;
+    
+      if (message) {
+        // Map specific backend error messages to field errors
+        if (message.toLowerCase().includes("email")) {
+          setFieldErrors({ email: message });
+        } else if (message.toLowerCase().includes("phone")) {
+          setFieldErrors({ phone: message });
+        } else {
+          setError(message);
+        }
+      } else {
+        setError("Failed to update user. Please try again.");
+      }
+    }finally {
       setSubmitLoading(false);
     }
   };
@@ -93,29 +117,28 @@ const UserAccountEdit = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-300 to-zinc-500 flex items-center justify-center py-10 px-4">
-      <div className="max-w-2xl w-full bg-white rounded-3xl shadow-xl overflow-hidden">
-        <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-center">
-          <h1 className="text-3xl font-bold text-white">Edit Your Profile</h1>
-          <p className="text-gray-200 text-sm mt-2">Keep your information up-to-date</p>
-        </div>
-
-        <UserProfileImage orgImage={orgImage} handleImageChange={handleImageChange} />
-
-        <UserAccountForm
-          userData={userData}
-          handleChange={handleInputChange}
-          handleSubmit={handleSubmit}
-          isLoading={submitLoading}
-        />
-
-        {error && (
-          <div className="text-center text-red-600 font-semibold text-sm pb-4">
-            {error}
-          </div>
-        )}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-300 via-gray-100 to-zinc-300 px-4 py-10">
+    <div className="w-full max-w-3xl bg-white/70 backdrop-blur-md border border-gray-200 rounded-3xl shadow-2xl overflow-hidden">
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 p-6 text-center">
+        <h1 className="text-4xl font-bold text-white">Edit Your Profile</h1>
+        <p className="text-sm text-indigo-100 mt-1">Keep your information up-to-date</p>
       </div>
+  
+      <UserProfileImage orgImage={orgImage} handleImageChange={handleImageChange} />
+  
+      <UserAccountForm
+        userData={userData}
+        handleChange={handleInputChange}
+        handleSubmit={handleSubmit}
+        isLoading={submitLoading}
+        fieldErrors={fieldErrors}
+      />
+  
+      {error && (
+        <div className="text-center text-red-600 font-semibold text-sm pb-4">{error}</div>
+      )}
     </div>
+  </div>
   );
 };
 

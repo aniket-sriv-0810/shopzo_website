@@ -21,12 +21,7 @@ const userEditValidationSchema = Joi.object({
       "string.empty": "Phone number cannot be empty",
     }),
 
-  image: Joi.string()
-    .uri()
-    .optional()
-    .messages({
-      "string.uri": "Image must be a valid URL",
-    }),
+  image: Joi.any()
 });
 
 export { userEditValidationSchema };

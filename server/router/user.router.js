@@ -5,7 +5,7 @@ import {validate} from '../middleware/validator.js';
 import {userSchemaValidation} from '../test/user.validator.js' ;
 import {userEditValidationSchema} from '../test/userEdit.validator.js' ;
 import { loginUserValidation } from '../test/login.validator.js';
-import { createNewUser , loginUser , logOutUser , checkAuthentication } from '../controller/userAuth.controller.js';
+import { createNewUser , loginUser , logOutUser , checkAuthentication, changeUserPassword } from '../controller/userAuth.controller.js';
 import {userAccountDetails , getUserWishlists , toggleProductWishlist , editUserDetails , deleteUserAccount, getUserBookings , cancelUserBooking ,getUserVendorWishlists , toggleVendorWishlist} from "../controller/user.controller.js";
 const router = express.Router();
 
@@ -75,10 +75,11 @@ router
      .route('/:id/account/edit')
      .put(isLoggedIn , upload.single("image"), validate(userEditValidationSchema) , editUserDetails);
 
-// Change the user password Route
+// Change the user password Details Route
 router
      .route('/:id/account/change-password')
-     .put(isLoggedIn , validate(userEditValidationSchema) , editUserDetails);
+     .put(isLoggedIn , changeUserPassword);
+
 
 // Delete the user Account Route
 router

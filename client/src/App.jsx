@@ -47,6 +47,7 @@ import UserBooking from './pages/User/UserBooking';
 import './App.css';
 import ErrorToast from './components/Popups/ErrorToast';
 import ErrorPopup from './components/Popups/ErrorPopUp';
+import UserPasswordChange from './pages/User/UserPasswordChange';
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -137,6 +138,11 @@ function App() {
     <Route path="/user/:id/account/edit" element={
       <PrivateRoute>
       <UserAccountEdit />
+      </PrivateRoute>
+      }  />
+    <Route path="/user/:id/account/change-password" element={
+      <PrivateRoute>
+      <UserPasswordChange />
       </PrivateRoute>
       }  />
     <Route path="/user/:id/account/wishlists" element={

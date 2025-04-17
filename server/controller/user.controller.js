@@ -223,58 +223,61 @@ const toggleProductWishlist = asyncHandler(async (req, res) => {
   );
 });
 // ✏️ Edit User Controller
+
 const editUserDetails = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-  
-    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json(new ApiError(400, "Invalid user ID"));
+  const { id } = req.params;
+
+  if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json(new ApiError(400, "Invalid user ID"));
+  }
+
+  const { name, email, phone } = req.body;
+  let imageURL;
+
+  try {
+    // 🧠 Upload image to Cloudinary if provided
+    if (req.file) {
+      const result = await uploadOnCloudinary(req.file.path);
+      if (result?.url) imageURL = result.url;
     }
-  
-    const { name, email, phone } = req.body;
-    let imageURL;
-  
-    try {
-      // 🧠 Upload new image if exists
-      if (req.file) {
-        const result = await uploadOnCloudinary(req.file.path);
-        if (result?.url) imageURL = result.url;
+
+    // 🔍 Fetch current user
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json(new ApiError(404, "User not found"));
+
+    // ✅ Check for email conflict with other users
+    if (email && email !== user.email.toLowerCase()) {
+      const existingUser = await User.findOne({ email: email.toLowerCase() });
+      if (existingUser && existingUser._id.toString() !== id) {
+        return res.status(400).json(new ApiError(400, "Email already exists"));
       }
-  
-      // 🔍 Find the user
-      const user = await User.findById(id);
-      if (!user) return res.status(404).json(new ApiError(404, "User not found"));
-  
-      // ✅ Check if new email or phone already exist (excluding self)
-      if (email && email !== user.email) {
-        const emailTaken = await User.findOne({ email });
-        if (emailTaken && emailTaken._id.toString() !== id) {
-          return res.status(400).json(new ApiError(400, "Email already exists"));
-        }
-      }
-  
-      if (phone && phone !== user.phone) {
-        const phoneTaken = await User.findOne({ phone });
-        if (phoneTaken && phoneTaken._id.toString() !== id) {
-          return res.status(400).json(new ApiError(400, "Phone number already exists"));
-        }
-      }
-  
-      // ✨ Update fields
-      user.name = name || user.name;
-      user.email = email || user.email;
-      user.phone = phone || user.phone;
-      if (imageURL) user.image = imageURL;
-  
-      await user.save();
-  
-      return res.status(200).json(
-        new ApiResponse(200, { updatedUser: user }, "User updated successfully")
-      );
-    } catch (error) {
-      console.error("User edit error:", error);
-      return res.status(500).json(new ApiError(500, "Internal Server Error"));
     }
-  });
+
+    // ✅ Check for phone conflict with other users
+    if (phone && phone !== user.phone) {
+      const existingUser = await User.findOne({ phone });
+      if (existingUser && existingUser._id.toString() !== id) {
+        return res.status(400).json(new ApiError(400, "Phone number already exists"));
+      }
+    }
+
+    // ✨ Update fields only if provided
+    user.name = name ?? user.name;
+    user.email = email ? email.toLowerCase() : user.email;
+    user.phone = phone ?? user.phone;
+    if (imageURL) user.image = imageURL;
+
+    await user.save();
+
+    return res.status(200).json(
+      new ApiResponse(200, { updatedUser: user }, "User updated successfully")
+    );
+  } catch (error) {
+    console.error("User edit error:", error);
+    return res.status(500).json(new ApiError(500, "Internal Server Error"));
+  }
+});
+
 
 // DELETE - User Account Controller
 const deleteUserAccount = asyncHandler(async (req, res) => {

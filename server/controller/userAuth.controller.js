@@ -203,4 +203,41 @@ const checkAuthentication = asyncHandler(async (req, res) => {
     }
   });
 
-export { createNewUser , loginUser , logOutUser , checkAuthentication };
+  const changeUserPassword = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { oldPassword, newPassword } = req.body;
+  
+      if (!oldPassword || !newPassword) {
+        return res.status(400).json({ error: "Both old and new passwords are required." });
+      }
+  
+      // 1. Find User by ID
+      const user = await User.findById(id);
+      if (!user) {
+        return res.status(404).json({ error: "User not found!" });
+      }
+  
+      // 2. Authenticate old password
+      user.authenticate(oldPassword, async (err, isMatch) => {
+        if (err || !isMatch) {
+          return res.status(400).json({ error: "Incorrect old password." });
+        }
+  
+        // 3. If old password matches, change to new password
+        user.setPassword(newPassword, async (err, updatedUser) => {
+          if (err) {
+            return res.status(500).json({ error: "Error updating password." });
+          }
+  
+          await updatedUser.save();
+          return res.status(200).json({ message: "Password successfully changed!" });
+        });
+      });
+    } catch (error) {
+      console.error("Change User Password Error:", error);
+      return res.status(500).json({ error: error.message || "Server Error" });
+    }
+  };
+  
+export { createNewUser , loginUser , logOutUser , checkAuthentication , changeUserPassword };

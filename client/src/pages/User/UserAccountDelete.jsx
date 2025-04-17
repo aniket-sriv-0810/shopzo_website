@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { useUser } from "../../components/UserContext/UserContext";
+import { useUser } from "../../components/UserContext/userContext";
 
 const UserAccountDelete = () => {
   const navigate = useNavigate();
