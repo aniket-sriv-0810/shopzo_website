@@ -53,6 +53,7 @@ import AddCategoryToVendor from './pages/Vendor/AddCategoriesToVendor';
 import VendorAccount from './pages/Vendor/VendorAccount/VendorAccount';
 import VendorCategories from './pages/Vendor/VendorCategories/VendorCategories';
 import VendorProducts from './pages/Vendor/VendorProducts/VendorProducts';
+import VendorFilteredProducts from './pages/Vendor/VendorFilteredProducts/VendorFilteredProduct';
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -125,9 +126,8 @@ function App() {
 
     <Route path="/product/:id" element={<ShowProduct />}  />
 
-  
-    <Route path="/vendor/:id/account" element={<ShowVendor />}  />
-    <Route path="/vendor/:id/account/edit" element={<EditVendor />}  />
+
+    <Route path="/vendor/:id/details" element={<ShowVendor />}  />
 
     <Route path="/category/:id/:tag/products" element={<ShowCategory />}  />
     <Route path="/user/:id/account/delete" element={
@@ -220,9 +220,11 @@ function App() {
             } />
 <Route path="/admin/vendors/:vendorId/add-category" element={<AddCategoryToVendor />} />
 
+          {/* Vendor Personal Accounts  */}
           <Route path="/vendor/:id/account" element={<VendorAccount />} />
           <Route path="/vendor/:id/account/categories-listed" element={<VendorCategories />} />
           <Route path="/vendor/:id/account/products-listed" element={<VendorProducts />} />
+          <Route path="/vendor/:id/:categoryId/:tag/all-products" element={<VendorFilteredProducts />} />
           <Route path="/error" element={<ErrorPopup />} />
           <Route path="*" element={<PageNotFound />} />
       </Routes>
