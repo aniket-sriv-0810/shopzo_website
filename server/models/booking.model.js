@@ -24,6 +24,7 @@ const bookingSchema = new mongoose.Schema(
     },
     sizeSelected: {
       type: String,
+      enum: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
       required: [true, "Size Detail is required"]
     },
     quantity: {

@@ -1,5 +1,6 @@
 import { User } from "../models/user.model.js";
 import {Vendor} from '../models/vendor.model.js';
+import {Booking} from '../models/booking.model.js';
 import { Product } from "../models/product.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
@@ -330,6 +331,57 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
     );
   }
 });
+const bookProduct = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const userId = req.user._id; // make sure user is authenticated
+
+    const { sizeSelected, quantity } = req.body;
+
+    // 1. Fetch the product
+    const product = await Product.findById(productId)
+      .populate("vendor", "name")
+      .populate("category", "title");
+
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    // 2. Validate size
+    if (!product.sizes.includes(sizeSelected)) {
+      return res.status(400).json({ error: "Invalid size selected" });
+    }
+
+    // 3. Calculate total price
+    const totalPrice = product.discountedPrice * quantity;
+
+    // 4. Create new booking
+    const newBooking = new Booking({
+      user: userId,
+      vendor: product.vendor._id,
+      product: product._id,
+      category: product.category._id,
+      sizeSelected,
+      quantity,
+      totalPrice,
+    });
+
+    await newBooking.save();
+
+    // 5. Add booking reference to user (optional but useful)
+    await User.findByIdAndUpdate(userId, {
+      $push: { bookings: newBooking._id },
+    });
+
+    return res.status(201).json({
+      message: "Booking successful!",
+      booking: newBooking,
+    });
+  } catch (err) {
+    console.error("Booking Error:", err);
+    return res.status(500).json({ error: "Something went wrong while booking." });
+  }
+};
 
 const getUserBookings = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -396,4 +448,4 @@ const cancelUserBooking = asyncHandler(async (req, res) => {
     new ApiResponse(200, {}, "Booking cancelled successfully.")
   );
 });
-export { userAccountDetails  , getUserWishlists , toggleProductWishlist , getUserVendorWishlists , toggleVendorWishlist ,editUserDetails , deleteUserAccount , getUserBookings , cancelUserBooking};
+export { userAccountDetails  , getUserWishlists , toggleProductWishlist , getUserVendorWishlists , toggleVendorWishlist ,editUserDetails , deleteUserAccount , bookProduct, getUserBookings , cancelUserBooking};

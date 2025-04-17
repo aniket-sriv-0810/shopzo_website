@@ -5,6 +5,7 @@ import {validate} from '../middleware/validator.js';
 import { bookingValidationSchema } from '../test/booking.validator.js';
 import {  getProductById } from "../controller/product.controller.js";
 import { createBooking , getAllBookings , deleteBooking} from '../controller/booking.controller.js';
+import { bookProduct } from '../controller/user.controller.js';
 
 const router = express.Router();
 
@@ -16,8 +17,8 @@ router
      .get(getProductById)
 
 router
-     .route("/:id/booking")
-     .post( isLoggedIn , validate(bookingValidationSchema) , createBooking)
+     .route("/:productId/booking")
+     .post( isLoggedIn  , bookProduct)
 
 router
      .route("/:id/bookings")

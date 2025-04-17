@@ -6,7 +6,7 @@ import {userSchemaValidation} from '../test/user.validator.js' ;
 import {userEditValidationSchema} from '../test/userEdit.validator.js' ;
 import { loginUserValidation } from '../test/login.validator.js';
 import { createNewUser , loginUser , logOutUser , checkAuthentication, changeUserPassword } from '../controller/userAuth.controller.js';
-import {userAccountDetails , getUserWishlists , toggleProductWishlist , editUserDetails , deleteUserAccount, getUserBookings , cancelUserBooking ,getUserVendorWishlists , toggleVendorWishlist} from "../controller/user.controller.js";
+import {userAccountDetails , getUserWishlists , toggleProductWishlist , editUserDetails , deleteUserAccount, getUserBookings , cancelUserBooking ,getUserVendorWishlists ,  toggleVendorWishlist} from "../controller/user.controller.js";
 const router = express.Router();
 
 
@@ -59,6 +59,7 @@ router
 router
   .route("/:id/account/vendor-wishlist")
   .post(isLoggedIn, toggleVendorWishlist);
+
 
 // Check for the user Bookings Route
 router
