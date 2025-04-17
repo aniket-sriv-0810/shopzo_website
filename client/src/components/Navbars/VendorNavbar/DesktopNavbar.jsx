@@ -1,15 +1,9 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaUserCircle } from "react-icons/fa";
-import { TiShoppingCart } from "react-icons/ti";
 import { FaPowerOff } from "react-icons/fa6";
-import { RiShieldUserLine } from "react-icons/ri";
-import { PiUserCirclePlusBold } from "react-icons/pi";
-import { useUser } from "../../UserContext/userContext";
 import { BsBuildingFillAdd } from "react-icons/bs";
-import { AiFillFileAdd } from "react-icons/ai";
+
 const DesktopNavbar = () => {
-  const { user} = useUser();
   const navigate = useNavigate();
 
 

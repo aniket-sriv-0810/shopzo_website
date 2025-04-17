@@ -8,7 +8,9 @@ const AdminHome = () => {
 
   return (
     <>
+    <div className="bg-gradient-to-tl from-gray-600 to-slate-800">
       <AdminNavbar />
+    </div>
       <div className="min-h-screen bg-gray-100 py-10 px-5 sm:px-20 flex flex-col items-center justify-center">
         {/* Welcome Section */}
         <div className="bg-white shadow-lg rounded-xl p-6 md:p-10 text-center max-w-4xl mx-auto">
