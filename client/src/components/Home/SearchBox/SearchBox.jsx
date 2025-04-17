@@ -29,25 +29,25 @@ const SearchBox = () => {
 
   return (
     <div className="relative w-full max-w-5xl mx-auto px-4 py-6">
-      {/* Search Bar */}
-      <div className="relative w-full max-w-xl mx-auto">
-        <input
-          type="text"
-          placeholder="Search by product name, category or tag..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          className="w-full py-3 pl-5 pr-12 text-gray-900 bg-white border border-gray-300 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 text-sm sm:text-base"
-        />
-        <button
-          onClick={handleSearch}
-          className="absolute top-1/2 right-3 transform -translate-y-1/2 bg-indigo-600 hover:bg-indigo-700 text-white p-2 rounded-full transition-all duration-300"
-          aria-label="Search"
-        >
-          <FaSearch size={18} className="hover:cursor-pointer hover:scale-105" />
-        </button>
-      </div>
-
+    {/* ✨ Elegant Search Bar */}
+    <div className="relative w-full max-w-2xl mx-auto">
+      <input
+        type="text"
+        placeholder="Search products, categories, or tags..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+        className="w-full py-3.5 pl-5 pr-14 text-base sm:text-lg text-gray-800 placeholder-gray-400 bg-white/70 backdrop-blur-md border border-gray-300 rounded-3xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300"
+      />
+      <button
+        onClick={handleSearch}
+        className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-700 hover:bg-indigo-700 text-white p-2 rounded-full shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 hover:cursor-pointer"
+        aria-label="Search"
+      >
+        <FaSearch size={18} className="hover:scale-110 transition-transform" />
+      </button>
+  </div>
+  
       {/* Result Section */}
       {loading && (
         <div className="flex justify-center items-center mt-10">

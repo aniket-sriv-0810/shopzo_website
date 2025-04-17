@@ -66,7 +66,7 @@ const AllCategories = () => {
           <div className="sm:hidden overflow-x-auto scrollbar-hide -mx-4 px-4 pb-2">
             <div className="flex gap-4">
               {filteredCategories.map((category) => (
-                <div key={category._id} className="flex-shrink-0 w-[80%]">
+                <div key={category._id} className="flex-shrink-0 w-full">
                   <CategoryCard category={category} />
                 </div>
               ))}

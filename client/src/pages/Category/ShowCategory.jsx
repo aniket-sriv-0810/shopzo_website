@@ -40,11 +40,11 @@ const ShowCategory = () => {
 
   return (
     <>
-      <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
+      <div className="bg-gray-200">
         <Navbar />
       </div>
 
-      <section className="max-w-7xl mx-auto px-6 py-10 bg-yellow-100 shadow-lg rounded-lg mt-10 min-h-screen">
+      <section className="max-w-7xl  mx-auto shadow-lg mt-10 rounded-xl shadow-gray-300  min-h-screen">
         {loading ? (
           <div className="flex justify-center items-center mt-10">
             <SkeletonList />
@@ -58,15 +58,15 @@ const ShowCategory = () => {
           </div>
         ) : (
           <>
-            <div className="text-center mb-8">
-              <h2 className="text-4xl font-semibold text-gray-800 tracking-tight leading-tight">
-                Products in <span className="text-indigo-600">{category?.title}</span>
+            <div className="text-center ">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 tracking-tight leading-tight">
+                Products in <span className="text-fuchsia-600">{category?.title}</span>
               </h2>
-              <p className="text-xl text-gray-500 mt-2 capitalize">For {tag}</p>
+              <p className="text-xl text-gray-500 font-semibold  mt-3 capitalize">{tag}</p>
             </div>
 
             {products.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-10 transition-all duration-300">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-10 transition-all duration-300">
                 {products.map((product) => (
                   <ProductCard key={product._id} product={product} />
                 ))}
