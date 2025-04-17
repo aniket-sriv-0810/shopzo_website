@@ -12,15 +12,17 @@ const AddProductForm = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    price: "",
+    originalPrice: "",
+    discountedPrice: "",
     sizes: [],
     category: "",
     tag: "",
-    vendor: "", // now a single string
+    vendor: "",
     images: [],
   });
 
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,18 +49,17 @@ const AddProductForm = () => {
       alert("Maximum 7 images allowed.");
       return;
     }
-
+    setLoading(true); // Start loading
     const productData = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (key === "images") {
-        value.forEach((img) => productData.append("images", img));
-      } else if (key === "sizes") {
-        // send as JSON string
-        productData.append("sizes", JSON.stringify(value));
-      } else {
-        productData.append(key, value);
-      }
-    });
+    productData.append("title", formData.title);
+    productData.append("description", formData.description);
+    productData.append("originalPrice", formData.originalPrice);
+    productData.append("discountedPrice", formData.discountedPrice);
+    productData.append("category", formData.category);
+    productData.append("tag", formData.tag);
+    productData.append("vendor", formData.vendor);
+    formData.sizes.forEach((size) => productData.append("sizes", size));
+    formData.images.forEach((img) => productData.append("images", img));
 
     try {
       await axios.post(
@@ -70,7 +71,8 @@ const AddProductForm = () => {
       setFormData({
         title: "",
         description: "",
-        price: "",
+        originalPrice: "",
+        discountedPrice: "",
         sizes: [],
         category: "",
         tag: "",
@@ -81,6 +83,8 @@ const AddProductForm = () => {
       navigate("/");
     } catch (err) {
       console.error("❌ Error adding product:", err);
+    }finally {
+      setLoading(false); // End loading
     }
   };
 
@@ -91,26 +95,60 @@ const AddProductForm = () => {
       </h2>
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <InputField label="Product Title" name="title" value={formData.title} onChange={handleChange} required />
-        <InputField label="Price (₹)" name="price" type="number" value={formData.price} onChange={handleChange} required />
-        <InputField label="Description" name="description" value={formData.description} onChange={handleChange} required textarea />
-        
+        <InputField
+          label="Product Title"
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
+          required
+        />
+        <InputField
+          label="Original Price (₹)"
+          name="originalPrice"
+          type="number"
+          value={formData.originalPrice}
+          onChange={handleChange}
+          required
+        />
+        <InputField
+          label="Discounted Price (₹)"
+          name="discountedPrice"
+          type="number"
+          value={formData.discountedPrice}
+          onChange={handleChange}
+          required
+        />
+        <InputField
+          label="Description"
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          required
+          textarea
+        />
+
         <CategoryDropdown value={formData.category} onChange={handleChange} />
         <VendorDropdown value={formData.vendor} onChange={handleChange} />
         <TagSelector value={formData.tag} onChange={handleChange} />
         <SizeCheckbox selectedSizes={formData.sizes} onChange={handleCheckboxChange} />
-        
+
         <div className="col-span-1 md:col-span-2">
           <ImageUploader onChange={handleImageChange} images={formData.images} />
         </div>
 
         <div className="col-span-1 md:col-span-2 text-center">
-          <button
-            type="submit"
-            className="bg-blue-600 text-white font-medium px-6 py-3 rounded-lg hover:bg-blue-700 transition"
-          >
-            Submit Product
-          </button>
+        <button
+  type="submit"
+  disabled={loading}
+  className={`flex items-center justify-center gap-2 bg-blue-600 text-white font-medium px-6 py-3 rounded-lg transition 
+    ${loading ? "cursor-not-allowed opacity-70" : "hover:bg-blue-700"}`}
+>
+  {loading && (
+    <span className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+  )}
+  {loading ? "Submitting..." : "Submit Product"}
+</button>
+
         </div>
       </form>
     </div>

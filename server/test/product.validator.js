@@ -31,15 +31,7 @@ const productSchemaValidation = Joi.object({
       "any.required": "Discounted price is required!",
     }),
 
-  images: Joi.array()
-    .items(Joi.string().uri().messages({ "string.uri": "Each image must be a valid URL." }))
-    .max(7)
-    .default([
-      "https://media-hosting.imagekit.io//4bc72ff0889f4681/demo.png",
-    ])
-    .messages({
-      "array.max": "A maximum of 7 images are allowed per product.",
-    }),
+  images: Joi.any(),
 
   sizes: Joi.array()
     .items(Joi.string().valid("XS", "S", "M", "L", "XL", "XXL", "XXXL"))
