@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { IoHomeSharp } from "react-icons/io5";
-import { FaUserCircle, FaBars, FaTimes, FaPaperPlane , FaPowerOff , FaStoreAlt , FaStore, FaTags, FaPlane } from "react-icons/fa";
-import { RiQuestionAnswerFill, RiShieldUserLine, RiArticleFill } from "react-icons/ri";
-import { TiShoppingCart } from "react-icons/ti";
+import { FaUserCircle, FaBars, FaTimes, FaPaperPlane , FaPowerOff , FaStoreAlt , FaStore, FaTags } from "react-icons/fa";
+import {  RiShieldUserLine } from "react-icons/ri";
 import { AiFillProduct } from "react-icons/ai";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { PiUserCirclePlusBold } from "react-icons/pi";
@@ -53,14 +52,6 @@ const MobileNavbar = () => {
                 </NavLink>
               </li>
             )}
-            {user?.role === "vendor" && (
-              <li className="opacity-80 flex items-center justify-center p-2.5 gap-2 bg-gray-800 rounded-2xl w-60 hover:text-yellow-400">
-                <FaStoreAlt className="text-xl" />
-                <NavLink to="/vendor" onClick={toggleMenu}>
-                  Vendor Panel
-                </NavLink>
-              </li>
-            )}
 
             {menuItems.map(({ to, label, icon }) => (
               <li key={to} className="opacity-80 flex items-center justify-center p-2.5 gap-2.5 bg-gray-800 rounded-2xl w-60 hover:text-yellow-400">
@@ -77,7 +68,7 @@ const MobileNavbar = () => {
               ) : (
                 <FaUserCircle className="text-xl" />
               )}
-              <NavLink to={user ? `/user/${user._id}/account` : "/login"} onClick={toggleMenu}>
+              <NavLink to={user ? user.role === "user" ? `/user/${user._id}/account` : "/vendor/login" : "/login"} onClick={toggleMenu}>
                 My Profile
               </NavLink>
             </li>

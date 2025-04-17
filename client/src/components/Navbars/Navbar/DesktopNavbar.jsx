@@ -1,7 +1,6 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
-import { TiShoppingCart } from "react-icons/ti";
 import { FaPowerOff } from "react-icons/fa6";
 import { RiShieldUserLine } from "react-icons/ri";
 import { PiUserCirclePlusBold } from "react-icons/pi";
@@ -15,6 +14,7 @@ const DesktopNavbar = () => {
 
     { to: "/", label: "Home", tooltip: "Home" },
     { to: "/category", label: "Categories", tooltip: "Categories" },
+    { to: "/vendors", label: "Vendors", tooltip: "Vendors" },
     { to: "/about", label: "About", tooltip: "About" },
     { to: "/contact", label: "Connect", tooltip: "Connect" },
   ];
@@ -30,13 +30,6 @@ const DesktopNavbar = () => {
             </NavLink>
         </li>
       )}
-{user?.role === "vendor" && (
-        <li>
-            <NavLink to="/admin/dashboard" className="hover:text-yellow-500  hover:font-semibold">
-              Vendor
-            </NavLink>
-        </li>
-      )}
       {navItems.map(({ to, label, tooltip }) => (
         <li key={to} className="  hover:scale-110 hover:font-semibold">
             <NavLink to={to} className="hover:text-black  ">
@@ -46,7 +39,7 @@ const DesktopNavbar = () => {
       ))}
 
  <li>
-          <NavLink to={user ? `/user/${user._id}/account` : "/login"}>
+          <NavLink to={user ? user.role === "user" ? `/user/${user._id}/account` : "/vendor/login" : "/login"}>
             {user ? (
               <img src={user.image} alt={user.name} className="w-10 h-10 rounded-full hover:scale-110" />
             ) : (
