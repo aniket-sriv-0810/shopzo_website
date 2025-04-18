@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import UserTable from "../../components/Admin/AdminUser/UserTable";
 import { useUser } from "../../components/UserContext/userContext";
 import { useNavigate } from "react-router-dom";
-
+import SkeletonTable from "../../components/LoadingSkeleton/SkeletonTable";
 const AdminUser = () => {
   const { user } = useUser();
   const [userDetails, setUserDetails] = useState([]);
@@ -52,7 +52,9 @@ const AdminUser = () => {
       </h1>
 
       {loading ? (
-        <p>loading...</p>
+        <div className='flex justify-center items-center mt-10'>
+      <SkeletonTable/> 
+        </div>
       ) : error ? (
         <p className="text-center text-red-600 font-medium">{error}</p>
       ) : userDetails.length === 0 ? (

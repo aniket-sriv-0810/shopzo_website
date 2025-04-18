@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import CategoryTable from "../../components/Admin/AdminCategory/CategoryTable";
-
+import SkeletonTable from '../../components/LoadingSkeleton/SkeletonTable';
 
 const AdminCategory = () => {
   const [categories, setCategories] = useState([]);
@@ -37,7 +37,9 @@ const AdminCategory = () => {
       </h1>
 
       {loading ? (
-        <p >Loading...</p>
+        <div className='flex justify-center items-center mt-10'>
+      <SkeletonTable/> 
+        </div>
       ) : error ? (
         <p className="text-center text-red-600 font-medium">{error}</p>
       ) : categories.length === 0 ? (

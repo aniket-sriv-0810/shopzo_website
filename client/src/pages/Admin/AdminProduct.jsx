@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ProductTable from "../../components/Admin/AdminProduct/ProductTable";
-
+import SkeletonTable from "../../components/LoadingSkeleton/SkeletonTable";
 const AdminProduct = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +34,9 @@ const AdminProduct = () => {
       </h1>
 
       {loading ? (
-        <p>loading...</p>
+        <div className='flex justify-center items-center mt-10'>
+      <SkeletonTable/> 
+        </div>
       ) : error ? (
         <p className="text-center text-red-600 font-medium">{error}</p>
       ) : products.length === 0 ? (

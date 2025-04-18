@@ -4,7 +4,7 @@ const ProductRow = ({ product }) => {
   const {
     _id,
     title,
-    price,
+    discountedPrice,
     images,
     category,
     tag,
@@ -22,15 +22,13 @@ const ProductRow = ({ product }) => {
       </td>
       <td className="px-4 py-2 border font-semibold">{title}</td>
       <td className="px-4 py-2 border text-xs break-all">{_id}</td>
-      <td className="px-4 py-2 border font-medium">₹{price}</td>
+      <td className="px-4 py-2 border font-medium">₹{discountedPrice}</td>
       <td className="px-4 py-2 border capitalize">
-        {category?.title || "N/A"}
+        {product.category?.title || "N/A"}
       </td>
       <td className="px-4 py-2 border capitalize">{tag}</td>
       <td className="px-4 py-2 border">
-        {vendor?.length > 0
-          ? vendor.map((v) => <p key={v._id}>{v.name || "Vendor"}</p>)
-          : "No vendor"}
+       {product.vendor.name}
       </td>
     </tr>
   );

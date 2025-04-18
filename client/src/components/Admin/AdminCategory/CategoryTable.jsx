@@ -11,7 +11,8 @@ const CategoryTable = ({ categories, onEdit, onDelete }) => {
             <th className="px-4 py-3 border">Title</th>
             <th className="px-4 py-3 border">Category ID</th>
             <th className="px-4 py-3 border">Tag</th>
-            <th className="px-4 py-3 border">Actions</th>
+            <th className="px-4 py-3 border">Edit</th>
+            <th className="px-4 py-3 border">Delete</th>
           </tr>
         </thead>
         <tbody>

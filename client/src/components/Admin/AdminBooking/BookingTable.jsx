@@ -5,7 +5,7 @@ const BookingTable = ({ bookings }) => {
   return (
     <div className="overflow-x-auto bg-white shadow-md rounded">
       <table className="min-w-full table-auto border">
-        <thead className="bg-gray-100">
+        <thead className="bg-gray-800 text-white">
           <tr>
             <th className="px-4 py-2">User</th>
             <th className="px-4 py-2">Vendor</th>
@@ -14,7 +14,7 @@ const BookingTable = ({ bookings }) => {
             <th className="px-4 py-2">Quantity</th>
             <th className="px-4 py-2">Total Price</th>
             <th className="px-4 py-2">Status</th>
-            <th className="px-4 py-2">Date</th>
+            <th className="px-4 py-2">Booking Date</th>
           </tr>
         </thead>
         <tbody>

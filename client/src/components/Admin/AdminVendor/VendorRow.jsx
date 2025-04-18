@@ -49,11 +49,11 @@ const VendorRow = ({ vendor, categories, refreshVendors }) => {
   <td className="px-4 py-2 border">{phone}</td>
   <td className="px-4 py-2 border">{email}</td>
   <td className="px-4 py-2 border text-sm text-left">
-    {address.area}, {address.city}, {address.state}, {address.country} - {address.pincode}
+    {address.area}, {address.city} - {address.pincode}
   </td><td className="px-4 py-2 border">
     <Link
       to={`/admin/vendors/${_id}/add-category`}
-      className="w-full bg-green-600 text-white text-sm py-1 rounded hover:bg-green-700"
+      className="w-full bg-green-600 text-white text-sm py-2 px-2 rounded hover:bg-green-700"
     >
       Add Category
     </Link>
