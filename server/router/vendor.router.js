@@ -93,7 +93,7 @@ router
 
 // Check for the All vendors Required Counts  Route
 router
-      .route("/:vendorId/dashboard-counts")
+      .route("/:vendorId/account/dashboard")
       .get( getVendorCounts);
 
 
@@ -121,7 +121,7 @@ router
 //  Check for the  vendor  Edit Account Route
 router
      .route("/:id/account/edit")
-     .put( isLoggedIn, upload.single("image"), validate(editVendorValidation),updateVendorById);
+     .put( isLoggedIn, upload.single("image"),updateVendorById);
 
 // Change password for Vendor Account Route
 router

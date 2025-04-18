@@ -3,10 +3,11 @@ import React from "react";
 const VendorDetailsForm = ({ vendor }) => {
   return (
     <form className="grid grid-cols-1 md:grid-cols-2 gap-6 px-2 md:px-4" data-aos="fade-up">
-      <FormGroup label="Vendor ID" value={vendor?._id} />
       <FormGroup label="Name" value={vendor?.name} />
-      <FormGroup label="Email" value={vendor?.email} />
+      <FormGroup label="Username" value={vendor?.username} />
       <FormGroup label="Phone" value={vendor?.phone} />
+      <FormGroup label="Email" value={vendor?.email} />
+      <FormGroup label="Vendor ID" value={vendor?._id} />
     </form>
   );
 };

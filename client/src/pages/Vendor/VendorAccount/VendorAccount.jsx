@@ -49,8 +49,8 @@ const VendorAccount = () => {
             <VendorProfile vendor={vendor} />
             <div className="flex-1 px-4 md:px-10 py-8 bg-white">
               <div className="max-w-5xl mx-auto">
-                <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-10 tracking-wide">
-                  Vendor Account
+                <h2 className="text-3xl md:text-4xl capitalize font-bold text-center text-gray-800 mb-10 tracking-wide">
+                 My Vendor Account
                 </h2>
                 {vendor ? (
                   <>

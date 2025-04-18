@@ -18,7 +18,7 @@ const MobileNavbar = () => {
     { to: `/vendor/${id}/account`, label: "My Account", tooltip: "Account" , icon: <FaUser />},
     { to: `/vendor/${id}/account/categories-listed`, label: "My Categories", tooltip: "Categories" , icon: <FaTags /> },
     { to: `/vendor/${id}/account/products-listed`, label: "My Products ", tooltip: "Products" , icon: <FaBoxOpen />},
-    { to: `/vendor/${id}/account/all-bookings`, label: "My Bookings", tooltip: "Bookings" , icon: <FaClipboardCheck />},
+    { to: `/vendor/${id}/account/bookings`, label: "My Bookings", tooltip: "Bookings" , icon: <FaClipboardCheck />},
   ];
 
   return (
@@ -43,7 +43,7 @@ const MobileNavbar = () => {
             {user?.role === "vendor" && (
               <li className="opacity-80 flex items-center justify-center p-2.5 gap-2 bg-gray-800 rounded-2xl w-60 hover:text-yellow-400">
                 <MdAdminPanelSettings className="text-xl" />
-                <NavLink to="/vendor/dashboard" onClick={toggleMenu}>
+                <NavLink to={`/vendor/${id}/account/dashboard`} onClick={toggleMenu}>
                   My Dashboard
                 </NavLink>
               </li>

@@ -85,20 +85,14 @@ const vendorAccountDetails = asyncHandler(async (req, res) => {
 
 const updateVendorById = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const {
-    name,
-    username,
-    email,
-    phone,
-    address, // Full address object
-  } = req.body;
+  const { name, username, email, phone, address } = req.body;
 
   let vendor = await Vendor.findById(id);
   if (!vendor) {
     return res.status(404).json(new ApiError(404, "Vendor not found"));
   }
 
-  // Check for unique email/phone if changed
+  // Check email & phone uniqueness
   if (email && email.toLowerCase() !== vendor.email) {
     const existingEmail = await Vendor.findOne({ email: email.toLowerCase() });
     if (existingEmail) {
@@ -113,7 +107,6 @@ const updateVendorById = asyncHandler(async (req, res) => {
     }
   }
 
-  // Upload new image if provided
   let image = vendor.image;
   if (req.file) {
     const uploaded = await uploadOnCloudinary(req.file.path);
@@ -123,27 +116,27 @@ const updateVendorById = asyncHandler(async (req, res) => {
   }
 
   // Update fields
-  vendor.name = name || vendor.name;
-  vendor.username = username?.toLowerCase() || vendor.username;
-  vendor.email = email?.toLowerCase() || vendor.email;
-  vendor.phone = phone || vendor.phone;
+  vendor.name = name;
+  vendor.username = username.toLowerCase();
+  vendor.email = email.toLowerCase();
+  vendor.phone = phone;
   vendor.image = image;
 
-  // Full nested address
-  if (address) {
-    vendor.address = {
-      area: address.area || vendor.address.area,
-      city: address.city || vendor.address.city,
-      pincode: address.pincode || vendor.address.pincode,
-      state: address.state || vendor.address.state,
-      country: address.country || vendor.address.country,
-    };
-  }
+  vendor.address = {
+    area: address.area,
+    city: address.city,
+    pincode: address.pincode,
+    state: address.state,
+    country: address.country,
+  };
 
   await vendor.save();
 
-  return res.status(200).json(new ApiResponse(200, vendor, "Vendor updated successfully"));
+  return res
+    .status(200)
+    .json(new ApiResponse(200, vendor, "Vendor updated successfully"));
 });
+
 
 const deleteVendorById = asyncHandler(async (req, res) => {
   const { id } = req.params;

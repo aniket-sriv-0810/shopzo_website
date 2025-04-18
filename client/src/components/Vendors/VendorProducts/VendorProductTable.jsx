@@ -9,9 +9,12 @@ const VendorProductTable = ({ products }) => {
           <tr>
             <th className="px-4 py-3 border">Image</th>
             <th className="px-4 py-3 border">Title</th>
-            <th className="px-4 py-3 border">Price</th>
+            <th className="px-4 py-3 border">Discounted Price</th>
+            <th className="px-4 py-3 border">Original Price</th>
+            <th className="px-4 py-3 border">Sizes</th>
             <th className="px-4 py-3 border">Category</th>
             <th className="px-4 py-3 border">Tag</th>
+            <th className="px-4 py-3 border">Product ID</th>
           </tr>
         </thead>
         <tbody>

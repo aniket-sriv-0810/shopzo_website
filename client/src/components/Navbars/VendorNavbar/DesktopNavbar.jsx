@@ -1,17 +1,17 @@
 import React from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { FaPowerOff } from "react-icons/fa6";
 
 const DesktopNavbar = () => {
   const navigate = useNavigate();
-
+  const {id} = useParams();
 
   const navItems = [
-    { to: "/vendor/dashboard", label: "My Dashboard", tooltip: "My Dashboard" },
-    { to: "account", label: "Account", tooltip: "Account" },
-    { to: "categories", label: "Categories", tooltip: "Categories" },
-    { to: "products", label: "Products", tooltip: "Products" },
-    { to: "bookings", label: "Bookings", tooltip: "Bookings" },
+    { to: `/vendor/${id}/account/dashboard`, label: "My Dashboard", tooltip: "My Dashboard" },
+    { to: `/vendor/${id}/account`, label: "Account", tooltip: "Account" },
+    { to: `/vendor/${id}/account/categories-listed`, label: "Categories", tooltip: "Categories" },
+    { to: `/vendor/${id}/account/products-listed`, label: "Products", tooltip: "Products" },
+    { to: `/vendor/${id}/account/bookings`, label: "Bookings", tooltip: "Bookings" },
   ];
 
 

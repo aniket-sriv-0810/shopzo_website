@@ -19,7 +19,6 @@ import ShowProduct from "./pages/Product/ShowProduct";
 import EditProduct from "./pages/Product/EditProduct";
 import AddVendor from "./pages/Vendor/AddVendor";
 import ShowVendor from "./pages/Vendor/ShowVendor";
-import EditVendor from "./pages/Vendor/EditVendor";
 import DeleteVendor from "./pages/Vendor/DeleteVendor";
 import ShowCategory from "./pages/Category/ShowCategory";
 import UserAccount from "./pages/User/UserAccount";
@@ -57,6 +56,9 @@ import VendorFilteredProducts from "./pages/Vendor/VendorFilteredProducts/Vendor
 import UserVendorWishlists from "./pages/User/UserVendorWishlists";
 import ShowVendorProducts from "./components/Vendors/VendorShow/ShowVendorProducts";
 import DeleteSuccessToast from "./components/Popups/DeleteSuccessToast";
+import VendorDashboard from "./pages/Vendor/VendorDashboard/VendorDashboard";
+import VendorAccountEdit from "./pages/Vendor/VendorAccountEdit/VendorAccountEdit";
+import VendorPasswordChange from "./pages/Vendor/VendorPasswordChange/VendorPasswordChange";
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -251,8 +253,11 @@ function App() {
             {/* Vendor Routes - VENDOR Side */}
           <Route path="/vendor/login" element={<VendorLoginForm />} />
           <Route path="/vendor/:id/account" element={<VendorAccount />} />
+          <Route path="/vendor/:id/account/edit" element={<VendorAccountEdit />} />
+          <Route path="/vendor/:id/account/dashboard" element={<VendorDashboard />} />
           <Route path="/vendor/:id/account/categories-listed" element={<VendorCategories />}/>
           <Route path="/vendor/:id/account/products-listed" element={<VendorProducts />}/>
+          <Route path="/vendor/:id/account/change-password" element={<VendorPasswordChange />}/>
           <Route path="/vendor/:id/:categoryId/:tag/all-products" element={<VendorFilteredProducts />}/>
 
              {/* Vendor Routes - CLIENT Side */}
