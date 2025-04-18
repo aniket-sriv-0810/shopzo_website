@@ -1,7 +1,7 @@
 import React from "react";
 import { MdDeleteForever } from "react-icons/md";
 
-const UserRow = ({ user, loggedInUser, deleteUser }) => {
+const UserRow = ({ user, loggedInUser, deleteUser  }) => {
   const isCurrentUser = loggedInUser?._id === user._id;
 
   return (
@@ -13,14 +13,15 @@ const UserRow = ({ user, loggedInUser, deleteUser }) => {
           className="w-12 h-12 md:w-14 md:h-14 rounded-full mx-auto object-cover border border-gray-300"
         />
       </td>
-      <td className="px-4 py-2 border">{user.name}</td>
+      <td className="px-4 py-2 border capitalize">{user.name}</td>
       <td className="px-4 py-2 border">{user.phone}</td>
       <td className="px-4 py-2 border">{user.email}</td>
+      <td className="px-4 py-2 border">{user._id}</td>
       <td className="px-4 py-2 border">
         <button
           onClick={() => deleteUser(user._id)}
           disabled={isCurrentUser}
-          className={`flex items-center m-auto justify-center gap-2 px-4 py-2 text-white font-semibold rounded-full transition-transform 
+          className={`hover:cursor-pointer flex items-center m-auto justify-center gap-2 px-4 py-2 text-white font-semibold rounded-full transition-transform 
             ${isCurrentUser ? "bg-gray-400 cursor-not-allowed" : "bg-red-500 hover:bg-red-600 hover:scale-110"}`}
         >
           <MdDeleteForever className="text-xl" />

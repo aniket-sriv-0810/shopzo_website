@@ -3,22 +3,20 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 const AddCategoryToVendor = () => {
-  const { vendorId } = useParams(); // Extract vendorId from the URL params
+  const { vendorId } = useParams();
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/category`);
-        const fetchedCategories = res.data?.data?.categories || [];
-
-        console.log("Fetched categories:", fetchedCategories);
-        setCategories(fetchedCategories);
+        setCategories(res.data?.data?.categories || []);
       } catch (err) {
-        console.error("Failed to fetch categories:", err);
+        console.error("Error fetching categories:", err);
       } finally {
         setLoading(false);
       }
@@ -29,68 +27,84 @@ const AddCategoryToVendor = () => {
 
   const handleCategoryChange = (e) => {
     const categoryId = e.target.value;
-    if (e.target.checked) {
-      setSelectedCategories((prev) => [...prev, categoryId]);
-    } else {
-      setSelectedCategories((prev) =>
-        prev.filter((id) => id !== categoryId)
-      );
-    }
+    setSelectedCategories((prev) =>
+      e.target.checked ? [...prev, categoryId] : prev.filter((id) => id !== categoryId)
+    );
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitLoading(true);
     try {
-      const res = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_API_URL}/api/admin/vendor/${vendorId}/add-categories`,
         { categoryIds: selectedCategories },
         { withCredentials: true }
       );
-      setMessage("Categories added successfully!");
+      setMessage("✅ Categories added successfully!");
     } catch (err) {
-      setMessage("Failed to add categories.");
+      setMessage("❌ Failed to add categories.");
+    } finally {
+      setSubmitLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-8">
-      <div className="w-full max-w-lg bg-white shadow-xl rounded-xl p-8">
-        <h2 className="text-2xl font-bold text-center mb-6">Add Categories to Vendor</h2>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center px-4 py-10">
+      <div className="w-full max-w-3xl bg-white rounded-3xl shadow-2xl p-8">
+        <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">Add Categories to Vendor</h2>
 
-        {message && (
-          <p className="text-center text-sm text-blue-600 mb-4">{message}</p>
-        )}
+        {message && <p className="text-center text-sm font-medium text-blue-600 mb-4">{message}</p>}
 
         {loading ? (
-          <p className="text-center text-gray-500">Loading categories...</p>
-        ) : !Array.isArray(categories) || categories.length === 0 ? (
+          <p className="text-center text-gray-500 animate-pulse">Loading categories...</p>
+        ) : categories.length === 0 ? (
           <p className="text-center text-red-500">No categories available.</p>
         ) : (
           <form onSubmit={handleSubmit}>
-            <div className="space-y-2 bg-gray-50 p-3 rounded border border-gray-200 max-h-64 overflow-y-auto">
-              <p className="text-xs text-red-400">Available: {categories.length} categories</p>
+            <div className="flex-col m-5 max-h-72 overflow-y-auto pr-2">
               {categories.map((cat) => (
-                <div key={cat._id} className="flex items-center">
+                <label
+                  key={cat._id}
+                  htmlFor={`cat-${cat._id}`}
+                  className="flex  items-center gap-7 m-4 p-3 bg-gray-50 rounded-xl shadow-sm hover:shadow-md border transition"
+                >
                   <input
                     type="checkbox"
                     value={cat._id}
+                    id={`cat-${cat._id}`}
                     onChange={handleCategoryChange}
-                    className="mr-2"
-                    id={`category-${cat._id}`}
+                    className="accent-blue-600"
                   />
-                  <label htmlFor={`category-${cat._id}`} className="text-sm text-black">
-                    {cat.name}
-                  </label>
-                </div>
+                  <img
+                    src={cat.image}
+                    alt={cat.title}
+                    className="w-12 h-12 rounded-full object-cover border"
+                  />
+                  <div className="flex gap-3">
+                    <p className="font-semibold text-gray-800 capitalize">{cat.title}</p>
+                    <p className="text-xs text-white bg-blue-500 inline-block px-2 py-0.5 rounded-md mt-1">
+                      {cat.tag}
+                    </p>
+                  </div>
+                </label>
               ))}
             </div>
 
             <div className="mt-6 text-center">
               <button
                 type="submit"
-                className="w-full py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition"
+                disabled={submitLoading}
+                className="relative w-full py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all duration-300"
               >
-                Submit Categories
+                {submitLoading ? (
+                  <span className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
+                    <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+                    Processing...
+                  </span>
+                ) : (
+                  "Submit Categories"
+                )}
               </button>
             </div>
           </form>

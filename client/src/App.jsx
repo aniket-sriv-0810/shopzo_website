@@ -56,6 +56,7 @@ import VendorProducts from "./pages/Vendor/VendorProducts/VendorProducts";
 import VendorFilteredProducts from "./pages/Vendor/VendorFilteredProducts/VendorFilteredProduct";
 import UserVendorWishlists from "./pages/User/UserVendorWishlists";
 import ShowVendorProducts from "./components/Vendors/VendorShow/ShowVendorProducts";
+import DeleteSuccessToast from "./components/Popups/DeleteSuccessToast";
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -237,16 +238,16 @@ function App() {
             />
             <Route path="product/:id/edit" element={<EditProduct />} />
             <Route path="product/:id/delete" element={<EditProduct />} />
-            <Route
-            path="vendor/:vendorId/add-category"
-            element={<AddCategoryToVendor />}
-          />
+           
             <Route
               path="vendor/:id/account/delete"
               element={<DeleteVendor />}
             />
           </Route>
-
+          <Route
+            path="/admin/vendor/:vendorId/add-category"
+            element={<AddCategoryToVendor />}
+          />
             {/* Vendor Routes - VENDOR Side */}
           <Route path="/vendor/login" element={<VendorLoginForm />} />
           <Route path="/vendor/:id/account" element={<VendorAccount />} />
@@ -273,6 +274,7 @@ function App() {
             }
           />
           <Route path="/error" element={<ErrorPopup />} />
+          <Route path="/delete" element={<DeleteSuccessToast />} />
           {/* 404 Page Not Found Route */}
           <Route path="*" element={<PageNotFound />} />
         </Routes>

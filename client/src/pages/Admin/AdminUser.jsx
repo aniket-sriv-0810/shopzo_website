@@ -10,7 +10,7 @@ const AdminUser = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
+  const [deleteLoading , setDeleteLoading] = useState(false);
   const fetchUserData = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/users`, {
@@ -30,14 +30,17 @@ const AdminUser = () => {
   };
 
   const deleteUser = async (userId) => {
+    setDeleteLoading(true);
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/api/user/${userId}/account/delete`, {
         withCredentials: true,
       });
       setUserDetails((prev) => prev.filter((u) => u._id !== userId));
-      navigate("/delete/successfully");
+      navigate("/admin");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to delete user.");
+    }finally{
+      setDeleteLoading(false);
     }
   };
 
