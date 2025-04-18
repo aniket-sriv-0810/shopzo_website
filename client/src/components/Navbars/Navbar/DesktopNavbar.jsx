@@ -39,7 +39,7 @@ const DesktopNavbar = () => {
       ))}
 
  <li>
-          <NavLink to={user ? user.role === "user" ? `/user/${user._id}/account` : "/vendor/login" : "/login"}>
+          <NavLink to={user ? user.role === "user" ||  user.role === "admin" ? `/user/${user._id}/account` : "/vendor/login" : "/login"}>
             {user ? (
               <img src={user.image} alt={user.name} className="w-10 h-10 rounded-full hover:scale-110" />
             ) : (

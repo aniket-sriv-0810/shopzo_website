@@ -59,6 +59,8 @@ import DeleteSuccessToast from "./components/Popups/DeleteSuccessToast";
 import VendorDashboard from "./pages/Vendor/VendorDashboard/VendorDashboard";
 import VendorAccountEdit from "./pages/Vendor/VendorAccountEdit/VendorAccountEdit";
 import VendorPasswordChange from "./pages/Vendor/VendorPasswordChange/VendorPasswordChange";
+import ProductBooking from "./pages/Product/ProductBooking";
+import BookingConfirmation from "./pages/Product/BookingConfirmation";
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -135,6 +137,8 @@ function App() {
 
               {/* Product Routes - CLIENT Side */}
           <Route path="/product/:id" element={<ShowProduct />} />
+          <Route path="/product/:id/booking" element={<ProductBooking />} />
+          <Route path="/product/:id/booking/:bookingId/confirmation" element={<BookingConfirmation />} />
         
               {/* Category Routes - CLIENT Side */}
           <Route path="/categories" element={<AllCategories />} />

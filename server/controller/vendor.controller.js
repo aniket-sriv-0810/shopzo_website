@@ -1,5 +1,6 @@
 import { Vendor } from "../models/vendor.model.js";
 import { Product } from "../models/product.model.js";
+import { Review } from "../models/review.model.js";
 import { Category } from "../models/category.model.js";
 import { Booking } from "../models/booking.model.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -61,6 +62,10 @@ const vendorAccountDetails = asyncHandler(async (req, res) => {
       .populate({
         path: "bookings.user",
         select: "name email"
+      })
+      .populate({
+        path: "reviews.user",
+        select: "image name email"
       })
 
     if (!vendorInfo) {

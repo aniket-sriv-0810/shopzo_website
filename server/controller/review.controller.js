@@ -4,6 +4,7 @@ import { Vendor } from "../models/vendor.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import mongoose from "mongoose";
 const addReviewToVendor = asyncHandler(async (req, res) => {
     const { rating, comment } = req.body;
     const { id: vendorId } = req.params;
@@ -80,4 +81,41 @@ const getVendorReviews = asyncHandler(async (req, res) => {
       );
     }
   });
-export { addReviewToVendor , getVendorReviews };
+
+  const getVendorReviewStats = async (req, res) => {
+    try {
+      const { id } = req.params;
+  
+      // Validate vendor ID
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res
+          .status(400)
+          .json(new ApiError(400, null, "Invalid vendor ID format."));
+      }
+  
+      // Check vendor exists
+      const vendorExists = await Vendor.findById(id).select("_id");
+      if (!vendorExists) {
+        return res
+          .status(404)
+          .json(new ApiError(404, null, "Vendor not found."));
+      }
+  
+      // Fetch all reviews for this vendor
+      const reviews = await Review.find({ vendor: id }).select("rating");
+  
+      const totalReviews = reviews.length;
+      const totalRatings = reviews.reduce((acc, review) => acc + review.rating, 0);
+      const avgRating = totalReviews > 0 ? (totalRatings / totalReviews).toFixed(2) : 0;
+  
+      return res.status(200).json(
+        new ApiResponse(200, { totalReviews, avgRating }, "Vendor review stats fetched successfully.")
+      );
+    } catch (error) {
+      console.error("Error fetching vendor review stats:", error);
+      return res
+        .status(500)
+        .json(new ApiError(500, null, "Internal server error."));
+    }
+  };
+export { addReviewToVendor , getVendorReviews , getVendorReviewStats };

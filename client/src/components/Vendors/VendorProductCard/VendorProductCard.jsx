@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const VendorProductCard = ({ product }) => {
+  const navigate = useNavigate();
   const {
     title,
     images,
@@ -40,6 +42,12 @@ const VendorProductCard = ({ product }) => {
           <div className="text-sm text-gray-700">{vendor?.name}</div>
         </div>
       </div>
+      <button
+          onClick={() => navigate(`/product/${product._id}`)}
+          className="mt-1 w-full bg-gradient-to-r from-red-600 to-fuchsia-600 hover:from-blue-700 hover:to-red-800 text-white font-semibold py-2 rounded-xl shadow-md transition duration-200 transform hover:scale-105 hover:cursor-pointer"
+        >
+          View Product
+        </button>
     </div>
   );
 };

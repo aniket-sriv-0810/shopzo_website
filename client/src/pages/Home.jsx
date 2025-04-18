@@ -21,6 +21,8 @@ import {
   FaBoxOpen,
   FaClipboardList
 } from 'react-icons/fa';
+import AllCategoryCard from '../components/Category/CategoryCircle/AllCategoryCard';
+import MainLayout from '../components/Home/MainLayout/MainLayout';
 
 const Home = () => {
   const driverRef = useRef(null);
@@ -105,9 +107,12 @@ const Home = () => {
       <div className="-mb-2 bg-gray-100" id="navbar">
         <Navbar />
       </div>
-
+      <MainLayout/>
       <div className="bg-[url('/assets/header-img.png')] bg-cover h-72 bg-no-repeat sm:h-[30rem]  md:h-[40rem] lg:h-[48rem]"></div>
 
+      <div className="my-20">
+       <AllCategoryCard/>
+      </div>
       <div className="my-20">
         <WelcomeMsg />
       </div>

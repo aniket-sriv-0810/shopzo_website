@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import SkeletonCard from "../../components/LoadingSkeleton/SkeletonCard";
 import NotAvailable from "../Loaders/NotAvailable";
 import Navbar from "../../components/Navbars/Navbar/Navbar";
@@ -11,7 +11,7 @@ const ShowProduct = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
   const fetchProduct = async () => {
     try {
       const { data } = await axios.get(
@@ -59,9 +59,9 @@ const ShowProduct = () => {
         {/* Image Carousel */}
         <div className="relative w-full overflow-hidden mb-8">
           <div className="flex overflow-x-auto gap-4 snap-x snap-mandatory scrollbar-hide">
-            {product.images.map((img, idx) => (
+            {product.images ? product.images.map((img, idx) => (
               <div
-                key={idx}
+                key={product._id-idx}
                 className="flex-shrink-0 w-full sm:w-[400px] h-[320px] sm:h-[480px] snap-start rounded-2xl overflow-hidden bg-gray-100 shadow-md"
               >
                 <img
@@ -70,7 +70,7 @@ const ShowProduct = () => {
                   className="w-full h-full object-cover object-center"
                 />
               </div>
-            ))}
+            )) : "No image found !"}
           </div>
         </div>
 
@@ -150,10 +150,10 @@ const ShowProduct = () => {
             </div>
 
             <button
-              onClick={() => alert("Added to cart!")}
+              onClick={() => navigate(`/product/${id}/booking`)}
               className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold text-lg shadow-md hover:bg-blue-700 transition duration-300"
             >
-              Add to Cart
+              Proceed to Booking
             </button>
           </div>
         </div>

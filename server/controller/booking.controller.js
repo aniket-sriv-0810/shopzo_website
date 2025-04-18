@@ -1,6 +1,10 @@
 import { Booking } from "../models/booking.model.js";
 import { Product } from "../models/product.model.js";
 import { User } from "../models/user.model.js";
+import { Vendor } from "../models/vendor.model.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 import mongoose from "mongoose";
 const createBooking = async (req, res) => {
   try {
@@ -62,7 +66,29 @@ const createBooking = async (req, res) => {
       });
     }
   };
+  const getBookingConfirmation = asyncHandler(async (req, res) => {
+    const { bookingId } = req.params;
   
+    // Validate booking ID
+    if (!mongoose.Types.ObjectId.isValid(bookingId)) {
+      throw new ApiError(400, 'Invalid booking ID format.');
+    }
+  
+    // Fetch booking with populated references
+    const booking = await Booking.findById(bookingId)
+      .populate('user')
+      .populate('vendor')
+      .populate('product')
+      .populate('category');
+  
+    if (!booking) {
+      throw new ApiError(404, 'Booking not found.');
+    }
+  
+    return res.status(200).json(
+      new ApiResponse(200, { booking }, 'Booking confirmation details fetched successfully.')
+    );
+  });
   const deleteBooking = async (req, res) => {
     try {
       const { id } = req.params;
@@ -89,4 +115,4 @@ const createBooking = async (req, res) => {
     }
   };
   
-  export {createBooking , getAllBookings , deleteBooking}
+  export {createBooking , getAllBookings ,getBookingConfirmation,  deleteBooking}

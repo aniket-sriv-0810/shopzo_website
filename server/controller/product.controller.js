@@ -105,8 +105,8 @@ const getProductById = asyncHandler(async (req, res) => {
 
   try {
     const product = await Product.findById(id)
-      .populate("category", "title tag")
-      .populate("vendor", "name image"); // ✅ Optionally add vendor fields if needed
+      .populate("category")
+      .populate("vendor"); // ✅ Optionally add vendor fields if needed
 
     if (!product) {
       return res.status(404).json(new ApiError(404, "Product not found"));
@@ -130,16 +130,7 @@ const getProductById = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         {
-          _id,
-          title,
-          description,
-          originalPrice: Number(originalPrice),
-          discountedPrice: Number(discountedPrice),
-          images: images || [],
-          sizes: sizes || [],
-          tag,
-          category,
-          vendor,
+        product
         },
         "Product fetched successfully"
       )

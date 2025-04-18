@@ -6,12 +6,14 @@ import SkeletonForm from "../../components/LoadingSkeleton/SkeletonForm";
 import Navbar from "../../components/Navbars/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import ShowVendorCategory from "../../components/Vendors/VendorShow/ShowVendorCategory";
+import Review from "../../components/Review/Review";
+import AllReviews from "../../components/Review/AllReviews";
+import ReviewCount from '../../components/Review/ReviewCount'
 const ShowVendor = () => {
   const { id } = useParams();
   const [vendor, setVendor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
   const fetchVendorDetails = async () => {
     try {
       const res = await axios.get(
@@ -20,6 +22,7 @@ const ShowVendor = () => {
           withCredentials: true,
         }
       );
+      console.log("vendor => " ,res.data.data.vendorInfo.reviews);
       setVendor(res.data.data.vendorInfo);
     } catch (err) {
       console.error("❌ Error fetching vendor:", err);
@@ -28,6 +31,7 @@ const ShowVendor = () => {
       setLoading(false);
     }
   };
+console.log("value = ", vendor.reviews);
 
   useEffect(() => {
     fetchVendorDetails();
@@ -74,6 +78,7 @@ const ShowVendor = () => {
             <div className="text-center">
               <h2 className="text-3xl font-semibold text-gray-800">{vendor.name}</h2>
               <p className="text-lg text-gray-500">@{vendor.username}</p>
+              <ReviewCount id={id}/>
             </div>
           </div>
 
@@ -104,6 +109,14 @@ const ShowVendor = () => {
         </h2>
         <ShowVendorCategory />
       </section>
+      
+      <div className="mt-20">
+        <Review/>
+      </div>
+      <p>Reviews : {vendor.reviews.user}</p>
+      <div className="mt-20">
+        <AllReviews reviews={vendor.reviews} />
+      </div>
       <div className="mt-20">
         <Footer/>
       </div>

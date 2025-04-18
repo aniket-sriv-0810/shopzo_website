@@ -73,7 +73,7 @@ const AllCategories = () => {
             </div>
           </div>
 
-          <div className="hidden sm:grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 max-w-7xl mx-auto px-2 sm:px-4">
+          <div className="hidden sm:grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 max-w-7xl mx-auto px-2 sm:px-4">
             {filteredCategories.map((category) => (
               <CategoryCard key={category._id} category={category} />
             ))}

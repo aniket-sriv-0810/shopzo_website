@@ -59,7 +59,11 @@ router
 router
      .route("/:id/account/categories-listed")
      .get(isLoggedIn , vendorCategoriesData)
-
+     
+// Check for the  vendor account categories Route
+router
+     .route("/:id/details/categories-listed")
+     .get(isLoggedIn , vendorCategoriesData)
 
 
 
