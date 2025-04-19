@@ -10,7 +10,7 @@ const UserRow = ({ user, loggedInUser, deleteUser  }) => {
         <img
           src={user.image}
           alt={user.name}
-          className="w-12 h-12 md:w-14 md:h-14 rounded-full mx-auto object-cover border border-gray-300"
+          className="w-12 h-12 md:w-14 md:h-14 shadow-md shadow-gray-300 rounded-full mx-auto object-cover border border-gray-300"
         />
       </td>
       <td className="px-4 py-2 border capitalize">{user.name}</td>

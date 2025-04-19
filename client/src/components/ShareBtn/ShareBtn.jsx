@@ -23,7 +23,7 @@ const ShareBtn = ({ productName, productLink }) => {
 
   return (
    <div onClick={handleShare} >
-      <FaShareAlt className="w-6 h-6  text-black hover:scale-110  " />
+      <FaShareAlt className="w-6 h-6  text-white hover:scale-110  " />
       </div>
   );
 };

@@ -68,7 +68,7 @@ router
 
 // Cancel the user bookings Route
 router
-      .route('/:userId/:productId')
+      .route('/:userId/account/bookings/:bookingId/cancel')
       .delete( isLoggedIn, cancelUserBooking);
 
 // Change the user Account Details Route

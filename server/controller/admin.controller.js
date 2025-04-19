@@ -128,36 +128,41 @@ const adminCategoryData = asyncHandler(async (req, res) => {
 });
 // Get All Products
 const adminProductData = asyncHandler(async (req, res) => {
-    try {
-        const allProductDetails = await Product.find({});
+  try {
+    const allProductDetails = await Product.find({})
+      .populate("category")           // Get full category info
+      .populate("vendor")             // Get full vendor info
+      .populate("wishlists", "name email") // Just get basic info about users who wishlisted
+      .populate("bookings", "name email"); // Optional: if you want users who booked
 
-        if (!allProductDetails) {
-            return res.status(404).json({
-                status: 404,
-                message: "Service Unavailable",
-                details: ["Product data is unavailable"]
-            });
-        }
-
-        console.log("Fetching admin product data...");
-
-        return res.status(200).json(
-            new ApiResponse(200, { allProductDetails }, "All Products data!")
-        );
-    } catch (error) {
-        return res.status(400).json(
-            new ApiError(400, null, "Unable to Fetch Product Details")
-        );
+    if (!allProductDetails || allProductDetails.length === 0) {
+      return res.status(404).json({
+        status: 404,
+        message: "No Products Found",
+        details: ["Product data is unavailable or empty"]
+      });
     }
+
+    console.log("Fetching admin product data...");
+
+    return res.status(200).json(
+      new ApiResponse(200, { allProductDetails }, "All Products data retrieved successfully")
+    );
+  } catch (error) {
+    console.error("Error fetching admin product data:", error);
+    return res.status(400).json(
+      new ApiError(400, null, "Unable to Fetch Product Details")
+    );
+  }
 });
 // Get All Bookings
 const adminBookingData = asyncHandler(async (req, res) => {
     try {
         const allBookingDetails = await Booking.find({})
-            .populate("user")
-            .populate("vendor")
-            .populate("product")
-            .populate("category");
+        .populate("user", "name email phone") // Populating only the necessary fields for user
+        .populate("vendor", "image name phone") // Vendor details
+        .populate("product", "images title") // Product details
+        .populate("category", "title"); // Category details
 
         if (!allBookingDetails) {
             return res.status(404).json({

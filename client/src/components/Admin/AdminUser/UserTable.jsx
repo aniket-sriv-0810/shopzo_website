@@ -5,7 +5,7 @@ const UserTable = ({ users, loggedInUser, deleteUser  }) => {
   return (
     <div className="overflow-x-auto bg-white shadow-xl rounded-xl">
       <table className="min-w-full text-sm md:text-base border border-gray-200">
-        <thead className="bg-gray-800 text-white">
+        <thead className="bg-gradient-to-b from-zinc-700 to-slate-700 text-white">
           <tr>
             <th className="px-4 py-3 border border-gray-200">Image</th>
             <th className="px-4 py-3 border border-gray-200">Name</th>

@@ -9,13 +9,13 @@ const EditProduct = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    price: "",
+    discountedPrice: "",
     sizes: [],
     tag: "male",
-    images: [], // URLs
+    images: [], // Default to empty array to avoid .map crash
   });
 
-  const [newImages, setNewImages] = useState([]); // For upload
+  const [newImages, setNewImages] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const sizeOptions = ["xs", "s", "m", "l", "xl", "xxl", "xxxl"];
@@ -23,22 +23,24 @@ const EditProduct = () => {
   const fetchProduct = async () => {
     try {
       const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/product/${id}`);
-      const product = data.data;
+      const product = data.data.product;
+  
       setFormData({
-        title: product.title,
-        description: product.description,
-        price: product.price,
-        sizes: product.sizes,
-        tag: product.tag,
-        images: product.images,
+        title: product.title || "",
+        description: product.description || "",
+        discountedPrice: product.discountedPrice || "",
+        sizes: Array.isArray(product.sizes) ? product.sizes : [],
+        tag: product.tag || "male",
+        images: Array.isArray(product.images) ? product.images : [],
       });
+  
       setLoading(false);
     } catch (error) {
       console.error("Error fetching product:", error);
       setLoading(false);
     }
   };
-
+  
   useEffect(() => {
     fetchProduct();
   }, [id]);
@@ -70,14 +72,12 @@ const EditProduct = () => {
       const sendData = new FormData();
       sendData.append("title", formData.title);
       sendData.append("description", formData.description);
-      sendData.append("price", formData.price);
+      sendData.append("discountedPrice", formData.discountedPrice);
       sendData.append("tag", formData.tag);
-
       formData.sizes.forEach((size) => sendData.append("sizes", size));
-
       newImages.forEach((img) => sendData.append("images", img));
 
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/product/${id}/edit`, sendData, {
+      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/product/${id}/edit`, sendData, {
         withCredentials: true,
       });
 
@@ -93,7 +93,6 @@ const EditProduct = () => {
     <div className="max-w-2xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-6">Edit Product</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-
         <div>
           <label className="block font-medium">Title</label>
           <input
@@ -120,8 +119,8 @@ const EditProduct = () => {
           <label className="block font-medium">Price (₹)</label>
           <input
             type="number"
-            name="price"
-            value={formData.price}
+            name="discountedPrice"
+            value={formData.discountedPrice}
             onChange={handleChange}
             className="w-full border p-2 rounded"
           />
@@ -159,11 +158,11 @@ const EditProduct = () => {
         <div>
           <label className="block font-medium">Current Images</label>
           <div className="grid grid-cols-3 gap-2">
-            {formData.images.map((img, i) => (
+            {(formData.images || []).map((img, i) => (
               <img
                 key={i}
                 src={img}
-                alt="product"
+                alt={`product-${i}`}
                 className="h-24 w-full object-cover rounded"
               />
             ))}

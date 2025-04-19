@@ -1,63 +1,65 @@
-// components/User/UserBookings/UserBookingCard.jsx
+// components/BookingCard.jsx
+import React, { useState } from "react";
+import CancelBooking from "../../../pages/User/UserBookingCancel"; // Assuming this is where CancelBooking is defined
 
-import React from "react";
-import { Link } from "react-router-dom";
-import { FaHeart, FaShoppingBag } from "react-icons/fa";
-import ShareBtn from "../../ShareBtn/ShareBtn";
-import LikeBtn from "../../LikeBtn/LikeBtn";
-import { useUser } from "../../UserContext/userContext";
-
-const UserBookingCard = ({ product }) => {
-  const { user } = useUser();
+const BookingCard = ({ booking, onCancelSuccess }) => {
+  const {
+    _id,
+    product,
+    vendor,
+    category,
+    quantity,
+    sizeSelected,
+    totalPrice,
+    createdAt,
+    status,
+  } = booking;
 
   return (
-    <div
-      className="bg-white shadow-lg border rounded-xl w-full hover:shadow-xl transition duration-300 ease-in-out"
-      data-aos="fade-up"
-    >
-      <div className="relative">
-        {/* Share + Like */}
-        <div className="absolute top-3 left-3 z-10">
-          <ShareBtn
-            hotelName={product.title}
-            hotelLink={`${import.meta.env.VITE_FRONTEND_URL}/product/${product._id}`}
-          />
-        </div>
-        <div className="absolute top-3 right-3 z-10 text-white">
-          <LikeBtn id={user?._id} productId={product._id} />
-        </div>
+    <div className="bg-white shadow-md rounded-2xl p-4 mb-6 border">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">{product.title}</h2>
+        <span className="text-sm text-gray-500">
+          {new Date(createdAt).toLocaleDateString()}
+        </span>
+      </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
         <img
-          src={product.images?.[0]}
-          alt={product.title}
-          className="w-full h-52 object-cover rounded-t-xl"
+          src={product.images[0]}
+          alt="Product"
+          className="w-full h-48 object-cover rounded-xl"
         />
-      </div>
 
-      <div className="p-4">
-        <h3 className="text-lg font-semibold text-gray-900 truncate">{product.title}</h3>
-        <p className="text-sm text-gray-500 mt-1">{product.category?.title}</p>
-
-        <p className="text-base text-gray-700 font-bold mt-2">
-          ₹{product.price}{" "}
-          <span className="text-xs text-gray-400 font-normal">+ 18% GST</span>
-        </p>
-
-        <div className="mt-4 flex gap-3">
-          <Link to={`/product/${product._id}`} className="w-full">
-            <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">
-              View <FaHeart />
-            </button>
-          </Link>
-          <Link to={`/product/${product._id}/buy`} className="w-full">
-            <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all">
-              Book Again <FaShoppingBag />
-            </button>
-          </Link>
+        <div className="space-y-2 text-sm">
+          <p>
+            <strong>Vendor:</strong> {vendor.name}
+          </p>
+          <p>
+            <strong>Category:</strong> {category.title}
+          </p>
+          <p>
+            <strong>Size Selected:</strong> {sizeSelected}
+          </p>
+          <p>
+            <strong>Quantity:</strong> {quantity}
+          </p>
+          <p>
+            <strong>Total Price:</strong> ₹{totalPrice}
+          </p>
         </div>
       </div>
+
+      {/* Display cancel button if booking status is not already cancelled */}
+      {status !== "cancelled" && (
+        <CancelBooking
+          bookingId={_id}
+          userId={vendor._id}  // Adjust if the userId is different
+          onCancelSuccess={onCancelSuccess}
+        />
+      )}
     </div>
   );
 };
 
-export default UserBookingCard;
+export default BookingCard;

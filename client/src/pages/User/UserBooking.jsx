@@ -1,82 +1,60 @@
-// pages/User/UserBookings.jsx
-
-import React, { useState, useEffect } from "react";
+// pages/UserBookings.jsx
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
-import UserBookingCard from "../../components/User/UserBooking/UserBookingCard";
-import UserNavbar from "../../components/Navbars/UserNavbar/UserNavbar";
-import SkeletonList from "../../components/LoadingSkeleton/SkeletonList";
-import NotAvailable from "../Loaders/NotAvailable";
+import BookingCard from "../../components/User/UserBooking/UserBookingCard";
+import { useUser } from "../../components/UserContext/userContext";
 
-const UserBooking = () => {
-  const { id } = useParams();
+const UserBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { user } = useUser();
 
-  // Fetch bookings
   useEffect(() => {
-    if (!id) {
-      setError("User not logged in");
-      setLoading(false);
-      return;
-    }
-
     const fetchBookings = async () => {
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/user/${id}/account/bookings`,
+          `${import.meta.env.VITE_API_URL}/api/user/${user._id}/account/bookings`,
           { withCredentials: true }
         );
-
-        const products = res?.data?.data?.bookings || [];
-        setBookings(products);
+        console.log("booking =>", res.data.data);
+        setBookings(res.data.data);
       } catch (err) {
-        console.error("Booking fetch failed:", err);
-        setError("Failed to fetch bookings");
+        console.error("Error fetching bookings:", err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchBookings();
-  }, [id]);
+  }, [user]);
 
-  if (error) return <div className="text-center py-20 text-red-600">{error}</div>;
+  // Function to handle successful booking cancellation
+  const handleCancelSuccess = (cancelledBookingId) => {
+    // Update the bookings list by removing the cancelled booking
+    setBookings((prevBookings) =>
+      prevBookings.filter((booking) => booking._id !== cancelledBookingId)
+    );
+  };
 
   return (
-    <>
-<div className="bg-gradient-to-tl from-gray-600 to-slate-800">
-    <UserNavbar/>
-  </div>
-    <div className="bg-gray-100 h-max">
+    <div className="max-w-5xl mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6">My Bookings</h1>
 
       {loading ? (
-        <div className="flex-col justify-center items-center mt-10  md:flex-row">
-         <SkeletonList/>
-        </div>
+        <p>Loading...</p>
+      ) : bookings.length === 0 ? (
+        <p>You haven’t made any bookings yet.</p>
       ) : (
-        <div className="overflow-x-hidden">
-          <h2 className="text-center text-3xl font-bold text-gray-900 mt-10 mb-6">
-            My Bookings
-          </h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-full px-6 md:px-10 lg:px-20 py-10">
-            {bookings.length > 0 ? (
-              bookings.map((product) => (
-                <UserBookingCard key={product._id} product={product} />
-              ))
-            ) : (
-              <div className="col-span-full text-center text-lg font-semibold text-gray-700">
-              <NotAvailable content={"No Booking Found"} tagline={" Oops! It looks like your wishlist is empty . Why not explore our amazing collection and add something special to your list?"} />
-              </div>
-            )}
-          </div>
-        </div>
+        bookings.map((booking) => (
+          <BookingCard
+            key={booking._id}
+            booking={booking}
+            onCancelSuccess={handleCancelSuccess}
+          />
+        ))
       )}
     </div>
-    </>
   );
 };
 
-export default UserBooking;
+export default UserBookings;

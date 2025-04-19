@@ -51,6 +51,7 @@ const AdminVendor = () => {
       const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/vendor/${vendorId}/account/delete`, {
         withCredentials: true,
       });
+      
 
       if (response.status === 200) {
         // Refresh vendor list after deletion
@@ -65,7 +66,7 @@ const AdminVendor = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 px-4 py-8">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
+      <h1 className="text-3xl font-bold text-center text-gray-800 mb-9">
         All Registered Vendors
       </h1>
 
@@ -74,15 +75,15 @@ const AdminVendor = () => {
           <SkeletonTable/> 
         </div>
       ) : error ? (
-        <p className="text-center text-red-600 font-medium"><ErrorPopup
+        <div className="text-center text-red-600 font-medium"><ErrorPopup
             message={error}
             onClose={() => {
               setError("");
               navigate("/admin"); // Optional: redirect or reload logic
             }}
-          /></p>
+          /></div>
       ) : vendors.length === 0 ? (
-        <p className="text-center text-gray-600 font-medium"><AdminNotAvailableLoader/></p>
+        <div className="text-center text-gray-600 font-medium"><AdminNotAvailableLoader content={"No Vendors Found"} tagline={" Oops! It looks like your vendor data is empty"}/></div>
       ) : (
         <VendorTable vendors={vendors} categories={categories} refreshVendors={fetchAll} deleteVendor={deleteVendor} />
       )}

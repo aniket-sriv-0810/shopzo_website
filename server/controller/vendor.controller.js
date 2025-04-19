@@ -1,4 +1,5 @@
 import { Vendor } from "../models/vendor.model.js";
+import { User } from "../models/user.model.js";
 import { Product } from "../models/product.model.js";
 import { Review } from "../models/review.model.js";
 import { Category } from "../models/category.model.js";
@@ -155,13 +156,18 @@ const deleteVendorById = asyncHandler(async (req, res) => {
     return res.status(404).json(new ApiError(404, "Vendor does not exist!"));
   }
 
-  // Trigger middleware cleanup on delete
+  // 1. Delete the Vendor
   await Vendor.findByIdAndDelete(id);
 
+  // 2. Delete the corresponding User with the same email and role "vendor"
+  await User.findOneAndDelete({ email: vendor.email, role: "vendor" });
+
   return res.status(200).json(
-    new ApiResponse(200, {}, "Vendor and associated data deleted successfully.")
+    new ApiResponse(200, {}, "Vendor and corresponding user deleted successfully.")
   );
 });
+
+
 
 
 

@@ -26,8 +26,10 @@ const UserVendorWishlists = () => {
           { withCredentials: true }
         );
 
-        const vendorList = res?.data?.data?.vendors || [];
-        setVendors(vendorList);
+        const vendorList = res?.data?.data?.vendorWishlists || [];
+console.log(vendorList);
+
+        setVendors(res?.data?.data?.vendorWishlists || []);
       } catch (err) {
         setError("Failed to fetch vendor wishlists");
       } finally {

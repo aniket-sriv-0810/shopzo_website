@@ -29,11 +29,11 @@ const VendorRow = ({ vendor, categories, refreshVendors, deleteVendor }) => {
         <img
           src={image}
           alt={name}
-          className="w-12 h-12 md:w-14 md:h-14 rounded-full mx-auto object-cover border border-gray-300"
+          className="w-12 h-12 md:w-14 md:h-14 shadow-md shadow-gray-400 rounded-full mx-auto object-cover border border-gray-300"
         />
       </td>
 
-      <td className="px-4 py-2 border">{name}</td>
+      <td className="px-4 py-2 capitalize text-sm border">{name}</td>
       <td className="px-4 py-2 border">{username}</td>
       <td className="px-4 py-2 border text-xs break-all">{_id}</td>
       <td className="px-4 py-2 border">{phone}</td>

@@ -346,13 +346,13 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
 const bookProduct = async (req, res) => {
   try {
     const { productId } = req.params;
-    const userId = req.user._id; // make sure user is authenticated
+    const userId = req.user._id;
 
     const { sizeSelected, quantity } = req.body;
 
-    // 1. Fetch the product
+    // 1. Fetch product
     const product = await Product.findById(productId)
-      .populate("vendor", "name")
+      .populate("vendor", "name bookings")
       .populate("category", "title");
 
     if (!product) {
@@ -380,15 +380,26 @@ const bookProduct = async (req, res) => {
 
     await newBooking.save();
 
-    // 5. Add booking reference to user (optional but useful)
+    // 5. Add booking to User (already done)
     await User.findByIdAndUpdate(userId, {
       $push: { bookings: newBooking._id },
+    });
+
+    // 6. Add user to product bookings
+    await Product.findByIdAndUpdate(productId, {
+      $addToSet: { bookings: userId },
+    });
+
+    // 7. Add user to vendor bookings
+    await Vendor.findByIdAndUpdate(product.vendor._id, {
+      $addToSet: { bookings: userId },
     });
 
     return res.status(201).json({
       message: "Booking successful!",
       booking: newBooking,
     });
+
   } catch (err) {
     console.error("Booking Error:", err);
     return res.status(500).json({ error: "Something went wrong while booking." });
@@ -399,20 +410,25 @@ const getUserBookings = async (req, res) => {
   const userId = req.params.id;
 
   try {
+    // Authorization check
+    if (req.user._id.toString() !== userId) {
+      return res.status(403).json({ message: "Unauthorized access." });
+    }
+
     // Validate user existence
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
 
-    // Fetch bookings linked to the user
+    // Fetch user's bookings with populated fields
     const bookings = await Booking.find({ user: userId })
-      .populate("vendor", "name email image")      // populate specific fields from vendor
-      .populate("product", "title price image")     // you can customize fields
-      .populate("category", "name description")     // category details
-      .sort({ createdAt: -1 }); // optional: latest first
+      .populate("vendor", "name email image")
+      .populate("product", "title discountedPrice images")
+      .populate("category", "title")
+      .sort({ createdAt: -1 });
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       count: bookings.length,
       data: bookings,
@@ -425,6 +441,7 @@ const getUserBookings = async (req, res) => {
     });
   }
 };
+
 
 const cancelUserBooking = asyncHandler(async (req, res) => {
   const { userId, bookingId } = req.params;
@@ -440,24 +457,32 @@ const cancelUserBooking = asyncHandler(async (req, res) => {
 
   // Find the booking
   const booking = await Booking.findById(bookingId);
-  if (!booking || booking.user.toString() !== userId) {
-    throw new ApiError(404, "Booking not found for this user");
+  if (!booking) {
+    throw new ApiError(404, "Booking not found");
   }
 
-  // Update the booking status to 'cancelled'
+  // Make sure the booking belongs to the user
+  if (booking.user.toString() !== userId) {
+    throw new ApiError(403, "Unauthorized action");
+  }
+
+  // Update booking status to 'cancelled'
   booking.status = "cancelled";
   await booking.save();
 
-  // Remove the booking reference from user
-  await User.findByIdAndUpdate(userId, { $pull: { bookings: bookingId } });
+  // Remove the booking from user's bookings array
+  await User.findByIdAndUpdate(userId, {
+    $pull: { bookings: bookingId },
+  });
 
-  // Optional: Remove the booking reference from product
+  // Remove the booking from product's bookings array (if applicable)
   await Product.findByIdAndUpdate(booking.product, {
-    $pull: { bookings: bookingId }, // Only if you maintain this in Product model
+    $pull: { bookings: bookingId },
   });
 
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "Booking cancelled successfully"));
+    .json(new ApiResponse(200, { bookingId }, "Booking cancelled successfully"));
 });
+
 export { userAccountDetails  , getUserWishlists , toggleProductWishlist , getUserVendorWishlists , toggleVendorWishlist ,editUserDetails , deleteUserAccount , bookProduct, getUserBookings , cancelUserBooking};

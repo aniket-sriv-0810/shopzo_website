@@ -19,10 +19,7 @@ const VendorCard = ({ vendor }) => {
 
         {/* Like Button */}
         <div className="absolute top-3 right-3 z-10">
-          <VendorLikeBtn
-            id={vendor?._id}
-            productId={vendor?._id}
-          />
+        <VendorLikeBtn vendorId={vendor?._id} />
         </div>
 
         {/* Best Seller Tag */}

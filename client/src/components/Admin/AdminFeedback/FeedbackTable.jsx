@@ -5,9 +5,11 @@ const FeedbackTable = ({ feedbacks }) => {
   return (
     <div className="overflow-x-auto bg-white shadow-md rounded">
       <table className="min-w-full table-auto border">
-        <thead className="bg-gray-800 text-white">
+        <thead className="bg-gradient-to-b from-zinc-700 to-slate-700 text-white text-sm">
           <tr>
-            <th className="px-4 py-2">User</th>
+            <th className="px-4 py-2">Profile</th>
+            <th className="px-4 py-2">User ID</th>
+            <th className="px-4 py-2">Name</th>
             <th className="px-4 py-2">Email</th>
             <th className="px-4 py-2">Phone</th>
             <th className="px-4 py-2">Message</th>

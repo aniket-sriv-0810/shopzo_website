@@ -68,8 +68,8 @@ const deleteUser = async (userId) => {
 
   return (
     <div className="min-h-screen bg-gray-100 px-4 py-8">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-        All Registered Users
+      <h1 className="text-3xl  font-bold text-center text-gray-800 mb-8">
+        All Registered  Users
       </h1>
 
       {loading ? (
@@ -77,15 +77,15 @@ const deleteUser = async (userId) => {
       <SkeletonTable/> 
         </div>
       ) : error ? (
-        <p className="text-center text-red-600 font-medium"><ErrorPopup
+        <div className="text-center text-red-600 font-medium"><ErrorPopup
             message={error}
             onClose={() => {
               setError("");
               navigate("/admin"); // Optional: redirect or reload logic
             }}
-          /></p>
+          /></div>
       ) : userDetails.length === 0 ? (
-        <div className="text-center text-gray-600 font-medium"><AdminNotAvailableLoader/></div>
+        <div className="text-center text-gray-600 font-medium"><AdminNotAvailableLoader content={"No Users Found"} tagline={" Oops! It looks like your user data is empty"}/></div>
       ) : (
         <UserTable users={userDetails} loggedInUser={user} deleteUser={deleteUser} />
       )}
