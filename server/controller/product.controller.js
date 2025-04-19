@@ -98,7 +98,6 @@ const addProductController = async (req, res) => {
 const getProductById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  // ✅ Validate MongoDB ObjectId early
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json(new ApiError(400, "Invalid product ID format"));
   }
@@ -106,32 +105,19 @@ const getProductById = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(id)
       .populate("category")
-      .populate("vendor"); // ✅ Optionally add vendor fields if needed
+      .populate({
+        path: "vendor",
+        select: "-__v -password -reviews", // Exclude sensitive/irrelevant fields
+      });
 
     if (!product) {
       return res.status(404).json(new ApiError(404, "Product not found"));
     }
 
-    // ✅ Explicitly convert fields to avoid accidental undefined/null leaks
-    const {
-      _id,
-      title,
-      description,
-      originalPrice,
-      discountedPrice,
-      images,
-      sizes,
-      tag,
-      category,
-      vendor,
-    } = product;
-
     return res.status(200).json(
       new ApiResponse(
         200,
-        {
-        product
-        },
+        { product },
         "Product fetched successfully"
       )
     );
@@ -142,6 +128,7 @@ const getProductById = asyncHandler(async (req, res) => {
       .json(new ApiError(500, error.message || "Internal Server Error"));
   }
 });
+
 
 const updateProductById = asyncHandler(async (req, res) => {
   const { id } = req.params;

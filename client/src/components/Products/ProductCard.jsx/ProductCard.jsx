@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { FaRupeeSign } from "react-icons/fa";
+import { FaRupeeSign, FaTags } from "react-icons/fa";
 import ShareBtn from "../../ShareBtn/ShareBtn";
 import { useUser } from "../../UserContext/userContext";
 import LikeBtn from "../../LikeBtn/LikeBtn";
@@ -12,9 +12,10 @@ const ProductCard = ({ product }) => {
   const originalPrice = product.originalPrice;
   const discountedPrice = product.discountedPrice;
   const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
+console.log("product => ", product);
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl border border-gray-200 overflow-hidden transition-transform duration-300 hover:scale-[1.02] w-full sm:max-w-[320px] mx-auto flex flex-col">
+    <div className=" rounded-2xl shadow-lg hover:shadow-2xl border border-gray-200 overflow-hidden transition-transform duration-300 hover:scale-[1.02] w-full sm:max-w-[320px] mx-auto flex flex-col">
       
       {/* Image Section (70%) */}
       <div className="relative h-[70%]">
@@ -80,13 +81,24 @@ const ProductCard = ({ product }) => {
             </span>
           )}
         </div>
-
+        {product.vendor && (
+  <div className="flex items-center gap-3 mt-3">
+    <span className="text-gray-500 text-sm">Sold by </span>
+     <img
+      src={product.vendor.image}
+      alt={product.vendor.name}
+      className="w-8 h-8 rounded-full object-cover"
+    />
+    <div className="text-sm text-gray-700">{product.vendor.name}</div>
+  </div>
+)}
         {/* Checkout Button */}
         <button
-          onClick={() => navigate(`/vendor/${product.vendor}/${product.category._id}/${product.tag}/all-products`)}
-          className="mt-1 w-full bg-gradient-to-r from-red-600 to-fuchsia-600 hover:from-blue-700 hover:to-red-800 text-white font-semibold py-2 rounded-xl shadow-md transition duration-200 transform hover:scale-105 hover:cursor-pointer"
+          onClick={() => navigate(`/product/${product._id}`)}
+          className="mt-1 w-full flex justify-center items-center gap-3 bg-gradient-to-r from-red-600 to-fuchsia-600 hover:from-blue-700 hover:to-red-800 text-white font-semibold py-2 rounded-xl shadow-md transition duration-200 transform hover:scale-105 hover:cursor-pointer"
         >
           View Product
+          <FaTags className="text-xl"/>
         </button>
       </div>
     </div>

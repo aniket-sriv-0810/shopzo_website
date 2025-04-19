@@ -121,7 +121,8 @@ const getProductsByCategoryAndTag = asyncHandler(async (req, res) => {
     const products = await Product.find({
       category: id,
       tag: tag,
-    }).populate("category", "title tag");
+    }).populate("category")
+      .populate("vendor")
 
     if (!products || products.length === 0) {
       return res.status(404).json(new ApiError(404, "No products found"));

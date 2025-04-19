@@ -1,4 +1,5 @@
 import React from "react";
+import { FaTags } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const CategoryCard = ({ category }) => {
@@ -24,10 +25,12 @@ const CategoryCard = ({ category }) => {
           </h3>
           <button
   onClick={() => navigate(`/category/${category._id}/${category.tag}/products`)}
-  className="inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-gradient-to-l from-red-600 to-fuchsia-600 text-white font-semibold shadow-md hover:from-purple-700 hover:to-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 hover:cursor-pointer"
+  className="inline-flex items-center justify-center gap-3 px-5 py-2.5 rounded-full bg-gradient-to-l from-red-600 to-fuchsia-600 text-white font-semibold shadow-md hover:from-purple-700 hover:to-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 hover:cursor-pointer"
 >
   View Products
+  <FaTags className="text-white mt-.5"/>
 </button>
+
 
         </div>
       </div>

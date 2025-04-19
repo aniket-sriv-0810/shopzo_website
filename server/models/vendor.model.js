@@ -101,26 +101,50 @@ vendorSchema.pre("findOneAndDelete", async function (next) {
   const vendor = await this.model.findOne(this.getFilter());
   if (!vendor) return next();
 
-  const { products, reviews, bookings } = vendor;
+  const { _id: vendorId } = vendor;
 
-  await mongoose.model("Product").deleteMany({ _id: { $in: products } });
-  await mongoose.model("Review").deleteMany({ _id: { $in: reviews } });
-  await mongoose.model("User").deleteMany({ _id: { $in: bookings } });
+  // 1. Find and delete associated bookings
+  const bookingsToDelete = await mongoose.model("Booking").find({ vendor: vendorId });
+  const bookingIds = bookingsToDelete.map((b) => b._id);
 
-  // Optional: remove vendor reference from categories
-  await mongoose.model("Category").updateMany(
-    { vendors: vendor._id },
-    { $pull: { vendors: vendor._id } }
+  await mongoose.model("Booking").deleteMany({ _id: { $in: bookingIds } });
+
+  // 2. Remove deleted bookings from users
+  await mongoose.model("User").updateMany(
+    { bookings: { $in: bookingIds } },
+    { $pull: { bookings: { $in: bookingIds } } }
   );
 
-  // Optional: remove vendor from user wishlists
+  // 3. Delete vendor's products
+  const productsToDelete = await mongoose.model("Product").find({ vendor: vendorId });
+  const productIds = productsToDelete.map((p) => p._id);
+
+  await mongoose.model("Product").deleteMany({ _id: { $in: productIds } });
+
+  // 4. Remove product references from users
   await mongoose.model("User").updateMany(
-    { vendor_wishlists: vendor._id },
-    { $pull: { vendor_wishlists: vendor._id } }
+    { wishlists: { $in: productIds } },
+    { $pull: { wishlists: { $in: productIds } } }
+  );
+
+  // 5. Remove vendor reference from categories (not deleting categories!)
+  await mongoose.model("Category").updateMany(
+    { vendors: vendorId },
+    { $pull: { vendors: vendorId } }
+  );
+
+  // 6. Delete reviews left by vendor (optional, if vendors leave reviews)
+  await mongoose.model("Review").deleteMany({ _id: { $in: vendor.reviews } });
+
+  // 7. Remove vendor from users' vendorWishlists
+  await mongoose.model("User").updateMany(
+    { vendorWishlists: vendorId },
+    { $pull: { vendorWishlists: vendorId } }
   );
 
   next();
 });
+
 
 // Enable username/password authentication
 vendorSchema.plugin(passportLocalMongoose, {

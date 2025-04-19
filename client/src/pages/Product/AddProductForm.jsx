@@ -80,9 +80,9 @@ const AddProductForm = () => {
         images: [],
       });
 
-      navigate("/");
+      navigate("/admin");
     } catch (err) {
-      console.error("❌ Error adding product:", err);
+      console.error("❌ Error adding product:", err.message);
     }finally {
       setLoading(false); // End loading
     }

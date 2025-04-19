@@ -17,7 +17,7 @@ const ShowProduct = () => {
       const { data } = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/product/${id}`
       );
-      setProduct(data.data);
+      setProduct(data.data.product); // 👈 correctly access the nested product
     } catch (error) {
       console.error("Error fetching product:", error);
     } finally {
