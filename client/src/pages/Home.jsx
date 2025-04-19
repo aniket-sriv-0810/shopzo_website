@@ -108,14 +108,10 @@ const Home = () => {
         <Navbar />
       </div>
       <MainLayout/>
-      <div className="bg-[url('/assets/header-img.png')] bg-cover h-72 bg-no-repeat sm:h-[30rem]  md:h-[40rem] lg:h-[48rem]"></div>
-
-      <div className="my-20">
+      <div className="my-10">
        <AllCategoryCard/>
       </div>
-      <div className="my-20">
-        <WelcomeMsg />
-      </div>
+      <div className="bg-[url('/assets/header-img.png')] bg-cover h-72 bg-no-repeat sm:h-[30rem]  md:h-[40rem] lg:h-[48rem]"></div>
 
       <div id="search-box">
         <SearchBox />
@@ -124,11 +120,6 @@ const Home = () => {
       <div id="category-section" className="my-20">
         <AllCategories />
       </div>
-
-      <div className="my-20">
-        <SlideShow />
-      </div>
-
       <div id="vendor-section" className="my-20">
         <AllVendors />
       </div>

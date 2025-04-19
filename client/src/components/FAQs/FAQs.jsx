@@ -31,11 +31,11 @@ const FAQs = () => {
 
   return (
     <>
-    <section className="w-full flex flex-col items-center justify-center text-center py-36  bg-[url('/assets/type.jpg')]  bg-cover  bg-left-top      bg-no-repeat text-white shadow-lg px-5 sm:px-20">
+    <section className="w-full flex flex-col items-center justify-center text-center py-36  bg-[url('/assets/faq-img.png')]  bg-cover  bg-left-top  bg-black/50    bg-no-repeat text-white shadow-lg px-5 sm:px-20">
       {/* Title */}
       <div className=" text-center mb-12">
         <h2 className="text-lg xs:text-2xl sm:text-3xl md:text-4xl font-extrabold text-white drop-shadow-lg flex items-center justify-center gap-2">
-          <IoMdHelpCircleOutline className="text-blue-400 text-2xl sm:text-5xl animate-pulse" />
+          <IoMdHelpCircleOutline className="text-pink-300 text-2xl sm:text-5xl animate-pulse" />
           Frequently Asked Questions
         </h2>
         <p className="text-base sm:text-xl text-white mt-2">
@@ -56,12 +56,12 @@ const FAQs = () => {
                 onClick={() => toggleFAQ(index)}
               >
                 <span className="flex items-center gap-3 text-xs sm:text-lg">
-                  <FaQuestionCircle className="text-blue-600 text-2xl" />
+                  <FaQuestionCircle className="text-pink-600 text-2xl" />
                   {faq.title}
                 </span>
                 <span className="ml-4 text-2xl transition-transform duration-300">
                   {activeIndex === index ? (
-                    <FaChevronUp className="text-blue-500 rotate-180" />
+                    <FaChevronUp className="text-pink-500 rotate-180" />
                   ) : (
                     <FaChevronDown className="text-gray-500" />
                   )}
@@ -70,7 +70,7 @@ const FAQs = () => {
 
               {/* FAQ Answer */}
               <div
-                className={`bg-blue-500 transition-all duration-500 ease-in-out overflow-hidden ${
+                className={`bg-pink-500 transition-all duration-500 ease-in-out overflow-hidden ${
                   activeIndex === index
                     ? "max-h-96 p-5 sm:p-6 bg-blue-50 text-gray-700 opacity-100"
                     : "max-h-0 opacity-0"

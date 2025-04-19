@@ -22,7 +22,7 @@ const AllCategoryCard = () => {
   }, []);
 
   return (
-    <div className="py-6 px-4 bg-gray-50">
+    <div className="py-7 px-4 bg-gray-200">
       <h2 className="text-lg font-bold mb-4 text-gray-800">Browse Categories</h2>
 
       {loading ? (

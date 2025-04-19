@@ -5,7 +5,7 @@ const ScrollComponent = () => {
     <div className="relative h-screen w-full mt-5 mb-5">
       {/* Background Image with Parallax Effect */}
       <div
-        className="bg-[url('/assets/scroll-bg.jpg')] absolute inset-0 bg-fixed bg-cover bg-center bg-no-repeat"
+        className="bg-[url('/assets/main1.jpg')] absolute inset-0 bg-fixed bg-center  bg-cover bg-no-repeat"
       ></div>
 
       {/* Dark Overlay with Glass Effect */}
