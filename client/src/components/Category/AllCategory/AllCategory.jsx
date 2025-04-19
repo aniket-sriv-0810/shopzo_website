@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import CategoryCard from "./CategoryCard";
 import ToggleGender from "../../ToggleGender/ToggleGender";
 import SkeletonList from "../../LoadingSkeleton/SkeletonList";
+import Pagination from "../../Pagination/Pagination";
 
 const AllCategories = () => {
   const [categories, setCategories] = useState([]);
@@ -11,6 +12,8 @@ const AllCategories = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(3);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -35,9 +38,38 @@ const AllCategories = () => {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width > 1024) {
+        setItemsPerPage(8);
+      } else if (width > 640) {
+        setItemsPerPage(6);
+      } else {
+        setItemsPerPage(3);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Filter by gender
   const filteredCategories = categories.filter(
     (cat) => cat.tag?.toLowerCase() === selectedGender
   );
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredCategories.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredCategories.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Reset page to 1 when gender changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedGender]);
 
   return (
     <section className="py-14 px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-zinc-900 dark:to-zinc-800 min-h-screen transition-colors duration-300">
@@ -62,22 +94,17 @@ const AllCategories = () => {
         <p className="text-center text-red-500 text-lg font-medium">{error}</p>
       ) : (
         <>
-          {/* Horizontal scroll on small devices, grid on sm+ */}
-          <div className="sm:hidden overflow-x-auto scrollbar-hide -mx-4 px-4 pb-2">
-            <div className="flex gap-4">
-              {filteredCategories.map((category) => (
-                <div key={category._id} className="flex-shrink-0 w-full">
-                  <CategoryCard category={category} />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="hidden sm:grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 max-w-7xl mx-auto px-2 sm:px-4">
-            {filteredCategories.map((category) => (
+          <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 max-w-7xl mx-auto px-2 sm:px-4">
+            {currentItems.map((category) => (
               <CategoryCard key={category._id} category={category} />
             ))}
           </div>
+
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            handlePageChange={setCurrentPage}
+          />
         </>
       )}
     </section>

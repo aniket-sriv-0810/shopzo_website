@@ -50,7 +50,7 @@ const MainLayout = () => {
         {/* Static Image with Button */}
         <div className="relative w-full h-[250px] sm:h-[320px] rounded-xl overflow-hidden shadow-md" >
           <img
-            src="https://media-hosting.imagekit.io/b52a6cd721b44cf3/ptr2.png?Expires=1839650464&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=N3jjpvnS4azn7JM8-wtik~1FOiWmBpBQfzlZPbjdzaC3WhYRA7JKxAHoi4h341gPD54H2Rc5uHfXPknCpkYf5Fv3BME0D2ZET97tCVPsnZlgo8xEDid1PVNEArZFMXiISMF24-qjZlm24x5fWAkIWGxgkcrs2T4bb85UvnQ2umliQDE9v2bBJyATM-gFtPYi0309odLavXWyVRkhrpkAg1GLXEQePrLaz3pWgYjXK592jZ9mCxYoO~Ptszaaxi4LAF87gk8qjcSPuKVZgrF8uez5IaBeEyBEzTZ70hzB6KMXG7RQHgeweIpqL-rPuA22xSPPLDAHJE1ac7ILQKWb5g__"
+            src="https://media-hosting.imagekit.io/5c298a81f65844e9/couple-fashion.jpg?Expires=1839072431&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=ZkcXNBk~XjicdM-4jwL61JMFD~wn8T02-S51PHlbBR7Wn-zOd1QvzHb5uSyDBuhquS7F1s7zbX1edJ9~hwv-vC2-Gl-OEhBqAmox8JYoMvyqF5~CZ2iiLjFyrWTsdIqgMKnYCqh8dAFm2RfF~I64piCdoIz2ch-ISFxar5BogBW3QeYqE~nJJadIHqBze1CAdjwQncvKul0dddGjXYbmuoUksCNQ9dZ3hkzQm8mqjRz3SLyQMtljTSBLPplABJ02qDf2IlAIfp3rWTkc-0vvh9DnvRczosaMIfgHLwNDrLaerVGYLdreFAcrAobAVBJCQHH6cPvwEPKTwf8cUaFmpg__"
             alt="Promo"
             className="w-full h-full object-cover"
             data-aos="fade-up"
