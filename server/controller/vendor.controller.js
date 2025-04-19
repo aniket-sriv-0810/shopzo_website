@@ -147,26 +147,22 @@ const deleteVendorById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json(
-      new ApiError(400, "Invalid ID", "Invalid Vendor ID!")
-    );
+    return res.status(400).json(new ApiError(400, "Invalid Vendor ID!"));
   }
 
   const vendor = await Vendor.findById(id);
   if (!vendor) {
-    return res.status(404).json(
-      new ApiError(404, "Vendor not found", "Vendor does not exist!")
-    );
+    return res.status(404).json(new ApiError(404, "Vendor does not exist!"));
   }
 
-  // ✅ Delete vendor and cleanup from related collections via middleware
+  // Trigger middleware cleanup on delete
   await Vendor.findByIdAndDelete(id);
 
-  // ✅ No logout behavior for admin – just return success
   return res.status(200).json(
-    new ApiResponse(200, {}, "Vendor deleted successfully")
+    new ApiResponse(200, {}, "Vendor and associated data deleted successfully.")
   );
 });
+
 
 
 // 2️⃣ Fetch products by vendor, category, and tag
@@ -407,4 +403,117 @@ const allProductsOfVendor = async (req, res) => {
   }
 };
 
-export {getAllVendors,  vendorAccountDetails  , updateVendorById , deleteVendorById ,getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData ,addCategoriesToVendor , productOfVendorData , allProductsOfVendor };
+
+const getVendorAllBookings = asyncHandler(async (req, res) => {
+  const { id: vendorId } = req.params;
+
+  // Validate Vendor ID
+  if (!vendorId || !mongoose.Types.ObjectId.isValid(vendorId)) {
+    throw new ApiError(400, "Invalid Vendor ID");
+  }
+
+  // Ensure vendor exists
+  const vendorExists = await Vendor.findById(vendorId);
+  if (!vendorExists) {
+    throw new ApiError(404, "Vendor not found");
+  }
+
+  // Fetch all bookings related to the vendor
+  const bookings = await Booking.find({ vendor: vendorId })
+    .populate({
+      path: "user",
+      select: "name email phone",
+    })
+    .populate({
+      path: "product",
+      select: "title price image",
+    })
+    .select("sizeSelected quantity totalPrice status bookingDate");
+
+  if (!bookings || bookings.length === 0) {
+    return res
+      .status(200)
+      .json(new ApiResponse(200, [], "No bookings found for this vendor"));
+  }
+
+  // Format the response
+  const formattedBookings = bookings.map((booking) => ({
+    bookingId: booking._id,
+    bookingDate: booking.bookingDate,
+    paymentStatus: booking.status,
+    totalPrice: booking.totalPrice,
+    sizeSelected: booking.sizeSelected,
+    quantity: booking.quantity,
+    user: {
+      name: booking.user?.name || "N/A",
+      email: booking.user?.email || "N/A",
+      phone: booking.user?.phone || "N/A",
+    },
+    product: {
+      title: booking.product?.title || "N/A",
+      price: booking.product?.price || 0,
+      image: booking.product?.image?.[0] || "",
+    },
+  }));
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, formattedBookings, "Bookings fetched successfully"));
+});
+
+
+const updateBookingStatusByVendor = asyncHandler(async (req, res) => {
+  const { bookingId, vendorId } = req.params;
+  const { status } = req.body;
+
+  // ✅ 1. Validate IDs
+  if (!mongoose.Types.ObjectId.isValid(bookingId)) {
+    throw new ApiError(400, "Invalid booking ID");
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(vendorId)) {
+    throw new ApiError(400, "Invalid vendor ID");
+  }
+
+  // ✅ 2. Validate Status
+  const validStatuses = ["pending", "cancelled", "completed"];
+  if (!status || !validStatuses.includes(status)) {
+    throw new ApiError(400, "Invalid or missing booking status");
+  }
+
+  // ✅ 3. Fetch booking and verify ownership
+  const booking = await Booking.findById(bookingId);
+  if (!booking) {
+    throw new ApiError(404, "Booking not found");
+  }
+
+  if (booking.vendor.toString() !== vendorId) {
+    throw new ApiError(403, "Unauthorized: This booking doesn't belong to you");
+  }
+
+  // ✅ 4. Prevent status change once completed
+  if (booking.status === "completed" && status !== "completed") {
+    throw new ApiError(400, "Status cannot be reverted after completion");
+  }
+
+  // ✅ 5. No update if status is already same
+  if (booking.status === status) {
+    throw new ApiError(400, `Booking is already marked as '${status}'`);
+  }
+
+  // ✅ 6. Update the status
+  booking.status = status;
+  await booking.save();
+
+  // ✅ 7. Populate for updated response
+  const updatedBooking = await Booking.findById(bookingId)
+    .populate("user", "name email phone")
+    .populate("product", "title price image");
+
+  return res.status(200).json(
+    new ApiResponse(200, updatedBooking, `Booking status updated to '${status}' successfully`)
+  );
+});
+
+
+export {getAllVendors,  vendorAccountDetails  , updateVendorById , deleteVendorById ,getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData ,addCategoriesToVendor , productOfVendorData , allProductsOfVendor  , getVendorAllBookings , updateBookingStatusByVendor};

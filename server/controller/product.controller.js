@@ -189,30 +189,25 @@ const updateProductById = asyncHandler(async (req, res) => {
 const deleteProductById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  try {
-    const product = await Product.findById(id);
-    if (!product) {
-      return res.status(404).json(new ApiError(404, "Product not found"));
-    }
-
-    // Remove product from category's product list
-    await Category.updateOne(
-      { _id: product.category },
-      { $pull: { products: product._id } }
-    );
-
-    await Product.findByIdAndDelete(id);
-
-    return res
-      .status(200)
-      .json(new ApiResponse(200, {}, "Product deleted successfully"));
-  } catch (error) {
-    console.error("❌ Error deleting product:", error);
-    return res
-      .status(500)
-      .json(new ApiError(500, error.message, "Failed to delete product"));
+  if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json(new ApiError(400, "Invalid product ID"));
   }
+
+  const product = await Product.findById(id);
+  if (!product) {
+    return res.status(404).json(new ApiError(404, "Product not found"));
+  }
+
+  // ✅ Trigger pre-delete middleware
+  await Product.findOneAndDelete({ _id: id });
+
+  console.log("✅ Product and related data deleted");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Product deleted successfully"));
 });
+
 
 
 

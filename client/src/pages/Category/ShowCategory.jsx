@@ -54,13 +54,12 @@ const ShowCategory = () => {
         <Navbar />
       </div>
 
-      <section className="max-w-7xl  mx-auto shadow-lg mt-10 rounded-xl shadow-gray-300  min-h-screen">
         {loading ? (
           <div className="flex justify-center items-center mt-10">
             <SkeletonList />
           </div>
         ) : errorMsg ? (
-          <div className="text-center mt-16">
+          <div className="text-center mt-16 min-h-screen">
             <NotAvailable 
               content="No Products Found" 
               tagline="Oops! It looks like no products are found in this category. Why not explore our amazing collection?"
@@ -68,6 +67,7 @@ const ShowCategory = () => {
           </div>
         ) : (
           <>
+      <section className="max-w-7xl  mx-auto shadow-lg mt-10 rounded-xl shadow-gray-300  min-h-screen">
             <div className="text-center ">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 tracking-tight leading-tight">
                 Products in <span className="text-fuchsia-600">{category?.title}</span>
@@ -93,9 +93,9 @@ const ShowCategory = () => {
                 />
               </div>
             )}
+      </section>
           </>
         )}
-      </section>
 
       <div className="mt-16">
         <Footer />

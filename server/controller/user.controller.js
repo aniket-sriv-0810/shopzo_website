@@ -298,12 +298,16 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
       );
     }
 
-    // Delete user account
-    await User.findByIdAndDelete(id);
-    console.log("✅ User deleted successfully:", id);
+    // ✅ Trigger middleware cleanup
+    await User.findOneAndDelete({ _id: id });
 
-    // If the logged-in user is deleting their own account (non-admin), log them out
-    if (req.user._id.toString() === id.toString() && req.user.role !== "admin") {
+    console.log("✅ User and all related data deleted:", id);
+
+    // 🧼 If the user deletes their own account (non-admin), clean up session
+    const isSelf = req.user._id.toString() === id.toString();
+    const isAdmin = req.user.role === "admin";
+
+    if (isSelf && !isAdmin) {
       req.logout((err) => {
         if (err) {
           return res.status(500).json(
@@ -325,7 +329,6 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
         });
       });
     } else {
-      // If admin deletes another user, no need to logout
       return res.status(200).json(
         new ApiResponse(200, null, "User deleted successfully by admin!")
       );
@@ -392,69 +395,69 @@ const bookProduct = async (req, res) => {
   }
 };
 
-const getUserBookings = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+const getUserBookings = async (req, res) => {
+  const userId = req.params.id;
 
-  if (!id) {
-    return res.status(400).json(
-      new ApiError(400, "User ID is required!")
-    );
+  try {
+    // Validate user existence
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Fetch bookings linked to the user
+    const bookings = await Booking.find({ user: userId })
+      .populate("vendor", "name email image")      // populate specific fields from vendor
+      .populate("product", "title price image")     // you can customize fields
+      .populate("category", "name description")     // category details
+      .sort({ createdAt: -1 }); // optional: latest first
+
+    res.status(200).json({
+      success: true,
+      count: bookings.length,
+      data: bookings,
+    });
+  } catch (err) {
+    console.error("Error fetching user bookings:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch user bookings.",
+    });
   }
-
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json(
-      new ApiError(400, "Invalid User ID!", "Failed to fetch user bookings.")
-    );
-  }
-
-  const user = await User.findById(id).populate({
-    path: "bookings",
-    model: "Product",
-    populate: {
-      path: "category vendor",
-      select: "title name", // customize as needed
-    },
-  });
-
-  if (!user || !user.bookings.length) {
-    return res.status(200).json(
-      new ApiResponse(200, [], "No bookings found for this user.")
-    );
-  }
-
-  return res.status(200).json(
-    new ApiResponse(200, user.bookings, "User bookings fetched successfully.")
-  );
-});
+};
 
 const cancelUserBooking = asyncHandler(async (req, res) => {
-  const { userId, productId } = req.params;
+  const { userId, bookingId } = req.params;
 
   // Validate input
-  if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
-    return res.status(400).json(new ApiError(400, "Invalid User ID"));
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    throw new ApiError(400, "Invalid User ID");
   }
 
-  if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
-    return res.status(400).json(new ApiError(400, "Invalid Booking/Product ID"));
+  if (!mongoose.Types.ObjectId.isValid(bookingId)) {
+    throw new ApiError(400, "Invalid Booking ID");
   }
 
-  // Find user
-  const user = await User.findById(userId);
-  if (!user || !user.bookings.includes(productId)) {
-    return res.status(404).json(new ApiError(404, "Booking not found for this user"));
+  // Find the booking
+  const booking = await Booking.findById(bookingId);
+  if (!booking || booking.user.toString() !== userId) {
+    throw new ApiError(404, "Booking not found for this user");
   }
 
-  // Remove booking from user
-  await User.findByIdAndUpdate(userId, { $pull: { bookings: productId } });
+  // Update the booking status to 'cancelled'
+  booking.status = "cancelled";
+  await booking.save();
 
-  // Remove user from product's bookings
-  await Product.findByIdAndUpdate(productId, { $pull: { bookings: userId } });
+  // Remove the booking reference from user
+  await User.findByIdAndUpdate(userId, { $pull: { bookings: bookingId } });
 
-  console.log(`Booking with productId ${productId} cancelled for user ${userId}`);
+  // Optional: Remove the booking reference from product
+  await Product.findByIdAndUpdate(booking.product, {
+    $pull: { bookings: bookingId }, // Only if you maintain this in Product model
+  });
 
-  return res.status(200).json(
-    new ApiResponse(200, {}, "Booking cancelled successfully.")
-  );
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Booking cancelled successfully"));
 });
 export { userAccountDetails  , getUserWishlists , toggleProductWishlist , getUserVendorWishlists , toggleVendorWishlist ,editUserDetails , deleteUserAccount , bookProduct, getUserBookings , cancelUserBooking};

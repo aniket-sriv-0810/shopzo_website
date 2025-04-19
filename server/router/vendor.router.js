@@ -4,7 +4,7 @@ import {upload} from "../multer.js";
 import {validate} from '../middleware/validator.js';
 
 import {editVendorValidation} from '../test/vendorEdit.validator.js' ;
-import { getAllVendors,vendorAccountDetails ,   updateVendorById , getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData , addCategoriesToVendor , productOfVendorData, allProductsOfVendor } from "../controller/vendor.controller.js";
+import { getAllVendors,vendorAccountDetails ,   updateVendorById , getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData , addCategoriesToVendor , productOfVendorData, allProductsOfVendor, getVendorAllBookings, updateBookingStatusByVendor } from "../controller/vendor.controller.js";
 import { reviewSchemaValidation } from '../test/review.validator.js';
 import { addReviewToVendor, getVendorReviews } from '../controller/review.controller.js';
 import { loginVendor, logOutAccount , checkVendorAuthentication , changePassword } from '../controller/vendorAuth.controller.js';
@@ -83,6 +83,14 @@ router
      .route("/:id/account/all-categories")
      .get(isLoggedIn , vendorAccountDetails)
 
+// Check for the  vendor account all categories Route
+router
+     .route("/:id/account/all-bookings")
+     .get(isLoggedIn , getVendorAllBookings )
+
+router
+     .route("/:vendorId/bookings/:bookingId/status")
+     .patch(isLoggedIn, updateBookingStatusByVendor);
 
 // Check for the  vendor account all particular products having the particular vendor/category/tag Route
 router

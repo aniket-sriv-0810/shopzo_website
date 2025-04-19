@@ -46,26 +46,21 @@ categorySchema.pre("findOneAndDelete", async function (next) {
   const category = await this.model.findOne(this.getFilter());
   if (!category) return next();
 
-  // Delete all associated products
-  await mongoose.model("Product").deleteMany({ _id: { $in: category.products } });
+  const productIds = category.products || [];
+  const vendorIds = category.vendors || [];
 
-  // Optional: If you just want to unset category field from products
-  await mongoose.model("Product").updateMany(
-    { _id: { $in: category.products } },
-    { $unset: { category: "" } }
-  );
+  // 1. 🗑 Delete associated products
+  await mongoose.model("Product").deleteMany({ _id: { $in: productIds } });
 
-  // Delete all associated vendors
-  await mongoose.model("Vendor").deleteMany({ _id: { $in: category.vendors } });
-
-  // Optional: If you just want to remove category reference from vendors
+  // 2. 🔁 Remove category reference from vendors (NOT deleting vendors)
   await mongoose.model("Vendor").updateMany(
-    { _id: { $in: category.vendors } },
-    { $unset: { category: "" } }
+    { _id: { $in: vendorIds } },
+    { $pull: { categories: category._id } }
   );
 
   next();
 });
+
 
 const Category = mongoose.model("Category", categorySchema);
 export { Category };

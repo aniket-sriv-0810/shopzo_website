@@ -95,41 +95,50 @@ productSchema.pre("findOneAndDelete", async function (next) {
   const product = await this.model.findOne(this.getFilter());
   if (!product) return next();
 
-  const ProductID = product._id;
+  const productId = product._id;
 
-  // Remove product from all users' wishlists and bookings
+  // 1. Remove product from users’ wishlists and bookings
   await mongoose.model("User").updateMany(
-    {},
+    {
+      $or: [
+        { wishlists: productId },
+        { bookings: productId }
+      ]
+    },
     {
       $pull: {
-        wishlists: ProductID,
-        bookings: ProductID,
-      },
+        wishlists: productId,
+        bookings: productId,
+      }
     }
   );
 
-  // Remove product from all vendors' products array
+  // 2. Remove product from vendor's product list
   await mongoose.model("Vendor").updateMany(
-    {},
+    { products: productId },
     {
       $pull: {
-        products: ProductID,
-      },
+        products: productId,
+      }
     }
   );
 
-  // Optional: Remove product from any category if needed
+  // 3. Delete all bookings that reference this product
+  await mongoose.model("Booking").deleteMany({ product: productId });
+
+  // 4. Remove product from category’s products array
   await mongoose.model("Category").updateMany(
-    {},
+    { products: productId },
     {
       $pull: {
-        products: ProductID,
-      },
+        products: productId,
+      }
     }
   );
 
   next();
 });
+
 
 const Product = mongoose.model("Product", productSchema);
 export { Product };

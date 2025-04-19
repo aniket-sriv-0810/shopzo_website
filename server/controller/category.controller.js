@@ -180,23 +180,26 @@ const editCategory = asyncHandler(async (req, res) => {
 });
 
 
-  const deleteCategory = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-  
-    const category = await Category.findById(id);
-    if (!category) {
-      throw new ApiError(404, "Category not found");
-    }
-    console.log("Deleted category successfully !");
-    
-    // Optional: Clean-up product/category relations here if needed
-    // e.g. remove category reference from related products
-  
-    await Category.findOneAndDelete({ _id: id });
+const deleteCategory = asyncHandler(async (req, res) => {
+  const { id } = req.params;
 
-  
-    return res
-      .status(200)
-      .json(new ApiResponse(200, {}, "Category deleted successfully"));
-  });
+  if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(400, "Invalid category ID");
+  }
+
+  const category = await Category.findById(id);
+  if (!category) {
+    throw new ApiError(404, "Category not found");
+  }
+
+  // 🧹 Trigger cleanup middleware
+  await Category.findOneAndDelete({ _id: id });
+
+  console.log("Deleted category successfully!");
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "Category deleted successfully"));
+});
+
 export { createCategory , getAllCategories , getCategoryById, getProductsByCategoryAndTag , editCategory , deleteCategory };
