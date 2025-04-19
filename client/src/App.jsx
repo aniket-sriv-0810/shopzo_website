@@ -235,11 +235,11 @@ function App() {
             <Route path="add-product" element={<AddProductForm />} />
             <Route path="add-vendor" element={<AddVendor />} />
             <Route
-              path="category/:id/edit-category"
+              path="categories/category/:id/edit-category"
               element={<EditCategory />}
             />
             <Route
-              path="category/:id/delete-category"
+              path="categories/category/:id/delete-category"
               element={<DeleteCategory />}
             />
             <Route path="product/:id/edit" element={<EditProduct />} />

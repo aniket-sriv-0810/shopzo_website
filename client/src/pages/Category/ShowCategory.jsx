@@ -6,13 +6,14 @@ import SkeletonList from "../../components/LoadingSkeleton/SkeletonList";
 import NotAvailable from "../Loaders/NotAvailable";
 import Navbar from "../../components/Navbars/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
-
+import SortProducts from '../../components/SortProducts/SortProducts'
 const ShowCategory = () => {
   const { id, tag } = useParams();
   const [category, setCategory] = useState({});
   const [products, setProducts] = useState([]);
   const [errorMsg, setErrorMsg] = useState("");
   const [loading, setLoading] = useState(true);
+  const [sortOrder, setSortOrder] = useState("default");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -37,6 +38,15 @@ const ShowCategory = () => {
       fetchProducts();
     }
   }, [id, tag]);
+  const sortProducts = (order) => {
+    const sorted = [...products];
+    if (order === "lowToHigh") {
+      sorted.sort((a, b) => a.discountedPrice - b.discountedPrice);
+    } else if (order === "highToLow") {
+      sorted.sort((a, b) => b.discountedPrice - a.discountedPrice);
+    }
+    setProducts(sorted);
+  };
 
   return (
     <>
@@ -64,7 +74,11 @@ const ShowCategory = () => {
               </h2>
               <p className="text-xl text-gray-500 font-semibold  mt-3 capitalize">{tag}</p>
             </div>
-
+            <SortProducts
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
+        sortProducts={sortProducts}
+      />
             {products.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mt-10 transition-all duration-300">
                 {products.map((product) => (

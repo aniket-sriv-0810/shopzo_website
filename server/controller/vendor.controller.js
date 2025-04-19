@@ -146,15 +146,28 @@ const updateVendorById = asyncHandler(async (req, res) => {
 const deleteVendorById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const vendor = await Vendor.findById(id);
-  if (!vendor) {
-    return res.status(404).json(new ApiError(404, "Vendor not found"));
+  if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json(
+      new ApiError(400, "Invalid ID", "Invalid Vendor ID!")
+    );
   }
 
+  const vendor = await Vendor.findById(id);
+  if (!vendor) {
+    return res.status(404).json(
+      new ApiError(404, "Vendor not found", "Vendor does not exist!")
+    );
+  }
+
+  // ✅ Delete vendor and cleanup from related collections via middleware
   await Vendor.findByIdAndDelete(id);
 
-  return res.status(200).json(new ApiResponse(200, {}, "Vendor deleted successfully"));
+  // ✅ No logout behavior for admin – just return success
+  return res.status(200).json(
+    new ApiResponse(200, {}, "Vendor deleted successfully")
+  );
 });
+
 
 // 2️⃣ Fetch products by vendor, category, and tag
 const getVendorProductsByCategoryAndTag = async (req, res) => {

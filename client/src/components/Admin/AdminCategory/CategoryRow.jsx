@@ -23,7 +23,7 @@ const CategoryRow = ({ category }) => {
       <td className="px-4 py-4 border">
         <div className="flex flex-col items-center">
           <button
-            onClick={() => navigate(`/category/${_id}/edit`)}
+            onClick={() => navigate(`category/${_id}/edit-category`)}
             className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-md transition-all flex items-center gap-1 text-sm"
           >
             <FaEdit className="text-xs" /> Edit
@@ -35,7 +35,7 @@ const CategoryRow = ({ category }) => {
       <td className="px-4 py-4 border">
         <div className="flex flex-col items-center">
           <button
-            onClick={() => navigate(`/category/${_id}/delete`)}
+            onClick={() => navigate(`category/${_id}/delete-category`)}
             className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-md transition-all flex items-center gap-1 text-sm"
           >
             <FaTrash className="text-xs" /> Delete

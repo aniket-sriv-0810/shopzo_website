@@ -2,12 +2,16 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import VendorTable from "../../components/Admin/AdminVendor/VendorTable";
 import SkeletonTable from "../../components/LoadingSkeleton/SkeletonTable";
+import AdminNotAvailableLoader from "../Loaders/AdminNotAvailableLoader";
+import ErrorPopup from "../../components/Popups/ErrorPopUp";
+import { useNavigate } from "react-router-dom";
 const AdminVendor = () => {
   const [vendors, setVendors] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const navigate = useNavigate();
+  // Fetch all vendors
   const fetchVendors = async () => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/vendors`, {
@@ -21,6 +25,7 @@ const AdminVendor = () => {
     }
   };
 
+  // Fetch categories
   const fetchCategories = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/category`);
@@ -29,7 +34,6 @@ const AdminVendor = () => {
       console.error("Failed to fetch categories:", err);
     }
   };
-  
 
   const fetchAll = async () => {
     setLoading(true);
@@ -41,6 +45,24 @@ const AdminVendor = () => {
     fetchAll();
   }, []);
 
+  // Delete vendor logic
+  const deleteVendor = async (vendorId) => {
+    try {
+      const response = await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/vendor/${vendorId}/account/delete`, {
+        withCredentials: true,
+      });
+
+      if (response.status === 200) {
+        // Refresh vendor list after deletion
+        setVendors((prevVendors) => prevVendors.filter((vendor) => vendor._id !== vendorId));
+      }
+      navigate("/admin/users");
+    } catch (err) {
+      console.error("Failed to delete vendor:", err);
+      setError("Error deleting vendor. Please try again later.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 px-4 py-8">
       <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
@@ -49,14 +71,20 @@ const AdminVendor = () => {
 
       {loading ? (
         <div className='flex justify-center items-center mt-10'>
-      <SkeletonTable/> 
+          <SkeletonTable/> 
         </div>
       ) : error ? (
-        <p className="text-center text-red-600 font-medium">{error}</p>
+        <p className="text-center text-red-600 font-medium"><ErrorPopup
+            message={error}
+            onClose={() => {
+              setError("");
+              navigate("/admin"); // Optional: redirect or reload logic
+            }}
+          /></p>
       ) : vendors.length === 0 ? (
-        <p className="text-center text-gray-600 font-medium">No vendors found.</p>
+        <p className="text-center text-gray-600 font-medium"><AdminNotAvailableLoader/></p>
       ) : (
-        <VendorTable vendors={vendors} categories={categories} refreshVendors={fetchAll} />
+        <VendorTable vendors={vendors} categories={categories} refreshVendors={fetchAll} deleteVendor={deleteVendor} />
       )}
     </div>
   );

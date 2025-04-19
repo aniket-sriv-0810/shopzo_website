@@ -56,12 +56,12 @@ router
 
 // Check for Editing categories Route
 router
-     .route("category/:id/edit")
+     .route("/category/:id/edit")
      .put(isLoggedIn , isAdmin , upload.single('image') , validate(updateCategorySchemaValidation) , editCategory)
 
 // Check for the Deleting categories Route
 router
-     .route("category/:id/delete")
+     .route("/category/:id/delete")
      .delete(isLoggedIn ,  isAdmin , deleteCategory)
 
 //check for Adding  product Route
@@ -72,12 +72,12 @@ router
 
 //check for the particular product Edit Route
 router
-     .route("product/:id/edit")
+     .route("/product/:id/edit")
      .put(isLoggedIn , isAdmin , upload.array("images", 7) , validate(editProductSchemaValidation) , updateProductById )
 
 //check for the particular product Delete Route
 router
-     .route("product/:id/delete")
+     .route("/product/:id/delete")
      .delete(isLoggedIn , isAdmin , deleteProductById)
 
 // Adding Vendor Route
@@ -92,7 +92,7 @@ router
 
 // Deleting a  vendor Account Route
 router
-     .route("vendor/:id/account/delete")
+     .route("/vendor/:id/account/delete")
      .delete(isLoggedIn, deleteVendorById);
 
 

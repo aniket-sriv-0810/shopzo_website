@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
-
+import { useNavigate, useParams } from "react-router-dom";
+import SkeletonCard from "../../components/LoadingSkeleton/SkeletonCard";
+import AdminNotAvailableLoader from "../Loaders/AdminNotAvailableLoader";
 const AddCategoryToVendor = () => {
   const { vendorId } = useParams();
   const [categories, setCategories] = useState([]);
@@ -9,7 +10,7 @@ const AddCategoryToVendor = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitLoading, setSubmitLoading] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -42,6 +43,7 @@ const AddCategoryToVendor = () => {
         { withCredentials: true }
       );
       setMessage("✅ Categories added successfully!");
+      navigate('/admin/vendors')
     } catch (err) {
       setMessage("❌ Failed to add categories.");
     } finally {
@@ -51,15 +53,15 @@ const AddCategoryToVendor = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-3xl bg-white rounded-3xl shadow-2xl p-8">
+      <div className="w-full max-w-3xl bg-white bg-opacity-40 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border border-white/30 hover:border-blue-300 transition-all duration-500">
         <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">Add Categories to Vendor</h2>
 
         {message && <p className="text-center text-sm font-medium text-blue-600 mb-4">{message}</p>}
 
         {loading ? (
-          <p className="text-center text-gray-500 animate-pulse">Loading categories...</p>
+          <p className="text-center text-gray-500 animate-pulse"><SkeletonCard/></p>
         ) : categories.length === 0 ? (
-          <p className="text-center text-red-500">No categories available.</p>
+          <p className="text-center text-red-500"><AdminNotAvailableLoader/></p>
         ) : (
           <form onSubmit={handleSubmit}>
             <div className="flex-col m-5 max-h-72 overflow-y-auto pr-2">
@@ -67,7 +69,7 @@ const AddCategoryToVendor = () => {
                 <label
                   key={cat._id}
                   htmlFor={`cat-${cat._id}`}
-                  className="flex  items-center gap-7 m-4 p-3 bg-gray-50 rounded-xl shadow-sm hover:shadow-md border transition"
+                  className="flex items-center gap-7 m-4 p-3 bg-gray-50 bg-opacity-50 backdrop-blur-lg rounded-xl shadow-sm hover:shadow-lg border border-white/30 hover:border-blue-300 transition-all duration-300"
                 >
                   <input
                     type="checkbox"
@@ -103,7 +105,7 @@ const AddCategoryToVendor = () => {
                     Processing...
                   </span>
                 ) : (
-                  "Submit Categories"
+                  "Add Categories"
                 )}
               </button>
             </div>

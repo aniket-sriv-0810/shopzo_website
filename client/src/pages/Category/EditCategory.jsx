@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-
+import SkeletonForm from "../../components/LoadingSkeleton/SkeletonForm";
+import ErrorPopup from "../../components/Popups/ErrorPopUp";
 const EditCategory = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const [loading , setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -14,17 +15,20 @@ const EditCategory = () => {
 
   const [previewImage, setPreviewImage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+const [error, setError] = useState(null);
   // Fetch existing category data
   useEffect(() => {
     const fetchCategory = async () => {
+      setLoading(true);
       try {
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/category/${id}`);
         const { title, description, image } = res.data?.data?.category || {};
         setFormData({ title, description, image });
         setPreviewImage(image);
       } catch (err) {
-        console.error("❌ Error fetching category:", err);
+        setError(err.response?.data?.message || "Failed to fetch category details");
+      }finally{
+        setLoading(false);
       }
     };
 
@@ -60,74 +64,115 @@ const EditCategory = () => {
       if (formData.description) updatedData.append("description", formData.description);
       if (formData.image && formData.image instanceof File) {
         updatedData.append("image", formData.image);
-      } else if (typeof formData.image === "string") {
-        updatedData.append("image", formData.image);
       }
+      
 
-      const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/category/${id}/edit`, updatedData, 
+      const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/category/${id}/edit`, updatedData, 
         {
         withCredentials: true, // if using cookies/auth
       });
 
-      navigate("/"); // adjust path as needed
+      navigate("/admin/categories"); // adjust path as needed
     } catch (err) {
-      console.error("❌ Error updating category:", err);
-      alert("Something went wrong while updating the category.");
+      setError(err.response?.data?.message || "Failed to fetch vendors");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4 bg-white shadow rounded-lg">
-      <h2 className="text-2xl font-bold mb-4">Edit Category</h2>
-      <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-4">
+    <>
+    {
+      loading ? (
+
+      <div className='flex justify-center items-center mt-10'>
+      <SkeletonForm/>
+    </div>
+      )
+    :
+    error ? (
+        <div className="text-center text-red-600 font-medium"><ErrorPopup
+            message={error}
+            onClose={() => {
+              setError("");
+              navigate("/admin"); // Optional: redirect or reload logic
+            }}
+          /></div>
+    ) :
+      <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-50 py-12 px-4 flex justify-center items-center">
+    <div className="w-full max-w-2xl p-8 bg-white/60 backdrop-blur-xl shadow-2xl rounded-3xl border border-white/30 transition-all duration-300">
+      <h2 className="text-3xl font-extrabold text-gray-800 text-center mb-6">Edit Category</h2>
+  
+      <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-6">
+        {/* Title */}
         <div>
-          <label className="block text-sm font-medium mb-1">Title</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Title</label>
           <input
             type="text"
             name="title"
             value={formData.title || ""}
             onChange={handleChange}
-            className="w-full border px-3 py-2 rounded"
-            placeholder="Category Title"
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70 shadow-sm"
+            placeholder="Enter category title"
           />
         </div>
-
+  
+        {/* Description */}
         <div>
-          <label className="block text-sm font-medium mb-1">Description</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
           <textarea
             name="description"
             value={formData.description || ""}
             onChange={handleChange}
             rows={4}
-            className="w-full border px-3 py-2 rounded"
-            placeholder="Category Description"
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white/70 shadow-sm"
+            placeholder="Enter category description"
           ></textarea>
         </div>
-
+  
+        {/* Image Upload */}
         <div>
-          <label className="block text-sm font-medium mb-1">Image</label>
-          <input type="file" name="image" accept="image/*" onChange={handleChange} />
+          <label className="block text-sm font-semibold text-gray-700 mb-1">Image</label>
+          <input
+            type="file"
+            name="image"
+            accept="image/*"
+            onChange={handleChange}
+            className="w-full text-sm"
+          />
           {previewImage && (
             <img
               src={previewImage}
               alt="Preview"
-              className="mt-2 w-full max-w-xs rounded shadow"
+              className="mt-3 w-full max-w-sm mx-auto rounded-lg shadow-lg"
             />
           )}
         </div>
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-        >
-          {isSubmitting ? "Updating..." : "Update Category"}
-        </button>
+  
+        {/* Submit */}
+        <div className="text-center">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all duration-300 disabled:opacity-60"
+          >
+            {isSubmitting ? (
+              <div className="flex justify-center items-center gap-2">
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                Updating...
+              </div>
+            ) : (
+              "Update Category"
+            )}
+          </button>
+        </div>
       </form>
     </div>
-  );
+  </div>
+  }
+    </>
+  
+);
 };
 
 export default EditCategory;

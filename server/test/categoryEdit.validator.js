@@ -8,12 +8,6 @@ const updateCategorySchemaValidation = Joi.object({
 
   description: Joi.string().trim().optional(),
 
-  image: Joi.string()
-    .uri()
-    .optional()
-    .messages({
-      "string.uri": "Image must be a valid URL.",
-    }),
 });
 
 export { updateCategorySchemaValidation };

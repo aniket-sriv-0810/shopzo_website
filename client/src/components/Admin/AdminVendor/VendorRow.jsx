@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { MdDeleteForever } from "react-icons/md";
-
-const VendorRow = ({ vendor, categories, refreshVendors }) => {
+import { TbTagPlus } from "react-icons/tb";
+const VendorRow = ({ vendor, categories, refreshVendors, deleteVendor }) => {
   const { name, username, _id, email, phone, address, image } = vendor;
 
   const [deleting, setDeleting] = useState(false);
@@ -12,15 +12,7 @@ const VendorRow = ({ vendor, categories, refreshVendors }) => {
   const handleDeleteVendor = async () => {
     try {
       setDeleting(true);
-      const res = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/admin/vendors/${_id}/delete`,
-        { withCredentials: true }
-      );
-
-      if (res.status === 200) {
-        setMessage("Deleted successfully!");
-        refreshVendors();
-      }
+      await deleteVendor(_id); // Call the delete function passed as a prop
     } catch (err) {
       setMessage(err.response?.data?.message || "Delete failed");
     } finally {
@@ -51,19 +43,20 @@ const VendorRow = ({ vendor, categories, refreshVendors }) => {
       </td>
 
       <td className="px-4 py-2 border">
-        <Link
-          to={`/admin/vendor/${_id}/add-category`}
-          className="bg-green-600 text-white text-sm py-1.5 px-3 rounded-lg hover:bg-green-700 transition"
-        >
-          Add Category
-        </Link>
-      </td>
+  <Link
+    to={`/admin/vendor/${_id}/add-category`}
+    className="flex justify-center items-center"
+  >
+    <TbTagPlus className="text-green-600  text-3xl rounded-full hover:scale-110"/>
+  </Link>
+</td>
+
 
       <td className="px-4 py-2 border">
         <button
           disabled={deleting}
           onClick={handleDeleteVendor}
-          className={`flex items-center justify-center mx-auto gap-2 px-4 py-1.5 text-white text-sm font-semibold rounded-lg transition
+          className={`flex items-center hover:cursor-pointer justify-center mx-auto gap-2 px-4 py-1.5 text-white text-sm font-semibold rounded-lg transition
             ${deleting ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-700"}`}
         >
           <MdDeleteForever className="text-lg" />

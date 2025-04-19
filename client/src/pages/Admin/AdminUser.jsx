@@ -4,6 +4,8 @@ import UserTable from "../../components/Admin/AdminUser/UserTable";
 import { useUser } from "../../components/UserContext/userContext";
 import { useNavigate } from "react-router-dom";
 import SkeletonTable from "../../components/LoadingSkeleton/SkeletonTable";
+import AdminNotAvailableLoader from "../Loaders/AdminNotAvailableLoader";
+import ErrorPopup from "../../components/Popups/ErrorPopUp";
 const AdminUser = () => {
   const { user } = useUser();
   const [userDetails, setUserDetails] = useState([]);
@@ -29,20 +31,36 @@ const AdminUser = () => {
     }
   };
 
-  const deleteUser = async (userId) => {
-    setDeleteLoading(true);
-    try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/user/${userId}/account/delete`, {
-        withCredentials: true,
-      });
-      setUserDetails((prev) => prev.filter((u) => u._id !== userId));
-      navigate("/admin");
-    } catch (err) {
-      setError(err.response?.data?.message || "Failed to delete user.");
-    }finally{
-      setDeleteLoading(false);
+
+const deleteUser = async (userId) => {
+  setDeleteLoading(true);
+
+  try {
+    const currentUserId = user?._id; // Assuming `user` comes from context or props
+    const isSelfDelete = userId === currentUserId;
+
+    await axios.delete(
+      `${import.meta.env.VITE_API_URL}/api/user/${userId}/account/delete`,
+      { withCredentials: true }
+    );
+
+    setUserDetails((prev) => prev.filter((u) => u._id !== userId));
+
+    if (isSelfDelete && user?.role !== "admin") {
+      // Optional: redirect to login if it's the current user (non-admin)
+      navigate("/login");
+    } else {
+      // Stay on admin page if not deleting self or admin is deleting others
+      navigate("/admin/users");
     }
-  };
+
+  } catch (err) {
+    setError(err.response?.data?.message || "Failed to delete user.");
+  } finally {
+    setDeleteLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchUserData();
@@ -59,9 +77,15 @@ const AdminUser = () => {
       <SkeletonTable/> 
         </div>
       ) : error ? (
-        <p className="text-center text-red-600 font-medium">{error}</p>
+        <p className="text-center text-red-600 font-medium"><ErrorPopup
+            message={error}
+            onClose={() => {
+              setError("");
+              navigate("/admin"); // Optional: redirect or reload logic
+            }}
+          /></p>
       ) : userDetails.length === 0 ? (
-        <p className="text-center text-gray-600 font-medium">No users found.</p>
+        <div className="text-center text-gray-600 font-medium"><AdminNotAvailableLoader/></div>
       ) : (
         <UserTable users={userDetails} loggedInUser={user} deleteUser={deleteUser} />
       )}

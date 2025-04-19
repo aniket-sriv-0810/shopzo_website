@@ -2,3 +2,53 @@ cat id :
 vend id:  ( vendor(u) , vendor@vendor.com(e) , vendor(p))
 prd id :
 user id : 67ff8d61d9b868462edc53c5  67ff93d9d9b868462edc53fe  67ff925cd9b868462edc53e5
+
+import React, { useEffect, useState } from "react";
+import Pagination from "../components/Pagination"; // Adjust the path as needed
+import ProductCard from "../components/Products/ProductCard"; // Example
+
+const ProductList = ({ allProducts }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(5); // Default for small
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width > 1024) {
+        setItemsPerPage(8); // md+ devices
+      } else if (width > 640) {
+        setItemsPerPage(6); // sm devices
+      } else {
+        setItemsPerPage(5); // small
+      }
+    };
+
+    handleResize(); // initial
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = allProducts.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(allProducts.length / itemsPerPage);
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        {currentItems.map((product) => (
+          <ProductCard key={product._id} product={product} />
+        ))}
+      </div>
+
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        handlePageChange={setCurrentPage}
+      />
+    </div>
+  );
+};
+
+export default ProductList;

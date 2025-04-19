@@ -139,38 +139,46 @@ const getProductsByCategoryAndTag = asyncHandler(async (req, res) => {
 });
 
 
-  const editCategory = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-    const { title, description, image } = req.body;
-  
-    const category = await Category.findById(id);
-    if (!category) {
-      throw new ApiError(404, "Category not found");
+const editCategory = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { title, description } = req.body;
+
+  const category = await Category.findById(id);
+  if (!category) {
+    throw new ApiError(404, "Category not found");
+  }
+
+  // Validate unique title if it's being updated
+  if (title && title !== category.title) {
+    const existingTitle = await Category.findOne({ title: title.trim() });
+    if (existingTitle) {
+      throw new ApiError(409, "Title already exists. Please use a different one.");
     }
-  
-    // If title is being updated, check if it's already used by another category
-    if (title && title !== category.title) {
-      const existingTitle = await Category.findOne({ title: title.trim() });
-      if (existingTitle) {
-        throw new ApiError(409, "Title already exists. Please use a different one.");
-      }
-      category.title = title.trim();
+    category.title = title.trim();
+  }
+
+  if (description !== undefined) {
+    category.description = description.trim();
+  }
+
+  // If new image uploaded, upload it to Cloudinary
+  if (req.file) {
+    const imageUpload = await uploadOnCloudinary(req.file.path);
+
+    if (!imageUpload?.url) {
+      throw new ApiError(500, "Image upload failed. Try again.");
     }
-  
-    if (description !== undefined) {
-      category.description = description.trim();
-    }
-  
-    if (image !== undefined) {
-      category.image = image;
-    }
-  
-    await category.save();
-  
-    return res
-      .status(200)
-      .json(new ApiResponse(200, { category }, "Category updated successfully"));
-  });
+
+    category.image = imageUpload.url;
+  }
+
+  const updatedCategory = await category.save();
+
+  res.status(200).json(
+    new ApiResponse(200, { category: updatedCategory }, "Category updated successfully")
+  );
+});
+
 
   const deleteCategory = asyncHandler(async (req, res) => {
     const { id } = req.params;
@@ -179,11 +187,13 @@ const getProductsByCategoryAndTag = asyncHandler(async (req, res) => {
     if (!category) {
       throw new ApiError(404, "Category not found");
     }
-  
+    console.log("Deleted category successfully !");
+    
     // Optional: Clean-up product/category relations here if needed
     // e.g. remove category reference from related products
   
-    await Category.findByIdAndDelete(id);
+    await Category.findOneAndDelete({ _id: id });
+
   
     return res
       .status(200)

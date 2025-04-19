@@ -291,38 +291,45 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
       );
     }
 
-    const user = await User.findById(id);
-    if (!user) {
+    const userToDelete = await User.findById(id);
+    if (!userToDelete) {
       return res.status(404).json(
         new ApiError(404, "User not found", "User does not exist!")
       );
     }
 
-    // Delete the user
+    // Delete user account
     await User.findByIdAndDelete(id);
-    console.log("User deleted successfully:", id);
+    console.log("✅ User deleted successfully:", id);
 
-    // Logout user after deletion
-    req.logout((err) => {
-      if (err) {
-        return res.status(500).json(
-          new ApiError(500, err, "Failed to log out after deletion!")
-        );
-      }
-
-      req.session.destroy((err) => {
+    // If the logged-in user is deleting their own account (non-admin), log them out
+    if (req.user._id.toString() === id.toString() && req.user.role !== "admin") {
+      req.logout((err) => {
         if (err) {
           return res.status(500).json(
-            new ApiError(500, err, "Failed to destroy session!")
+            new ApiError(500, err, "Failed to log out after deletion!")
           );
         }
 
-        res.clearCookie("connect.sid");
-        return res.status(200).json(
-          new ApiResponse(200, null, "User deleted and logged out successfully!")
-        );
+        req.session.destroy((err) => {
+          if (err) {
+            return res.status(500).json(
+              new ApiError(500, err, "Failed to destroy session!")
+            );
+          }
+
+          res.clearCookie("connect.sid");
+          return res.status(200).json(
+            new ApiResponse(200, null, "User deleted and logged out successfully!")
+          );
+        });
       });
-    });
+    } else {
+      // If admin deletes another user, no need to logout
+      return res.status(200).json(
+        new ApiResponse(200, null, "User deleted successfully by admin!")
+      );
+    }
 
   } catch (error) {
     console.error("User deletion failed:", error);
@@ -331,6 +338,8 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
     );
   }
 });
+
+
 const bookProduct = async (req, res) => {
   try {
     const { productId } = req.params;
