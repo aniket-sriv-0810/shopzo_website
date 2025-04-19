@@ -35,11 +35,11 @@ const MainLayout = () => {
       });
     }, []);
   return (
-    <div className="bg-gradient-to-br from-pink-600 to-slate-800 p-4 sm:p-6 space-y-10 max-w-screen-2xl mx-auto">
+    <div className="bg-gradient-to-tr from-pink-400 to-slate-800 p-4 sm:p-6 space-y-10 max-w-screen-2xl mx-auto">
       {/* Row 1 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center" data-aos="fade-down">
         {/* Slideshow */}
-        <div className="w-full h-[250px] sm:h-[320px] rounded-xl overflow-hidden shadow-md">
+        <div className="w-full h-[250px] sm:h-[360px] rounded-xl overflow-hidden shadow-md">
           <img
             src={slideshowImages[currentIndex]}
             alt="Slideshow"
@@ -56,7 +56,7 @@ const MainLayout = () => {
             data-aos="fade-up"
           />
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-            <button onClick={() => navigate('/categories')} className="bg-gradient-to-r from-indigo-600 to-pink-500 hover:from-indigo-700 hover:to-pink-600 text-white font-semibold py-2 px-6 rounded-full shadow-md">
+            <button onClick={() => navigate('/categories')} className="bg-gradient-to-r from-indigo-600 to-pink-500 hover:from-indigo-700 hover:to-pink-600 hover:cursor-pointer text-white font-semibold py-2 px-6 rounded-full shadow-md">
               Explore Now
             </button> 
           </div>
@@ -76,7 +76,7 @@ const MainLayout = () => {
 
         {/* Portraits */}
         <div className="flex gap-6">
-          <div className="w-full  rounded-xl overflow-hidden shadow-md" data-aos="fade-left">
+          <div className="w-full  rounded-xl overflow-hidden shadow-md" data-aos="fade-down">
             <img
               src="https://media-hosting.imagekit.io/aeab8893369048a9/m1.png?Expires=1839650734&Key-Pair-Id=K2ZIVPTIP2VGHC&Signature=Zq3jUGlg1sCD-lq2ZqniJIwT0k5E7FiD475bJmPZ2HXzfRhmEHAWl0~DjJUuEq1Nf80X9QroKe~sqxpvavGmAMgKmxZU3kwLBkG14OW83icWnwdVxFZHP7dKooeGcRQUAlnQxas23PKWVaz17RfXIF2KaRfbgbasVwCRJZYL9dAS9QkJCmudWH1u5sco4wOdkCkKduvzZQjZxublinkfLtoZ-Aa5zhygQEfYxOpSC9Wb05rkxZhqWHLbod5MXeeqBOUQqY3FfQIkYi0F4YE6DDWZ0x4JEIAHRUaEr9dfvJp0pbZ--~zqBoHHsdm736e7Q0fjVmTEtWArJe6ySOm7qg__"
               alt="Portrait 1"

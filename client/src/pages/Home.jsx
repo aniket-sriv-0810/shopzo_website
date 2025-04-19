@@ -103,7 +103,7 @@ const Home = () => {
   
 
   return (
-    <div>
+    <div className='bg-gray-100'>
       <div className="-mb-2 bg-gray-100" id="navbar">
         <Navbar />
       </div>
@@ -111,7 +111,6 @@ const Home = () => {
       <div className="my-10">
        <AllCategoryCard/>
       </div>
-      <div className="bg-[url('/assets/header-img.png')] bg-cover h-72 bg-no-repeat sm:h-[30rem]  md:h-[40rem] lg:h-[48rem]"></div>
 
       <div id="search-box">
         <SearchBox />
@@ -120,6 +119,7 @@ const Home = () => {
       <div id="category-section" className="my-20">
         <AllCategories />
       </div>
+      <div className="bg-[url('/assets/header-img.png')] bg-cover h-72 bg-no-repeat sm:h-[30rem]  md:h-[40rem] lg:h-[48rem]"></div>
       <div id="vendor-section" className="my-20">
         <AllVendors />
       </div>

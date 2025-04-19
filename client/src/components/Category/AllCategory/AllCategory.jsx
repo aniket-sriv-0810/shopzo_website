@@ -75,7 +75,7 @@ const AllCategories = () => {
     <section className="py-14 px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-zinc-900 dark:to-zinc-800 min-h-screen transition-colors duration-300">
       <div className="max-w-7xl mx-auto text-center mb-12">
         <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-800 dark:text-white mb-2">
-          Explore Categories
+          Explore Our Top Categories
         </h2>
         <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300">
           Discover products by your interests

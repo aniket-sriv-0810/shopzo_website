@@ -88,12 +88,12 @@ const ShowCategory = () => {
         </div>
       ) : (
         <>
-          <section className="mx-auto mt-10  min-h-screen">
+          <section className="mx-auto  pt-6 bg-gray-300 min-h-screen">
             <div className="text-center">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 tracking-tight leading-tight">
+              <h2 className="text-2xl  sm:text-3xl font-bold text-gray-700 tracking-tight leading-tight">
                 Products in <span className="text-fuchsia-600">{category?.title}</span>
               </h2>
-              <p className="text-xl text-gray-500 font-semibold mt-3 capitalize">{tag}</p>
+              <p className="text-xl text-gray-600 font-semibold mt-3 capitalize">{tag}</p>
             </div>
 
             <SortProducts

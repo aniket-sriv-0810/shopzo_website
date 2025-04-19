@@ -10,7 +10,7 @@ const ToggleGender = ({ onToggle }) => {
 
   return (
     <div className="w-full flex justify-center items-center py-2">
-      <div className="flex bg-gray-800 rounded-full shadow-md overflow-hidden border border-gray-600 transition-all duration-300 hover:shadow-lg">
+      <div className="flex bg-gray-800 rounded-full shadow-md overflow-hidden border border-gray-600 transition-all duration-300 hover:shadow-lg ">
         {["male", "female"].map((gender) => (
           <button
             key={gender}
@@ -22,7 +22,7 @@ const ToggleGender = ({ onToggle }) => {
             }`}
           >
             <span
-              className={`absolute inset-0 bg-gradient-to-r ${
+              className={`hover:cursor-pointer absolute inset-0 bg-gradient-to-r ${
                 selected === gender ? "from-blue-400 via-blue-500 to-blue-600" : "from-transparent to-transparent"
               } rounded-full opacity-20`}
             ></span>

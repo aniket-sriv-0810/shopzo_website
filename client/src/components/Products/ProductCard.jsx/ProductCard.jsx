@@ -15,7 +15,7 @@ const ProductCard = ({ product }) => {
 console.log("product => ", product);
 
   return (
-    <div className=" rounded-2xl shadow-lg hover:shadow-2xl border border-gray-200 overflow-hidden transition-transform duration-300 hover:scale-[1.02] w-full sm:max-w-[320px] mx-auto flex flex-col">
+    <div className="hover:shadow-yellow-200 rounded-2xl shadow-md hover:shadow-2xl border  overflow-hidden transition-transform duration-300 hover:scale-[1.02] w-full sm:max-w-[350px] mx-auto flex flex-col">
       
       {/* Image Section (70%) */}
       <div className="relative h-[70%]">
@@ -45,32 +45,41 @@ console.log("product => ", product);
         <img
           src={product.images[0]}
           alt={product.title}
-          className="w-full h-[300px] object-cover bg-amber-100 transition-all duration-300"
+          className="w-full h-[300px] object-cover bg-gray-800 transition-all duration-300"
         />
       </div>
 
       {/* Content Section (30%) */}
-      <div className="p-4 sm:p-3 bg-amber-50 space-y-3 flex-grow flex flex-col justify-between">
+      <div className="p-4 sm:p-3 bg-gray-700 space-y-3 flex-grow flex flex-col justify-between">
         
         {/* Title */}
-        <h2 className="text-lg sm:text-xl capitalize font-bold text-gray-900 line-clamp-2">
+        <h2 className="text-xl sm:text-2xl capitalize font-bold text-white line-clamp-2">
           {product.title}
         </h2>
 
         {/* Price */}
         <div className="flex items-center gap-2 text-md sm:text-base">
-          <span className="flex items-center text-xl text-green-600 font-bold">
+          <span className="flex items-center text-xl text-green-300 font-bold">
             <FaRupeeSign className="" />
-            {discountedPrice.toFixed(0)}
+            {discountedPrice.toFixed(2).toLocaleString("INR")}
           </span>
-          <span className="flex items-center text-gray-400 line-through">
-            {originalPrice.toFixed(0)}
+          <span className="flex items-center text-gray-400 text-sm line-through">
+            {originalPrice.toFixed(2).toLocaleString("INR")}
           </span>
         </div>
 
         {/* Category & Tag */}
         <div className="flex flex-wrap gap-2 text-xs mt-1">
-          {product.category?.title && (
+          
+         
+        {product.category && (
+  <div className="flex items-center gap-3 mt-3">
+     <img
+      src={product.category.image}
+      alt={product.category.title}
+      className="w-10 h-10  rounded-full object-cover border border-gray-200"
+    />
+   {product.category?.title && (
             <span className="bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white px-3 py-1 rounded-full font-medium">
               {product.category.title}
             </span>
@@ -80,22 +89,24 @@ console.log("product => ", product);
               {product.tag}
             </span>
           )}
+  </div>
+)}
         </div>
         {product.vendor && (
   <div className="flex items-center gap-3 mt-3">
-    <span className="text-gray-500 text-sm">Sold by </span>
+    <span className="text-gray-300 text-sm">Sold by </span>
      <img
       src={product.vendor.image}
       alt={product.vendor.name}
-      className="w-8 h-8 rounded-full object-cover"
+      className="w-8 h-8 rounded-full object-cover border border-gray-100"
     />
-    <div className="text-sm text-gray-700">{product.vendor.name}</div>
+    <div className="text-sm  text-gray-100">{product.vendor.name}</div>
   </div>
 )}
         {/* Checkout Button */}
         <button
           onClick={() => navigate(`/product/${product._id}`)}
-          className="mt-1 w-full flex justify-center items-center gap-3 bg-gradient-to-r from-red-600 to-fuchsia-600 hover:from-blue-700 hover:to-red-800 text-white font-semibold py-2 rounded-xl shadow-md transition duration-200 transform hover:scale-105 hover:cursor-pointer"
+          className="mt-1 w-[80%] mb-2 mx-auto flex justify-center items-center gap-3 bg-gradient-to-r from-red-600 to-fuchsia-600 hover:from-blue-700 hover:to-red-800 text-white font-semibold py-2 rounded-xl shadow-md transition duration-200 transform hover:scale-105 hover:cursor-pointer"
         >
           View Product
           <FaTags className="text-xl"/>

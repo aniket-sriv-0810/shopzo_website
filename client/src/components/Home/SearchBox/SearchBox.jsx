@@ -59,11 +59,11 @@ const SearchBox = () => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          className="w-full py-3.5 pl-5 pr-14 text-base sm:text-lg text-gray-800 placeholder-gray-400 bg-white/70 backdrop-blur-md border border-gray-300 rounded-3xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300"
+          className="w-full py-3.5 pl-5 pr-14 text-base sm:text-lg text-gray-800 placeholder-gray-400 bg-white/70 backdrop-blur-md border border-gray-300 rounded-3xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 transition-all duration-300"
         />
         <button
           onClick={() => handleSearch()}
-          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-700 hover:bg-indigo-700 text-white p-2 rounded-full shadow-md transition-all duration-300"
+          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-700 hover:bg-indigo-700 text-white p-2 rounded-full shadow-md transition-all duration-300 hover:cursor-pointer"
           aria-label="Search"
         >
           <FaSearch size={18} />

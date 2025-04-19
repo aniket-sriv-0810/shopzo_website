@@ -55,19 +55,20 @@ const ShowProduct = () => {
   return (
     <>
       <Navbar />
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+      <section className="max-w-full bg-gray-400 mx-auto px-4 sm:px-6 py-12">
         {/* Image Carousel */}
-        <div className="relative w-full overflow-hidden mb-8">
-          <div className="flex overflow-x-auto gap-4 snap-x snap-mandatory scrollbar-hide">
+        <div className="relative w-full  overflow-hidden mb-8">
+          <div className="flex overflow-x-auto gap-6 snap-x snap-mandatory scrollbar-hide">
             {product.images ? product.images.map((img, idx) => (
               <div
                 key={product._id-idx}
-                className="flex-shrink-0 w-full sm:w-[400px] h-[320px] sm:h-[480px] snap-start rounded-2xl overflow-hidden bg-gray-100 shadow-md"
+                className="flex-shrink-0 w-full  sm:w-[350px] h-[320px] sm:h-[450px] snap-start rounded-2xl overflow-hidden bg-gray-100  shadow-md"
+
               >
                 <img
                   src={img}
                   alt={`Product ${idx}`}
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-cover object-center hover:scale-110  "
                 />
               </div>
             )) : "No image found !"}
@@ -77,20 +78,20 @@ const ShowProduct = () => {
         {/* Product Info */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           <div className="space-y-6">
-            <h1 className="text-3xl font-bold text-gray-900">{product.title}</h1>
-            <p className="text-gray-600 text-lg">{product.description}</p>
+            <h1 className="text-4xl capitalize font-bold text-gray-900">{product.title}</h1>
+            <p className="text-gray-100 text-lg">{product.description}</p>
 
             {/* Prices */}
             <div className="flex items-center gap-4">
             {originalPrice && discountedPrice ? (
   <div className="flex items-center gap-4">
-    <div className="text-2xl font-semibold text-green-600 flex items-center">
+    <div className="text-2xl font-semibold text-green-300 flex items-center">
       <FaRupeeSign className="mr-1" />
-      {Number(discountedPrice).toFixed(0)}
+      {Number(discountedPrice).toFixed(2)}
     </div>
-    <div className="line-through text-gray-500 flex items-center">
-      <FaRupeeSign className="mr-1" />
-      {Number(originalPrice).toFixed(0)}
+    <div className="line-through text-gray-700 text-sm flex items-center">
+
+      {Number(originalPrice).toFixed(2)}
     </div>
     {discount > 0 && (
       <span className="bg-red-500 text-white text-xs px-3 py-1 rounded-full animate-bounce">
@@ -105,12 +106,12 @@ const ShowProduct = () => {
 
             {/* Sizes */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">Sizes</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3">Sizes Available</h3>
               <div className="flex flex-wrap gap-3">
                 {product.sizes?.map((size) => (
                   <div
                     key={size}
-                    className="w-12 h-12 flex items-center justify-center border-2 border-gray-300 text-gray-700 rounded-full font-bold hover:border-blue-500 transition"
+                    className="w-12 h-12 flex p-2 items-center justify-center border-2 border-gray-500 text-gray-700 bg-white rounded-full font-bold hover:border-blue-500 transition"
                   >
                     {size}
                   </div>
@@ -120,13 +121,18 @@ const ShowProduct = () => {
 
             {/* Category & Tag */}
             <div className="flex flex-wrap gap-3 mt-4">
+            <img
+      src={product.category.image}
+      alt={product.category.title}
+      className="w-10 h-10  rounded-full object-cover border border-gray-200"
+    />
               {product.category?.title && (
-                <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-sm font-medium">
+                <span className="bg-indigo-200 text-indigo-700 px-4 py-1 flex items-center justify-center rounded-full text-sm font-medium">
                    {product.category.title}
                 </span>
               )}
               {product.tag && (
-                <span className="bg-pink-100 text-pink-600 px-3 py-1 rounded-full text-sm font-medium capitalize">
+                <span className="bg-pink-200 text-pink-600 flex items-center justify-center  px-4 py-1 rounded-full text-sm font-medium capitalize">
                    {product.tag}
                 </span>
               )}
@@ -134,7 +140,7 @@ const ShowProduct = () => {
           </div>
 
           {/* Vendor Info & Action */}
-          <div className="bg-white shadow-xl rounded-2xl p-6 space-y-6">
+          <div className="bg-gray-200 shadow-xl rounded-2xl p-6 space-y-6 h-max mt-5">
             <div className="flex items-center gap-4">
               <img
                 src={product.vendor?.image}
@@ -151,7 +157,7 @@ const ShowProduct = () => {
 
             <button
               onClick={() => navigate(`/product/${id}/booking`)}
-              className="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold text-lg shadow-md hover:bg-blue-700 transition duration-300"
+              className="w-full m-auto bg-gradient-to-b from-green-500 to-teal-500 hover:cursor-pointer  text-white py-3 rounded-xl font-semibold text-lg shadow-md transition duration-300"
             >
               Proceed to Booking
             </button>

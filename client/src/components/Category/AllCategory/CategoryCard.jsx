@@ -6,7 +6,7 @@ const CategoryCard = ({ category }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="relative group bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-300 w-full h-[370px]">
+    <div className="relative group bg-white  dark:bg-zinc-900 rounded-2xl overflow-hidden shadow-md hover:shadow-gray-50 hover:shadow-2xl transition-shadow duration-300 w-full h-[370px]">
       <div className="relative w-full h-full overflow-hidden">
         <img
           src={category.image}

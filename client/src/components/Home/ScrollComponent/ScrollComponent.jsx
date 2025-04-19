@@ -2,14 +2,14 @@ import React from "react";
 
 const ScrollComponent = () => {
   return (
-    <div className="relative h-screen w-full mt-5 mb-5">
+    <div className="relative h-screen w-full mt-5 mb-5 p-5">
       {/* Background Image with Parallax Effect */}
       <div
-        className="bg-[url('/assets/main1.jpg')] absolute inset-0 bg-fixed bg-center  bg-cover bg-no-repeat"
+        className="bg-[url('/assets/model1.png')] absolute inset-0 bg-fixed bg-center  bg-cover bg-no-repeat"
       ></div>
 
       {/* Dark Overlay with Glass Effect */}
-      <div className="absolute inset-0 bg-black/50"></div>
+      <div className="absolute inset-0 bg-black/40"></div>
 
       {/* Content Section */}
       <div className="relative z-10 flex flex-col justify-center items-center h-full px-6 text-center text-white">

@@ -22,11 +22,11 @@ const AllCategoryCard = () => {
   }, []);
 
   return (
-    <div className="py-7 px-4 bg-gray-200">
-      <h2 className="text-lg font-bold mb-4 text-gray-800">Browse Categories</h2>
+    <div className="py-7 px-4 bg-gradient-to-tr from-fuchsia-100 to-zinc-100 ">
+      <h2 className="text-lg font-semibold mb-4 text-gray-800">Browse Categories</h2>
 
       {loading ? (
-        <p className="text-center text-gray-400">Loading...</p>
+        <p className="text-center text-gray-400">Loading Categories...</p>
       ) : (
         <div className="flex gap-5 overflow-x-auto scrollbar-hide snap-x snap-mandatory px-1">
           {categories.map((category) => (
