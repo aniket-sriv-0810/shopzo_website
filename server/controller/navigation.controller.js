@@ -66,35 +66,60 @@ const createContactMessage = async (req, res) => {
   }
 };
 
-const searchProducts = async (req, res) => {
+const searchAll = async (req, res) => {
   try {
-    const { query } = req.query;
+    const { query, page = 1, limit = 6 } = req.query;
 
     if (!query || query.trim() === "") {
       return res.status(400).json({ message: "Search query is required." });
     }
 
-    // Find categories with matching title to include their product references
+    const skip = (page - 1) * limit;
+
+    // 1. Search Vendors
+    const vendorQuery = Vendor.find({
+      name: { $regex: query, $options: "i" },
+    });
+
+    const vendorResults = await vendorQuery.skip(skip).limit(limit);
+    const totalVendors = await Vendor.countDocuments({
+      name: { $regex: query, $options: "i" },
+    });
+
+    // 2. Match categories by title
     const matchedCategories = await Category.find({
       title: { $regex: query, $options: "i" },
     });
 
     const categoryIds = matchedCategories.map((cat) => cat._id);
 
-    const products = await Product.find({
+    // 3. Search Products
+    const productQuery = Product.find({
       $or: [
         { title: { $regex: query, $options: "i" } },
         { tag: { $regex: query, $options: "i" } },
         { category: { $in: categoryIds } },
       ],
-    })
-      .populate("category", "title")
-      .limit(30); // Optional: limit results
+    }).populate("category", "title");
 
-    return res.status(200).json({ products });
+    const productResults = await productQuery.skip(skip).limit(limit);
+    const totalProducts = await Product.countDocuments({
+      $or: [
+        { title: { $regex: query, $options: "i" } },
+        { tag: { $regex: query, $options: "i" } },
+        { category: { $in: categoryIds } },
+      ],
+    });
+
+    return res.status(200).json({
+      products: productResults,
+      vendors: vendorResults,
+      totalPages: Math.ceil((totalProducts + totalVendors) / limit),
+      currentPage: Number(page),
+    });
   } catch (error) {
     console.error("Search error:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
-export {faqData , createContactMessage , searchProducts}
+export {faqData , createContactMessage , searchAll}
