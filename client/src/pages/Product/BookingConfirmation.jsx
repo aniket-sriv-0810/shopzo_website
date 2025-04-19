@@ -4,13 +4,13 @@ import { useParams, Link } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
 import { MdDownload } from "react-icons/md";
-
+import { useUser } from "../../components/UserContext/userContext";
 const BookingConfirmation = () => {
   const { bookingId } = useParams();
   const [booking, setBooking] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const {user} = useUser();
   useEffect(() => {
     const fetchBooking = async () => {
       try {
@@ -25,118 +25,115 @@ const BookingConfirmation = () => {
         setLoading(false);
       }
     };
-
     fetchBooking();
   }, [bookingId]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex justify-center items-center bg-gray-100">
-        <p className="text-gray-600">Loading booking confirmation...</p>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="animate-spin h-10 w-10 border-4 border-indigo-500 border-t-transparent rounded-full"></div>
       </div>
     );
   }
 
   if (error || !booking) {
     return (
-      <div className="min-h-screen flex justify-center items-center bg-gray-100">
-        <p className="text-red-600">{error || "Booking not found"}</p>
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <p className="text-red-500 text-lg">{error || "Booking not found."}</p>
       </div>
     );
   }
 
   const {
     product,
-    user,
     vendor,
-    category,
-    sizeSelected,
     quantity,
     totalPrice,
-    status,
-    bookingDate,
     _id,
+    sizeSelected,
   } = booking;
 
-  const percentageSaved = Math.round(
-    ((product.originalPrice - product.discountedPrice) /
-      product.originalPrice) *
-      100
-  );
-  const totalOriginalPrice = product.originalPrice * quantity;
+  const originalPrice = product?.originalPrice || 0;
+  const discountedPrice = product?.discountedPrice || 0;
+  const percentageSaved =
+    originalPrice > 0
+      ? Math.round(((originalPrice - discountedPrice) / originalPrice) * 100)
+      : 0;
+  const totalOriginalPrice = originalPrice * quantity;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-white to-gray-200 p-6 sm:p-10">
-      <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl p-8 sm:p-12 space-y-6">
-        <div className="flex flex-col items-center gap-2 text-center">
-          <FaCheckCircle className="text-green-500 text-5xl" />
-          <h1 className="text-3xl font-bold text-gray-800">
-            Booking Confirmed!
-          </h1>
-          <p className="text-sm text-gray-500">
-            Booking ID: <span className="font-semibold">{_id}</span>
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-gray-100 p-4 sm:p-10">
+      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+        {/* Header */}
+        <div className="bg-indigo-600 text-white p-6 text-center">
+          <FaCheckCircle className="text-4xl mx-auto mb-2" />
+          <h1 className="text-2xl font-bold">Booking Confirmed</h1>
+          <p className="text-sm">Booking ID: <span className="font-semibold">{_id}</span></p>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-6 text-sm text-gray-700">
-          {/* Product Section */}
-          <div className="space-y-2">
-            <h2 className="text-lg font-semibold text-indigo-700 mb-2">Product</h2>
+        <div className="grid md:grid-cols-2 gap-8 p-8 text-sm text-gray-800">
+          {/* Product Info */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold border-b pb-1">Product Details</h2>
             <img
-              src={product.images[0]}
-              alt={product.title}
-              className="w-32 h-32 object-cover rounded-xl shadow"
+              src={product?.images?.[0]}
+              alt={product?.title}
+              className="w-full max-w-xs h-48 object-cover rounded-xl shadow"
             />
-            <p><strong>Title:</strong> {product.title}</p>
-            <p><strong>Category:</strong> {category.title}</p>
-            <p><strong>Tag:</strong> {product.tag}</p>
+            <p><strong>Title:</strong> {product?.title}</p>
+            <p><strong>Category:</strong> {product?.category?.title}</p>
+            <p><strong>Tag:</strong> {product?.tag}</p>
             <p><strong>Size:</strong> {sizeSelected}</p>
             <p><strong>Quantity:</strong> {quantity}</p>
           </div>
 
-          {/* Billing Section */}
-          <div className="space-y-2">
-            <h2 className="text-lg font-semibold text-indigo-700 mb-2">Bill Summary</h2>
-            <p><strong>Original Price:</strong> ₹{product.originalPrice}</p>
-            <p><strong>Discounted Price:</strong> ₹{product.discountedPrice}</p>
-            <p><strong>You Save:</strong> ₹{product.originalPrice - product.discountedPrice} ({percentageSaved}%)</p>
+          {/* Billing */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold border-b pb-1">Billing Summary</h2>
+            <p><strong>Original Price:</strong> ₹{originalPrice}</p>
+            <p><strong>Discounted Price:</strong> ₹{discountedPrice}</p>
+            <p>
+              <strong>You Save:</strong> ₹{originalPrice - discountedPrice} (
+              {percentageSaved}%)
+            </p>
             <p><strong>Total Before Discount:</strong> ₹{totalOriginalPrice}</p>
-            <p className="text-xl font-bold"><strong>Total Payable:</strong> ₹{totalPrice}</p>
+            <p className="text-xl font-bold text-indigo-600">
+              Total Payable: ₹{totalPrice}
+            </p>
           </div>
 
-          {/* User Section */}
-          <div className="space-y-2">
-            <h2 className="text-lg font-semibold text-indigo-700 mb-2">Booked By</h2>
-            <p><strong>Name:</strong> {user.name}</p>
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Phone:</strong> {user.phone}</p>
+          {/* User Info */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold border-b pb-1">Customer Info</h2>
+            <p><strong>Name:</strong> {user.name || "N/A"}</p>
+            <p><strong>Email:</strong> {user.email || "N/A"}</p>
+            <p><strong>Phone:</strong> {user.phone || "N/A"}</p>
           </div>
 
-          {/* Vendor Section */}
-          <div className="space-y-2">
-            <h2 className="text-lg font-semibold text-indigo-700 mb-2">Sold By</h2>
-            <p><strong>Name:</strong> {vendor.name}</p>
-            <p><strong>Email:</strong> {vendor.email}</p>
-            <p><strong>Phone:</strong> {vendor.phone}</p>
+          {/* Vendor Info */}
+          <div className="space-y-4">
+            <h2 className="text-xl font-semibold border-b pb-1">Sold By</h2>
+            <p><strong>Name:</strong> {vendor?.name}</p>
+            <p><strong>Email:</strong> {vendor?.email}</p>
+            <p><strong>Phone:</strong> {vendor?.phone}</p>
             <p>
               <strong>Address:</strong>{" "}
-              {vendor.address.area}, {vendor.address.city}, {vendor.address.state} - {vendor.address.pincode}, {vendor.address.country}
+              {vendor?.address?.area}, {vendor?.address?.city},{" "}
+              {vendor?.address?.state} - {vendor?.address?.pincode},{" "}
+              {vendor?.address?.country}
             </p>
           </div>
         </div>
 
-        {/* Footer Buttons */}
-        <div className="flex justify-between flex-wrap gap-4 mt-8">
+        {/* Buttons */}
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 p-6 bg-gray-50 border-t">
           <Link
             to="/"
-            className="inline-flex items-center gap-2 px-5 py-2 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-all"
+            className="inline-flex items-center gap-2 px-5 py-2 bg-gray-200 text-gray-800 rounded-lg font-medium hover:bg-gray-300 transition"
           >
             <IoIosArrowBack /> Back to Home
           </Link>
-
-          <button className="inline-flex items-center gap-2 px-5 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-all">
-            <MdDownload /> Download Receipt
-          </button>
+         
         </div>
       </div>
     </div>

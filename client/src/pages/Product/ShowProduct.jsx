@@ -6,7 +6,7 @@ import NotAvailable from "../Loaders/NotAvailable";
 import Navbar from "../../components/Navbars/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import { FaRupeeSign } from "react-icons/fa";
-
+import { BsCashCoin } from "react-icons/bs";
 const ShowProduct = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -79,7 +79,7 @@ const ShowProduct = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           <div className="space-y-6">
             <h1 className="text-4xl capitalize font-bold text-gray-900">{product.title}</h1>
-            <p className="text-gray-100 text-lg">{product.description}</p>
+            <p className="text-white text-lg">{product.description}</p>
 
             {/* Prices */}
             <div className="flex items-center gap-4">
@@ -111,7 +111,7 @@ const ShowProduct = () => {
                 {product.sizes?.map((size) => (
                   <div
                     key={size}
-                    className="w-12 h-12 flex p-2 items-center justify-center border-2 border-gray-500 text-gray-700 bg-white rounded-full font-bold hover:border-blue-500 transition"
+                    className="w-12 h-12 flex p-2 items-center justify-center border-2 border-gray-300 text-gray-700 bg-white rounded-full font-bold hover:border-blue-500 transition"
                   >
                     {size}
                   </div>
@@ -127,12 +127,12 @@ const ShowProduct = () => {
       className="w-10 h-10  rounded-full object-cover border border-gray-200"
     />
               {product.category?.title && (
-                <span className="bg-indigo-200 text-indigo-700 px-4 py-1 flex items-center justify-center rounded-full text-sm font-medium">
+                <span className="bg-indigo-200 text-indigo-700 px-5 py-1 flex items-center justify-center rounded-full text-sm font-medium">
                    {product.category.title}
                 </span>
               )}
               {product.tag && (
-                <span className="bg-pink-200 text-pink-600 flex items-center justify-center  px-4 py-1 rounded-full text-sm font-medium capitalize">
+                <span className="bg-pink-200 text-pink-600 flex items-center justify-center  px-5 py-1 rounded-full text-sm font-medium capitalize">
                    {product.tag}
                 </span>
               )}
@@ -157,9 +157,10 @@ const ShowProduct = () => {
 
             <button
               onClick={() => navigate(`/product/${id}/booking`)}
-              className="w-full m-auto bg-gradient-to-b from-green-500 to-teal-500 hover:cursor-pointer  text-white py-3 rounded-xl font-semibold text-lg shadow-md transition duration-300"
+              className="w-full m-auto bg-gradient-to-b flex justify-center items-center gap-3 from-green-500 to-teal-500 hover:cursor-pointer  text-white py-3 rounded-xl font-semibold text-lg shadow-md transition duration-300"
             >
               Proceed to Booking
+              <BsCashCoin className="text-xl text-white mt-2"/>
             </button>
           </div>
         </div>

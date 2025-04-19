@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useUser } from "../../components/UserContext/userContext";
-
+import Navbar from "../../components/Navbars/Navbar/Navbar";
+import { FaTags } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 const ProductBooking = () => {
   const { id } = useParams(); // product ID
   const { user } = useUser();
@@ -11,7 +13,7 @@ const ProductBooking = () => {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [bookingStatus, setBookingStatus] = useState("");
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -42,8 +44,15 @@ const ProductBooking = () => {
         { sizeSelected, quantity },
         { withCredentials: true }
       );
-      setBookingStatus("Booking Successful!");
-    } catch (err) {
+      const bookingId = res.data?.booking?._id || res.data?.data?.booking?._id;
+
+      if (bookingId) {
+        setBookingStatus("Booking Successful!");
+        navigate(`/booking/${bookingId}/confirmation`);
+      } else {
+        navigate(`/product/${id}`);
+      }
+     } catch (err) {
       setBookingStatus(err.response?.data?.error || "Booking failed.");
     } finally {
       setLoading(false);
@@ -56,10 +65,14 @@ const ProductBooking = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-200 px-4 py-10 flex justify-center items-center">
-  <div className="w-full max-w-6xl bg-white rounded-3xl shadow-xl p-6 sm:p-10">
-    <h1 className="text-3xl sm:text-4xl font-extrabold mb-10 text-center text-gray-800">
-      📦 Book Your Product
+    <>
+  <div className="bg-gradient-to-br from-slate-100 via-gray-100 to-zinc-100">
+    <Navbar/>
+  </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-700 via-gray-500 to-zinc-800 px-4 py-10 flex justify-center items-center">
+  <div className="w-full max-w-6xl bg-white rounded-3xl shadow-xl p-6 mt-5 sm:p-10">
+    <h1 className="text-xl md:text-3xl sm:text-4xl font-extrabold mb-10 text-center text-gray-800">
+      Book Your Product
     </h1>
 
     <div className="grid lg:grid-cols-2 gap-12 items-start">
@@ -74,28 +87,26 @@ const ProductBooking = () => {
         </div>
 
         <div className="space-y-2">
-          <h2 className="text-2xl font-bold text-gray-800">{product.title}</h2>
+          <h2 className="text-3xl font-bold capitalize text-gray-800">{product.title}</h2>
 
-          <p className="text-sm text-gray-600">
-            <span className="font-medium">Category:</span> {product.category?.title} |{" "}
-            <span className="font-medium">Tag:</span> <span className="capitalize">{product.tag}</span>
+          <p className="text-sm flex gap-3 text-gray-600">
+            <span className=" font-medium flex gap-2"> Category : {product.category?.title} </span> |{" "}
+            <span className="font-medium">Tag :</span> <span className="capitalize">{product.tag}</span>
           </p>
 
-          <div className="text-sm text-gray-600 space-y-1">
+          <div className="text-sm  text-gray-600 space-y-1">
             <p>
-              <span className="font-medium">Sold by:</span> {product.vendor.name} (
-              {product.vendor.email} | {product.vendor.phone})
+              <span className="font-medium ">Sold by :</span> {product.vendor.name} (
+               <span className="px-1">{product.vendor.email}  | {product.vendor.phone}) </span>
             </p>
             <p>
-              <span className="font-medium">Address:</span>{" "}
-              {product.vendor.address.area}, {product.vendor.address.city},{" "}
-              {product.vendor.address.state} - {product.vendor.address.pincode},{" "}
-              {product.vendor.address.country}
+              <span className="font-medium ">Address:</span>{" "}
+              {product.vendor.address.area}, {product.vendor.address.city}{" "}- {product.vendor.address.pincode},{" "}
             </p>
           </div>
 
-          <p className="text-sm font-medium text-indigo-700">
-            👤 Booked by: {user?.name} ({user?.email} | {user?.phone})
+          <p className="text-sm font-medium text-teal-600">
+            👤 Booked by:  {user?.name} ({user?.email} | {user?.phone})
           </p>
         </div>
       </div>
@@ -134,15 +145,15 @@ const ProductBooking = () => {
             <button
               type="button"
               onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-              className="w-9 h-9 bg-gray-200 hover:bg-gray-300 text-xl rounded-full"
+              className="w-9 h-9 border border-red-500 font-bold bg-gray-200 hover:bg-red-400 hover:text-white hover:cursor-pointer text-xl rounded-full "
             >
               −
             </button>
-            <span className="text-lg font-semibold">{quantity}</span>
+            <span className="text-lg font-semibold ">{quantity}</span>
             <button
               type="button"
               onClick={() => setQuantity((prev) => prev + 1)}
-              className="w-9 h-9 bg-gray-200 hover:bg-gray-300 text-xl rounded-full"
+              className="w-9 h-9 border border-green-500 bg-gray-200 hover:bg-green-400 hover:text-white hover:cursor-pointer text-xl rounded-full"
             >
               +
             </button>
@@ -150,44 +161,53 @@ const ProductBooking = () => {
         </div>
 
         {/* Billing Summary */}
-        <div className="bg-white border border-gray-200 p-4 rounded-xl shadow-sm text-sm space-y-1">
-          <p>Original Price: ₹{product.originalPrice}</p>
-          <p>Discounted Price: ₹{product.discountedPrice}</p>
-          <p>
-            You Save: ₹{product.originalPrice - product.discountedPrice} (
-            {calculateDiscount()}%)
-          </p>
-          <p className="font-bold text-lg text-indigo-600 pt-2">
-            Total: ₹{(product.discountedPrice * quantity).toFixed(2)}
-          </p>
-        </div>
+        <div className="bg-gradient-to-br from-white to-gray-50 border border-gray-100 p-6 rounded-2xl shadow-md space-y-3 transition-all duration-300">
+  <h3 className="text-base font-semibold text-gray-800 border-b pb-2">
+    🧾 Billing Summary
+  </h3>
+
+  <div className="flex justify-between text-sm text-gray-700">
+    <span>Original Price</span>
+    <span className=" text-gray-600">₹{product.originalPrice}</span>
+  </div>
+
+  <div className="flex justify-between text-sm text-gray-700">
+    <span>Offer Price</span>
+    <span className="text-teal-600 font-medium">₹{product.discountedPrice}</span>
+  </div>
+
+  <div className="flex justify-between text-sm text-gray-700">
+    <span>You Save</span>
+    <span className="text-red-600 font-medium">
+      ₹{product.originalPrice - product.discountedPrice} ({calculateDiscount()}%)
+    </span>
+  </div>
+
+  <hr className="my-2 border-t" />
+
+  <div className="flex justify-between text-lg font-semibold text-green-600">
+    <span className="text-gray-500">Total</span>
+    <span>₹{(product.discountedPrice * quantity).toFixed(2)}</span>
+  </div>
+</div>
+
 
         {/* Button */}
         <button
           type="submit"
           disabled={loading}
-          className={`w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-all duration-300 ${
+          className={`w-full py-3 hover:cursor-pointer hover:scale-105 bg-gradient-to-b from-green-400 to-teal-500 text-white font-semibold rounded-xl transition-all duration-300 ${
             loading ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >
-          {loading ? "Booking..." : "🎉 Confirm Booking"}
+          {loading ? "Booking..." : " Confirm Booking"}
         </button>
 
-        {/* Booking Status */}
-        {bookingStatus && (
-          <p
-            className={`text-sm text-center font-medium ${
-              bookingStatus.includes("successful") ? "text-green-600" : "text-red-600"
-            }`}
-          >
-            {bookingStatus}
-          </p>
-        )}
       </form>
     </div>
   </div>
 </div>
-
+    </>
   );
 };
 

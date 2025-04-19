@@ -282,6 +282,8 @@ function App() {
               </PrivateRoute>
             }
           />
+          
+          <Route path="/booking/:bookingId/confirmation" element={<BookingConfirmation />} />
           <Route path="/error" element={<ErrorPopup />} />
           <Route path="/delete" element={<DeleteSuccessToast />} />
           {/* 404 Page Not Found Route */}

@@ -63,15 +63,39 @@ const MobileNavbar = () => {
             ))}
 
             <li className="opacity-80 flex items-center justify-center p-2.5 gap-2 bg-gray-800 rounded-2xl w-60 hover:text-yellow-400">
-              {user ? (
-                <img src={user.image} alt={user.name} className="w-8 h-8 rounded-full border bg-white border-white" />
-              ) : (
-                <FaUserCircle className="text-xl" />
-              )}
-              <NavLink to={user ? user.role === "user" ? `/user/${user._id}/account` : "/vendor/login" : "/login"} onClick={toggleMenu}>
-                My Profile
-              </NavLink>
-            </li>
+  {/* Determine the correct route */}
+  <NavLink to={
+    user
+      ? (user.role === "user" || user.role === "admin")
+        ? `/user/${user._id}/account`
+        : "/vendor/login"
+      : "/login"
+  }>
+    {user ? (
+      <img
+        src={user.image}
+        alt={user.name}
+        className="w-10 h-10 rounded-full hover:scale-110 transition duration-200"
+      />
+    ) : (
+      <FaUserCircle className="text-2xl text-black" />
+    )}
+  </NavLink>
+
+  <NavLink
+    to={
+      user
+        ? (user.role === "user" || user.role === "admin")
+          ? `/user/${user._id}/account`
+          : "/vendor/login"
+        : "/login"
+    }
+    onClick={toggleMenu}
+  >
+    My Profile
+  </NavLink>
+</li>
+
 
             {user ? (
               <button

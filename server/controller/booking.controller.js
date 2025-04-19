@@ -75,12 +75,16 @@ const createBooking = async (req, res) => {
     }
   
     // Fetch booking with populated references
-    const booking = await Booking.findById(bookingId)
-      .populate('user')
-      .populate('vendor')
-      .populate('product')
-      .populate('category');
-  
+   const booking =  await Booking.findById(bookingId)
+  .populate("product")
+  .populate({
+    path: "product",
+    populate: { path: "category" },
+  })
+  .populate("vendor")
+  .populate("user")
+  .lean();
+
     if (!booking) {
       throw new ApiError(404, 'Booking not found.');
     }

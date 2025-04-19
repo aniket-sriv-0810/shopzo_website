@@ -395,6 +395,8 @@ const bookProduct = async (req, res) => {
       $addToSet: { bookings: userId },
     });
 
+    console.log("Booking data => ", newBooking);
+    
     return res.status(201).json({
       message: "Booking successful!",
       booking: newBooking,
@@ -423,10 +425,16 @@ const getUserBookings = async (req, res) => {
 
     // Fetch user's bookings with populated fields
     const bookings = await Booking.find({ user: userId })
-      .populate("vendor", "name email image")
-      .populate("product", "title discountedPrice images")
-      .populate("category", "title")
-      .sort({ createdAt: -1 });
+    .populate({
+      path: "product",
+      select: "title discountedPrice images category",
+      populate: {
+        path: "category",
+        select: "title",
+      },
+    })
+    .populate("vendor", "name email image")
+    .sort({ createdAt: -1 });
 
     return res.status(200).json({
       success: true,

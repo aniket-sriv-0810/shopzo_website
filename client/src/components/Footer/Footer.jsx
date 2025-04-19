@@ -43,7 +43,7 @@ const Footer = () => {
         <div className="text-center sm:text-left">
           <h3 className="text-lg font-semibold text-white mb-4">Our Location</h3>
           <p className="text-sm text-gray-400 leading-relaxed">
-            Sharda University, Knowledge Park 3,<br />
+             Knowledge Park 3<br />
             Greater Noida, Uttar Pradesh, India - 201306
           </p>
           <p className="mt-3 text-sm text-gray-400">
