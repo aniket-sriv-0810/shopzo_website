@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../../components/UserContext/userContext';
+
 const UserPasswordChange = () => {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -9,10 +10,10 @@ const UserPasswordChange = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
- const {user} = useUser();
+  const { user } = useUser();
+  const navigate  = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setError('');
     setSuccess('');
 
@@ -27,16 +28,17 @@ const UserPasswordChange = () => {
     setLoading(true);
 
     try {
-      const response = await axios.put(`${import.meta.env.VITE_API_URL}/api/user/${user._id}/account/change-password`, {
-        oldPassword,
-        newPassword,
-      }, 
-    {withCredentials: true});
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/user/${user._id}/account/change-password`,
+        { oldPassword, newPassword },
+        { withCredentials: true }
+      );
 
       setSuccess(response.data.message);
       setOldPassword('');
       setNewPassword('');
       setConfirmPassword('');
+      navigate(`/user/${user._id}/account`);
     } catch (err) {
       setError(err.response?.data?.error || 'Something went wrong!');
     } finally {
@@ -45,71 +47,73 @@ const UserPasswordChange = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-100 to-gray-200 px-4">
-      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-blue-100 via-white to-pink-100">
+      <div className="w-full max-w-md bg-white bg-opacity-30 backdrop-blur-lg rounded-3xl p-8 border border-white border-opacity-40 shadow-2xl">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Change Password
         </h2>
 
-        {error && <div className="bg-red-100 text-red-600 px-4 py-2 rounded mb-4 text-sm">{error}</div>}
-        {success && <div className="bg-green-100 text-green-600 px-4 py-2 rounded mb-4 text-sm">{success}</div>}
+        {error && (
+          <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4 text-sm border border-red-300">
+            {error}
+          </div>
+        )}
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="oldPassword" className="block text-sm font-medium text-gray-700">Old Password</label>
+        {success && (
+          <div className="bg-green-100 text-green-700 px-4 py-2 rounded mb-4 text-sm border border-green-300">
+            {success}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Old Password</label>
             <input
               type="password"
-              id="oldPassword"
               value={oldPassword}
               onChange={(e) => setOldPassword(e.target.value)}
-              required
-              className="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-70 border border-gray-300 placeholder-gray-500 text-gray-800 focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all"
               placeholder="Enter your old password"
+              required
             />
           </div>
 
-          <div className="mb-4">
-            <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">New Password</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
             <input
               type="password"
-              id="newPassword"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              required
-              className="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-70 border border-gray-300 placeholder-gray-500 text-gray-800 focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all"
               placeholder="Enter new password"
+              required
             />
           </div>
 
-          <div className="mb-6">
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirm New Password</label>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
             <input
               type="password"
-              id="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full px-4 py-2 rounded-lg bg-white bg-opacity-70 border border-gray-300 placeholder-gray-500 text-gray-800 focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all"
+              placeholder="Confirm new password"
               required
-              className="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="Confirm your new password"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors ${
+            className={`w-full py-3 rounded-lg text-white font-semibold transition-all duration-300 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 hover:from-pink-600 hover:to-indigo-600 shadow-md ${
               loading ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
-            {loading ? 'Changing Password...' : 'Change Password'}
+            {loading ? 'Updating Password...' : 'Change Password'}
           </button>
         </form>
 
-        <div className="mt-6 text-center">
-          <Link to={`user/${user._id}/account`} className="text-sm text-indigo-600 hover:text-indigo-700 underline">
-            ⬅ Back to Profile
-          </Link>
-        </div>
+      
       </div>
     </div>
   );

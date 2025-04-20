@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FaPhoneAlt, FaMapMarkerAlt, FaEnvelope, FaTags } from "react-icons/fa";
 import VendorLikeBtn from '../../LikeBtn/VendorLikeBtn';
 import ShareBtn from "../../ShareBtn/ShareBtn";
+import ReviewCount from "../../Review/ReviewCount";
 
 const VendorCard = ({ vendor }) => {
   return (
@@ -23,7 +24,7 @@ const VendorCard = ({ vendor }) => {
         </div>
 
         {/* Best Seller Tag */}
-        <div className="absolute bottom-4 left-1/5 transform -translate-x-1/2 bg-gradient-to-r from-pink-600 to-rose-500 text-white px-5 py-2 text-xs font-semibold uppercase rounded-full shadow-lg animate-bounce">
+        <div className="absolute bottom-4 left-1/4  transform -translate-x-1/2 bg-gradient-to-r from-pink-600 to-rose-500 text-white px-5 py-2 text-xs font-semibold uppercase rounded-full shadow-lg animate-bounce">
          Our Best Seller
         </div>
 
@@ -37,7 +38,11 @@ const VendorCard = ({ vendor }) => {
       {/* Info Section - 40% */}
       <div className="p-4 space-y-2.5 bg-gray-100 ">
         {/* Name */}
-        <h3 className="text-2xl font-bold text-center text-gray-900">{vendor.name}</h3>
+        <h3 className="text-2xl font-bold text-center text-gray-900">{vendor.name}
+        </h3>
+        <div className="flex justify-center items-center mr-5 -mt-2">
+        <ReviewCount id={vendor._id}/>
+        </div>
 
         {/* Phone */}
         <div className="flex items-center text-gray-600 text-sm gap-3">

@@ -5,15 +5,15 @@ import CategoryCard from "./CategoryCard";
 import ToggleGender from "../../ToggleGender/ToggleGender";
 import SkeletonList from "../../LoadingSkeleton/SkeletonList";
 import Pagination from "../../Pagination/Pagination";
-
+import NotAvailable from "../../../pages/Loaders/NotAvailable";
 const AllCategories = () => {
   const [categories, setCategories] = useState([]);
   const [selectedGender, setSelectedGender] = useState("male");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(3);
+  const [itemsPerPage, setItemsPerPage] = useState(4);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -28,7 +28,6 @@ const AllCategories = () => {
           setError("No categories found.");
         }
       } catch (err) {
-        console.error("Error fetching categories:", err);
         setError("Failed to load categories.");
       } finally {
         setLoading(false);
@@ -46,7 +45,7 @@ const AllCategories = () => {
       } else if (width > 640) {
         setItemsPerPage(6);
       } else {
-        setItemsPerPage(3);
+        setItemsPerPage(4);
       }
     };
 
@@ -91,7 +90,9 @@ const AllCategories = () => {
           <SkeletonList />
         </div>
       ) : error ? (
-        <p className="text-center text-red-500 text-lg font-medium">{error}</p>
+        <div className="col-span-full  text-center text-lg font-semibold text-gray-700">
+              <NotAvailable content={"No Categories Available"} tagline={" Oops! It looks like your category data is empty . Why not explore our amazing collection and add something special to your list?"} />
+              </div>
       ) : (
         <>
           <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 max-w-7xl mx-auto px-2 sm:px-4">
