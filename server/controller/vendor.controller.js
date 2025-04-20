@@ -427,12 +427,16 @@ const getVendorAllBookings = asyncHandler(async (req, res) => {
   // Fetch all bookings related to the vendor
   const bookings = await Booking.find({ vendor: vendorId })
     .populate({
+      path: "vendor",
+      select: "name email phone image",
+    })
+    .populate({
       path: "user",
-      select: "name email phone",
+      select: "name email phone image",
     })
     .populate({
       path: "product",
-      select: "title price image",
+      select: "title price images",
     })
     .select("sizeSelected quantity totalPrice status bookingDate");
 
@@ -454,11 +458,18 @@ const getVendorAllBookings = asyncHandler(async (req, res) => {
       name: booking.user?.name || "N/A",
       email: booking.user?.email || "N/A",
       phone: booking.user?.phone || "N/A",
+      image: booking.user?.image || "N/A",
+    },
+    vendor: {
+      name: booking.vendor?.name || "N/A",
+      email: booking.vendor?.email || "N/A",
+      phone: booking.vendor?.phone || "N/A",
+      image: booking.vendor?.image || "N/A",
     },
     product: {
       title: booking.product?.title || "N/A",
       price: booking.product?.price || 0,
-      image: booking.product?.image?.[0] || "",
+      image: booking.product?.images?.[0] || "",
     },
   }));
 

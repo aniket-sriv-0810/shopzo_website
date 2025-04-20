@@ -6,7 +6,7 @@ import {validate} from '../middleware/validator.js';
 import {editVendorValidation} from '../test/vendorEdit.validator.js' ;
 import { getAllVendors,vendorAccountDetails ,   updateVendorById , getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData , addCategoriesToVendor , productOfVendorData, allProductsOfVendor, getVendorAllBookings, updateBookingStatusByVendor } from "../controller/vendor.controller.js";
 import { reviewSchemaValidation } from '../test/review.validator.js';
-import { addReviewToVendor, getVendorReviews } from '../controller/review.controller.js';
+import { addReviewToVendor, getVendorReviews, getVendorReviewStats } from '../controller/review.controller.js';
 import { loginVendor, logOutAccount , checkVendorAuthentication , changePassword } from '../controller/vendorAuth.controller.js';
 import { loginVendorValidation } from '../test/loginVendor.validator.js';
 const router = express.Router();
@@ -90,7 +90,7 @@ router
 
 router
      .route("/:vendorId/bookings/:bookingId/status")
-     .patch(isLoggedIn, updateBookingStatusByVendor);
+     .put(isLoggedIn, updateBookingStatusByVendor);
 
 // Check for the  vendor account all particular products having the particular vendor/category/tag Route
 router
@@ -118,7 +118,7 @@ router
 //  Check for the posting review on  vendor  Route
 router
      .route("/:id/review")
-     .post(isLoggedIn , validate(reviewSchemaValidation), addReviewToVendor)
+     .post(isLoggedIn ,  addReviewToVendor)
 
 //  Check for the  vendor all reviews data Route
 router
@@ -128,7 +128,7 @@ router
 //  Check for the  vendor all reviews data Route
 router
      .route("/:id/review-stats")
-     .get(isLoggedIn , getVendorReviews)
+     .get(isLoggedIn , getVendorReviewStats)
 
 //  Check for the  vendor  Edit Account Route
 router

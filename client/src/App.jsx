@@ -61,6 +61,9 @@ import VendorAccountEdit from "./pages/Vendor/VendorAccountEdit/VendorAccountEdi
 import VendorPasswordChange from "./pages/Vendor/VendorPasswordChange/VendorPasswordChange";
 import ProductBooking from "./pages/Product/ProductBooking";
 import BookingConfirmation from "./pages/Product/BookingConfirmation";
+import UserBookingCancel from './pages/User/UserBookingCancel';
+import ReviewLoader from "./pages/Loaders/ReviewLoader";
+import VendorBookings from "./pages/Vendor/VendorBookings/VendorBookings";
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -261,6 +264,7 @@ function App() {
           <Route path="/vendor/:id/account/dashboard" element={<VendorDashboard />} />
           <Route path="/vendor/:id/account/categories-listed" element={<VendorCategories />}/>
           <Route path="/vendor/:id/account/products-listed" element={<VendorProducts />}/>
+          <Route path="/vendor/:id/account/bookings" element={<VendorBookings />}/>
           <Route path="/vendor/:id/account/change-password" element={<VendorPasswordChange />}/>
           <Route path="/vendor/:id/:categoryId/:tag/all-products" element={<VendorFilteredProducts />}/>
 
@@ -284,7 +288,9 @@ function App() {
           />
           
           <Route path="/booking/:bookingId/confirmation" element={<BookingConfirmation />} />
+          <Route path="/:userId/account/bookings/:bookingId/cancel" element={<UserBookingCancel />} />
           <Route path="/error" element={<ErrorPopup />} />
+          <Route path="/review/done" element={<ReviewLoader />} />
           <Route path="/delete" element={<DeleteSuccessToast />} />
           {/* 404 Page Not Found Route */}
           <Route path="*" element={<PageNotFound />} />

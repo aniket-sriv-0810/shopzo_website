@@ -53,7 +53,7 @@ const getVendorReviews = asyncHandler(async (req, res) => {
     try {
       // Fetch all reviews for the vendor
       const reviews = await Review.find({ vendor: vendorId })
-        .populate("user", "name")  // Populate user details (e.g., name)
+        .populate("user")  // Populate user details (e.g., name)
         .select("rating comment user")  // Only select rating, comment, and user
         .sort({ createdAt: -1 }); // Optional: Sort by most recent first
   
@@ -67,6 +67,8 @@ const getVendorReviews = asyncHandler(async (req, res) => {
       // Map reviews to send relevant details: name, rating, and comment
       const reviewDetails = reviews.map((review) => ({
         name: review.user.name,  // User's name
+        email: review.user.email,  // User's email
+        image: review.user.image,  // User's img
         rating: review.rating,  // Rating given by the user
         comment: review.comment,  // Comment from the user
       }));

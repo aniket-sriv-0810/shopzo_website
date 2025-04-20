@@ -31,7 +31,7 @@ const ShowVendor = () => {
       setLoading(false);
     }
   };
-console.log("value = ", vendor.reviews);
+
 
   useEffect(() => {
     fetchVendorDetails();
@@ -78,7 +78,9 @@ console.log("value = ", vendor.reviews);
             <div className="text-center">
               <h2 className="text-3xl font-semibold text-gray-800">{vendor.name}</h2>
               <p className="text-lg text-gray-500">@{vendor.username}</p>
+              <div className="mx-3">
               <ReviewCount id={id}/>
+              </div>
             </div>
           </div>
 
@@ -110,13 +112,10 @@ console.log("value = ", vendor.reviews);
         <ShowVendorCategory />
       </section>
       
-      <div className="mt-20">
-        <Review/>
-      </div>
-      <p>Reviews : {vendor.reviews.user}</p>
-      <div className="mt-20">
-        <AllReviews reviews={vendor.reviews} />
-      </div>
+
+    <Review/>
+
+      <AllReviews vendorId={id} />
       <div className="mt-20">
         <Footer/>
       </div>

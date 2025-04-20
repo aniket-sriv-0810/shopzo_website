@@ -40,7 +40,7 @@ const Review = () => {
 
       if (response.status === 201) {
         setReview({ rating: "5", comment: "" });
-        navigate("/review/done", { state: { returnTo: `/vendor/${id}` } });
+        navigate("/review/done", { state: { returnTo: `/vendor/${id}/details` } });
       }
     } catch (error) {
       console.error(error);

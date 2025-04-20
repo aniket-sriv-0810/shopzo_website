@@ -186,7 +186,7 @@ const ProductBooking = () => {
   <hr className="my-2 border-t" />
 
   <div className="flex justify-between text-lg font-semibold text-green-600">
-    <span className="text-gray-500">Total</span>
+    <span className="text-gray-500">Total Amount Payable</span>
     <span>₹{(product.discountedPrice * quantity).toFixed(2)}</span>
   </div>
 </div>
