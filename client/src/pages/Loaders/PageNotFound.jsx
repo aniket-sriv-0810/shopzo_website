@@ -24,7 +24,7 @@ const PageNotFound = () => {
 
       <span className='flex justify-center'>
       <button
-        className="mt-6 flex justify-center items-center gap-2 px-6 py-3 bg-gradient-to-t from-cyan-600 to-purple-600 text-white text-sm sm:text-base md:text-lg rounded-lg hover:scale-110 transition-all duration-300"
+        className="mt-6 flex justify-center items-center gap-2 px-6 py-3 bg-gradient-to-t from-cyan-600 to-purple-600 text-white text-sm sm:text-base md:text-lg rounded-lg hover:scale-110 transition-all duration-300 hover:cursor-pointer"
         onClick={() => navigate('/')}
       >
          Home

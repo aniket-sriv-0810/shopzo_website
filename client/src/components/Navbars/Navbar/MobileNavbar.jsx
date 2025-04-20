@@ -78,7 +78,7 @@ const MobileNavbar = () => {
         className="w-10 h-10 rounded-full hover:scale-110 transition duration-200"
       />
     ) : (
-      <FaUserCircle className="text-2xl text-black" />
+      <FaUserCircle className="text-2xl text-white" />
     )}
   </NavLink>
 

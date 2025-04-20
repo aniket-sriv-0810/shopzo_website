@@ -15,7 +15,7 @@ const ProductCard = ({ product }) => {
 console.log("product => ", product);
 
   return (
-    <div className="hover:shadow-yellow-200 rounded-2xl shadow-md hover:shadow-2xl border  overflow-hidden transition-transform duration-300 hover:scale-[1.02] w-full sm:max-w-[350px] mx-auto flex flex-col">
+    <div className="hover:shadow-gray-500 rounded-2xl shadow-md hover:shadow-2xl  overflow-hidden transition-transform duration-300 hover:scale-[1.02] w-full sm:max-w-[350px] mx-auto flex flex-col">
       
       {/* Image Section (70%) */}
       <div className="relative h-[70%]">
@@ -37,7 +37,7 @@ console.log("product => ", product);
 
         {/* Discount Badge */}
         {discount > 0 && (
-          <div className="absolute bottom-3 left-3 bg-red-600 text-white px-3 py-2 rounded-full text-xs font-bold shadow-md animate-bounce">
+          <div className="absolute bottom-3 left-3 bg-red-500 text-white px-5 py-2 rounded-full text-xs font-semibold shadow-md animate-bounce">
             {discount}% OFF
           </div>
         )}
@@ -50,20 +50,20 @@ console.log("product => ", product);
       </div>
 
       {/* Content Section (30%) */}
-      <div className="p-4 sm:p-3 bg-gray-700 space-y-3 flex-grow flex flex-col justify-between">
+      <div className="p-4 sm:p-3 bg-gray-200 space-y-3 flex-grow flex flex-col justify-between">
         
         {/* Title */}
-        <h2 className="text-xl sm:text-2xl capitalize font-bold text-white line-clamp-2">
+        <h2 className="text-xl ml-3 sm:text-2xl capitalize font-bold text-gray-800 line-clamp-2">
           {product.title}
         </h2>
 
         {/* Price */}
         <div className="flex items-center gap-2 text-md sm:text-base">
-          <span className="flex items-center text-xl text-green-300 font-bold">
+          <span className="flex ml-2 items-center text-xl text-green-600 font-bold">
             <FaRupeeSign className="" />
             {discountedPrice.toFixed(2).toLocaleString("INR")}
           </span>
-          <span className="flex items-center text-gray-400 text-sm line-through">
+          <span className="flex items-center text-gray-600 text-sm line-through">
             {originalPrice.toFixed(2).toLocaleString("INR")}
           </span>
         </div>
@@ -77,7 +77,7 @@ console.log("product => ", product);
      <img
       src={product.category.image}
       alt={product.category.title}
-      className="w-10 h-10  rounded-full object-cover border border-gray-200"
+      className="w-10 h-10  rounded-full object-cover border border-gray-600"
     />
    {product.category?.title && (
             <span className="bg-gradient-to-r from-indigo-600 to-fuchsia-600 text-white px-3 py-1 rounded-full font-medium">
@@ -85,7 +85,7 @@ console.log("product => ", product);
             </span>
           )}
           {product.tag && (
-            <span className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-3 py-1 rounded-full font-medium capitalize">
+            <span className="bg-gradient-to-tr from-teal-600 to-green-700 text-white px-4 py-1 rounded-full font-medium capitalize">
               {product.tag}
             </span>
           )}
@@ -94,19 +94,19 @@ console.log("product => ", product);
         </div>
         {product.vendor && (
   <div className="flex items-center gap-3 mt-3">
-    <span className="text-gray-300 text-sm">Sold by </span>
+    <span className="text-gray-700 text-sm">Sold by </span>
      <img
       src={product.vendor.image}
       alt={product.vendor.name}
-      className="w-8 h-8 rounded-full object-cover border border-gray-100"
+      className="w-8 h-8 rounded-full object-cover border border-gray-600"
     />
-    <div className="text-sm  text-gray-100">{product.vendor.name}</div>
+    <div className="text-sm  text-gray-700">{product.vendor.name}</div>
   </div>
 )}
         {/* Checkout Button */}
         <button
           onClick={() => navigate(`/product/${product._id}`)}
-          className="mt-1 w-[80%] mb-2 mx-auto flex justify-center items-center gap-3 bg-gradient-to-r from-red-600 to-fuchsia-600 hover:from-blue-700 hover:to-red-800 text-white font-semibold py-2 rounded-xl shadow-md transition duration-200 transform hover:scale-105 hover:cursor-pointer"
+          className="mt-1 w-[80%] mb-2 mx-auto flex justify-center items-center gap-3 bg-gradient-to-r from-red-600 to-fuchsia-600 hover:from-fuchsia-700 hover:to-red-800 text-white font-semibold py-2 rounded-xl shadow-md transition duration-200 transform hover:scale-105 hover:cursor-pointer"
         >
           View Product
           <FaTags className="text-xl"/>

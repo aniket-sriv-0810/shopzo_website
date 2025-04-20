@@ -62,18 +62,16 @@ const ShowVendor = () => {
         </h1>
 
         {/* Profile Section */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 grid md:grid-cols-2 gap-12">
+        <div className="bg-white shadow-gray-500 border border-gray-300 rounded-2xl shadow-lg p-8 grid md:grid-cols-2 gap-12">
           {/* Vendor Image */}
           <div className="flex flex-col items-center gap-4">
             <div className="relative group">
               <img
                 src={vendor.image}
                 alt={vendor.name}
-                className="w-40 h-40 rounded-full object-cover shadow-md transition-transform duration-300 ease-in-out group-hover:scale-105"
+                className="w-40 h-40 rounded-full object-cover shadow-md transition-transform duration-300 ease-in-out group-hover:scale-105 shadow-gray-500"
               />
-              <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <span className="text-white font-semibold">View Image</span>
-              </div>
+             
             </div>
             <div className="text-center">
               <h2 className="text-3xl font-semibold text-gray-800">{vendor.name}</h2>
@@ -105,7 +103,7 @@ const ShowVendor = () => {
       </div>
 
        {/* Vendor's Categories */}
-       <section className="max-w-7xl mx-auto px-4 mt-16">
+       <section className=" mx-auto px-4 mt-16">
         <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
           Categories Listed by this Vendor
         </h2>

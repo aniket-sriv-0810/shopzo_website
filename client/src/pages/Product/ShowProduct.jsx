@@ -55,7 +55,7 @@ const ShowProduct = () => {
   return (
     <>
       <Navbar />
-      <section className="max-w-full bg-gray-400 mx-auto px-4 sm:px-6 py-12">
+      <section className="max-w-full bg-gray-500 mx-auto px-4 sm:px-6 py-12">
         {/* Image Carousel */}
         <div className="relative w-full  overflow-hidden mb-8">
           <div className="flex overflow-x-auto gap-6 snap-x snap-mandatory scrollbar-hide">
@@ -89,12 +89,12 @@ const ShowProduct = () => {
       <FaRupeeSign className="mr-1" />
       {Number(discountedPrice).toFixed(2)}
     </div>
-    <div className="line-through text-gray-700 text-sm flex items-center">
+    <div className="line-through text-gray-800 text-sm flex items-center">
 
       {Number(originalPrice).toFixed(2)}
     </div>
     {discount > 0 && (
-      <span className="bg-red-500 text-white text-xs px-3 py-1 rounded-full animate-bounce">
+      <span className="bg-red-500 text-white text-xs px-4 py-1 rounded-full animate-bounce">
         {discount}% OFF
       </span>
     )}
@@ -106,12 +106,12 @@ const ShowProduct = () => {
 
             {/* Sizes */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">Sizes Available</h3>
+              <h3 className="text-sm font-semibold text-gray-200 mb-3">Sizes Available</h3>
               <div className="flex flex-wrap gap-3">
                 {product.sizes?.map((size) => (
                   <div
                     key={size}
-                    className="w-12 h-12 flex p-2 items-center justify-center border-2 border-gray-300 text-gray-700 bg-white rounded-full font-bold hover:border-blue-500 transition"
+                    className="w-16 h-16 flex p-2 items-center justify-center border-2 border-gray-300 text-gray-700 bg-white rounded-full font-bold hover:border-blue-500 transition"
                   >
                     {size}
                   </div>
@@ -120,19 +120,19 @@ const ShowProduct = () => {
             </div>
 
             {/* Category & Tag */}
-            <div className="flex flex-wrap gap-3 mt-4">
+            <div className="flex flex-wrap gap-3 mt-6">
             <img
       src={product.category.image}
       alt={product.category.title}
       className="w-10 h-10  rounded-full object-cover border border-gray-200"
     />
               {product.category?.title && (
-                <span className="bg-indigo-200 text-indigo-700 px-5 py-1 flex items-center justify-center rounded-full text-sm font-medium">
+                <span className="bg-indigo-600 text-white px-5 py-1 flex items-center justify-center rounded-full text-sm font-medium">
                    {product.category.title}
                 </span>
               )}
               {product.tag && (
-                <span className="bg-pink-200 text-pink-600 flex items-center justify-center  px-5 py-1 rounded-full text-sm font-medium capitalize">
+                <span className="bg-pink-600 text-white flex items-center justify-center  px-6 py-1 rounded-full text-sm font-medium capitalize">
                    {product.tag}
                 </span>
               )}
@@ -157,7 +157,7 @@ const ShowProduct = () => {
 
             <button
               onClick={() => navigate(`/product/${id}/booking`)}
-              className="w-full m-auto bg-gradient-to-b flex justify-center items-center gap-3 from-green-500 to-teal-500 hover:cursor-pointer  text-white py-3 rounded-xl font-semibold text-lg shadow-md transition duration-300"
+              className="w-full m-auto  flex justify-center items-center gap-3 bg-gradient-to-tr from-green-500 to-teal-500 hover:cursor-pointer  text-white py-3 rounded-xl font-semibold text-lg shadow-md transition duration-300  hover:from-teal-700 hover:to-green-600"
             >
               Proceed to Booking
               <BsCashCoin className="text-xl text-white mt-2"/>

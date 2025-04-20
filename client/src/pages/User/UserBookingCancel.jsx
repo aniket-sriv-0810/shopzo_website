@@ -20,7 +20,6 @@ const CancelBooking = ({ bookingId, userId, onCancelSuccess }) => {
       if (response.status === 200) {
         // Notify the parent component about the successful cancellation
         onCancelSuccess(bookingId);
-        alert("Booking cancelled successfully!");
       }
     } catch (err) {
       setError("Failed to cancel booking. Please try again later.");
@@ -34,7 +33,7 @@ const CancelBooking = ({ bookingId, userId, onCancelSuccess }) => {
       <button
         onClick={cancelBooking}
         disabled={loading}
-        className="bg-red-500 text-white px-4 py-2 rounded"
+        className=" text-white bg-gradient-to-bl from-red-500 to-fuchsia-500 hover:scale-110 hover:cursor-pointer shadow-md shadow-gray-500 px-5 py-2 rounded"
       >
         {loading ? "Cancelling..." : "Cancel Booking"}
       </button>

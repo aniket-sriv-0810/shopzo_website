@@ -17,6 +17,7 @@ const EditProduct = () => {
 
   const [newImages, setNewImages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const sizeOptions = ["xs", "s", "m", "l", "xl", "xxl", "xxxl"];
 
@@ -68,6 +69,7 @@ const EditProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       const sendData = new FormData();
       sendData.append("title", formData.title);
@@ -81,9 +83,11 @@ const EditProduct = () => {
         withCredentials: true,
       });
 
-      navigate("/");
+      navigate("/admin");
     } catch (error) {
       console.error("Error updating product:", error);
+    }finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -182,9 +186,12 @@ const EditProduct = () => {
 
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          disabled={isSubmitting}
+          className={`bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 ${
+            isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+          }`}
         >
-          Update Product
+          {isSubmitting ? "Updating..." : "Update Product"}
         </button>
       </form>
     </div>

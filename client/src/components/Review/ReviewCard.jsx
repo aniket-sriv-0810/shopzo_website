@@ -1,7 +1,7 @@
 import Logo from '../../assets/black-website-logo.png';
 const ReviewCard = ({ review }) => {
   return (
-    <div className="w-full sm:w-80 bg-white shadow-lg rounded-2xl p-6 border border-gray-200">
+    <div className="w-full sm:w-80 bg-white shadow-lg rounded-2xl p-6 border border-gray-300 shadow-gray-400">
       <div className="flex items-center gap-4">
         <img
           src={review.image}// or a default user avatar

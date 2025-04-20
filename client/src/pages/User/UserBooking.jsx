@@ -4,6 +4,8 @@ import axios from "axios";
 import BookingCard from "../../components/User/UserBooking/UserBookingCard";
 import { useUser } from "../../components/UserContext/userContext";
 import UserNavbar from "../../components/Navbars/UserNavbar/UserNavbar";
+import SkeletonList from "../../components/LoadingSkeleton/SkeletonList";
+import NotAvailable from "../Loaders/NotAvailable";
 const UserBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,12 +44,21 @@ const UserBookings = () => {
       <UserNavbar />
     </div>
     <div className="max-w-5xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">My Bookings</h1>
+    <h2 className="text-center text-3xl font-bold text-gray-900 mt-10 mb-7">My Bookings</h2>
 
       {loading ? (
-        <p>Loading...</p>
+        <div className="flex-col justify-center items-center mt-10 md:flex-row">
+            <SkeletonList />
+          </div>
       ) : bookings.length === 0 ? (
-        <p>You haven’t made any bookings yet.</p>
+        <div className="col-span-full text-center text-lg font-semibold text-gray-700">
+                  <NotAvailable
+                    content={"No Bookings Found"}
+                    tagline={
+                      "Oops! You haven't done any bookings yet. Start exploring and discover your products!"
+                    }
+                  />
+                </div>
       ) : (
         bookings.map((booking) => (
           <BookingCard

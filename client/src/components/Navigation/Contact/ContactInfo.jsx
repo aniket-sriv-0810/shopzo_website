@@ -23,7 +23,7 @@ const ContactInfo = () => {
           <FaMapMarkerAlt className="text-red-500 text-xl" />
           <span>
             <strong className="hidden md:block">Address</strong>
-            <span className="text-sm"> Sharda University, Knowledge Park 3,
+            <span className="text-sm">    Knowledge Park 3,
             Greater Noida, Uttar Pradesh, India - 201306</span>
           </span>
         </li>

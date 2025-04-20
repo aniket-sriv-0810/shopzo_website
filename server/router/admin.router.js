@@ -73,7 +73,7 @@ router
 //check for the particular product Edit Route
 router
      .route("/product/:id/edit")
-     .put(isLoggedIn , isAdmin , upload.array("images", 7) , validate(editProductSchemaValidation) , updateProductById )
+     .put(isLoggedIn , isAdmin , upload.array("images", 7)  , updateProductById )
 
 //check for the particular product Delete Route
 router

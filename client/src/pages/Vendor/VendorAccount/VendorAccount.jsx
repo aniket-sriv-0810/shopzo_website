@@ -7,6 +7,7 @@ import VendorDetailsForm from "../../../components/Vendors/VendorAccount/VendorD
 import VendorActions from "../../../components/Vendors/VendorAccount/VendorActions";
 import SkeletonForm from "../../../components/LoadingSkeleton/SkeletonForm";
 import ErrorPopup from "../../../components/Popups/ErrorPopUp";
+import ReviewCount from "../../../components/Review/ReviewCount";
 
 const VendorAccount = () => {
   const [vendor, setVendor] = useState(null);
@@ -51,6 +52,7 @@ const VendorAccount = () => {
               <div className="max-w-5xl mx-auto">
                 <h2 className="text-3xl md:text-4xl capitalize font-bold text-center text-gray-800 mb-10 tracking-wide">
                  My Vendor Account
+                 <div className="mt-4 flex justify-center items-center "><ReviewCount id={vendor._id}/></div>
                 </h2>
                 {vendor ? (
                   <>

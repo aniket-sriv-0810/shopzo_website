@@ -123,12 +123,12 @@ router
 //  Check for the  vendor all reviews data Route
 router
      .route("/:id/all-reviews")
-     .get(isLoggedIn , getVendorReviews)
+     .get(  getVendorReviews)
 
 //  Check for the  vendor all reviews data Route
 router
      .route("/:id/review-stats")
-     .get(isLoggedIn , getVendorReviewStats)
+     .get(  getVendorReviewStats)
 
 //  Check for the  vendor  Edit Account Route
 router

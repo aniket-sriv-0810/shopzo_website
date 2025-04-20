@@ -19,7 +19,7 @@ const ShowCategory = () => {
   const [sortOrder, setSortOrder] = useState("default");
 
   // 🆕 Pagination
-  const PRODUCTS_PER_PAGE = 1;
+  const PRODUCTS_PER_PAGE = 6;
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(allProducts.length / PRODUCTS_PER_PAGE);
 
@@ -88,12 +88,12 @@ const ShowCategory = () => {
         </div>
       ) : (
         <>
-          <section className="mx-auto p-3 pt-6 bg-gray-300 min-h-screen">
+          <section className="m-auto p-3 pb-7 pt-6 bg-gray-700 min-h-screen">
             <div className="text-center">
-              <h2 className="text-2xl  sm:text-3xl font-bold text-gray-700 tracking-tight leading-tight">
-                Products in <span className="text-fuchsia-600">{category?.title}</span>
+              <h2 className="text-2xl mt-2 sm:text-3xl font-bold text-gray-300 tracking-tight leading-tight">
+                Products in <span className="text-fuchsia-500">{category?.title}</span>
               </h2>
-              <p className="text-xl text-gray-600 font-semibold mt-3 capitalize">{tag}</p>
+              <p className="text-xl text-gray-300 font-semibold mt-3 capitalize">{tag}</p>
             </div>
 
             <SortProducts
@@ -129,7 +129,7 @@ const ShowCategory = () => {
         </>
       )}
 
-      <div className="mt-16">
+      <div className="">
         <Footer />
       </div>
     </>

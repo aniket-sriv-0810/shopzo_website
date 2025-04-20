@@ -2,6 +2,7 @@ import {Faq} from "../models/faq.model.js";
 import {Contact} from "../models/contact.model.js";
 import {User} from "../models/user.model.js";
 import {Product} from "../models/product.model.js";
+import {Vendor} from "../models/vendor.model.js";
 import {Category} from "../models/category.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -76,50 +77,50 @@ const searchAll = async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    // 1. Search Vendors
-    const vendorQuery = Vendor.find({
-      name: { $regex: query, $options: "i" },
-    });
+    const regexQuery = { $regex: query, $options: "i" };
 
-    const vendorResults = await vendorQuery.skip(skip).limit(limit);
-    const totalVendors = await Vendor.countDocuments({
-      name: { $regex: query, $options: "i" },
-    });
-
-    // 2. Match categories by title
-    const matchedCategories = await Category.find({
-      title: { $regex: query, $options: "i" },
-    });
-
+    // Find matching categories first (by title)
+    const matchedCategories = await Category.find({ title: regexQuery });
     const categoryIds = matchedCategories.map((cat) => cat._id);
 
-    // 3. Search Products
+    // Search Vendors (by name)
+    const vendorQuery = Vendor.find({ name: regexQuery });
+    const vendors = await vendorQuery.skip(skip).limit(limit);
+    const totalVendors = await Vendor.countDocuments({ name: regexQuery });
+
+    // Search Products (title, tag, or matched category)
     const productQuery = Product.find({
       $or: [
-        { title: { $regex: query, $options: "i" } },
-        { tag: { $regex: query, $options: "i" } },
+        { title: regexQuery },
+        { tag: regexQuery },
         { category: { $in: categoryIds } },
       ],
-    }).populate("category", "title");
+    })
+      .populate("category", "title image")
+      .populate("vendor", "name image");
 
-    const productResults = await productQuery.skip(skip).limit(limit);
+    const products = await productQuery.skip(skip).limit(limit);
     const totalProducts = await Product.countDocuments({
       $or: [
-        { title: { $regex: query, $options: "i" } },
-        { tag: { $regex: query, $options: "i" } },
+        { title: regexQuery },
+        { tag: regexQuery },
         { category: { $in: categoryIds } },
       ],
     });
 
     return res.status(200).json({
-      products: productResults,
-      vendors: vendorResults,
-      totalPages: Math.ceil((totalProducts + totalVendors) / limit),
+      vendors,
+      products,
+      totalVendors,
+      totalProducts,
       currentPage: Number(page),
+      totalPages: Math.ceil(Math.max(totalVendors, totalProducts) / limit),
     });
   } catch (error) {
     console.error("Search error:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
 export {faqData , createContactMessage , searchAll}

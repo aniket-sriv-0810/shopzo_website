@@ -22,7 +22,9 @@ router
      .route('/:bookingId/confirmation')
      .get(isLoggedIn , getBookingConfirmation)
 
-router.get("/search-products", searchAll);
+router
+      .route("/search-all")
+      .get(searchAll);
 
 
 

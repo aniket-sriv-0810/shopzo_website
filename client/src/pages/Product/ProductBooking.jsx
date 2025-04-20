@@ -5,6 +5,7 @@ import { useUser } from "../../components/UserContext/userContext";
 import Navbar from "../../components/Navbars/Navbar/Navbar";
 import { FaTags } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import SkeletonForm from "../../components/LoadingSkeleton/SkeletonForm";
 const ProductBooking = () => {
   const { id } = useParams(); // product ID
   const { user } = useUser();
@@ -61,7 +62,9 @@ const ProductBooking = () => {
   };
 
   if (!product) {
-    return <div className="text-center py-10 text-gray-600">Loading product...</div>;
+    return <div className="flex justify-center items-center py-16">
+    <SkeletonForm />
+  </div>;
   }
 
   return (
@@ -145,7 +148,7 @@ const ProductBooking = () => {
             <button
               type="button"
               onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
-              className="w-9 h-9 border border-red-500 font-bold bg-gray-200 hover:bg-red-400 hover:text-white hover:cursor-pointer text-xl rounded-full "
+              className="w-9 h-9 border pb-1 border-red-500 font-bold bg-gray-200 hover:bg-red-400 hover:text-white hover:cursor-pointer text-xl rounded-full "
             >
               −
             </button>
@@ -153,7 +156,7 @@ const ProductBooking = () => {
             <button
               type="button"
               onClick={() => setQuantity((prev) => prev + 1)}
-              className="w-9 h-9 border border-green-500 bg-gray-200 hover:bg-green-400 hover:text-white hover:cursor-pointer text-xl rounded-full"
+              className="w-9 h-9 border pb-1 border-green-500 bg-gray-200 hover:bg-green-400 hover:text-white hover:cursor-pointer text-xl rounded-full"
             >
               +
             </button>
@@ -176,16 +179,16 @@ const ProductBooking = () => {
     <span className="text-teal-600 font-medium">₹{product.discountedPrice}</span>
   </div>
 
-  <div className="flex justify-between text-sm text-gray-700">
+  <div className="flex justify-between  text-sm text-gray-700">
     <span>You Save</span>
-    <span className="text-red-600 font-medium">
+    <span className="text-green-600 font-semibold">
       ₹{product.originalPrice - product.discountedPrice} ({calculateDiscount()}%)
     </span>
   </div>
 
   <hr className="my-2 border-t" />
 
-  <div className="flex justify-between text-lg font-semibold text-green-600">
+  <div className="flex justify-between text-lg font-semibold text-cyan-600">
     <span className="text-gray-500">Total Amount Payable</span>
     <span>₹{(product.discountedPrice * quantity).toFixed(2)}</span>
   </div>

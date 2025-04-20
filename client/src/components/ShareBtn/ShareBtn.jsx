@@ -6,7 +6,7 @@ const ShareBtn = ({ productName, productLink }) => {
     const shareData = {
       title: `Check out this hotel: ${productName}`,
       text: `I found this amazing hotel called ${productLink}. You can check it out here:`,
-      url: hotelLink,
+      url: productLink,
     };
 
     try {

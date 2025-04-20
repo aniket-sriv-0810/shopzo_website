@@ -12,6 +12,7 @@ const VendorProfile = ({ vendor }) => {
         <h1 className="text-2xl font-bold uppercase">{vendor?.name || "Vendor Name"}</h1>
         <p className="text-sm font-semibold opacity-80">@{vendor?.username || "Vendor Email"}</p>
         <p className="text-sm opacity-80">{vendor?.email || "Vendor Email"}</p>
+        
       </div>
     </div>
   );
