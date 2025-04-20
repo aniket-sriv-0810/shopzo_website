@@ -531,6 +531,26 @@ const updateBookingStatusByVendor = asyncHandler(async (req, res) => {
     new ApiResponse(200, updatedBooking, `Booking status updated to '${status}' successfully`)
   );
 });
+const vendorDeleteBooking = async (req, res) => {
+  try {
+    const { bookingId, userId, productId } = req.params;
+    const vendorId = req.user._id; // assuming vendor is authenticated and `req.user` has the vendor info
 
+    const booking = await Booking.findOne({
+      _id: bookingId,
+      vendor: vendorId,
+      user: userId,
+      product: productId,
+    });
 
-export {getAllVendors,  vendorAccountDetails  , updateVendorById , deleteVendorById ,getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData ,addCategoriesToVendor , productOfVendorData , allProductsOfVendor  , getVendorAllBookings , updateBookingStatusByVendor};
+    if (!booking) return res.status(404).json({ message: "Booking not found or unauthorized" });
+
+    await booking.deleteOne();
+
+    return res.status(200).json({ message: "Booking deleted by vendor" });
+  } catch (err) {
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+export {getAllVendors,  vendorAccountDetails  , updateVendorById , deleteVendorById ,getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData ,addCategoriesToVendor , productOfVendorData , allProductsOfVendor  , getVendorAllBookings , updateBookingStatusByVendor , vendorDeleteBooking};

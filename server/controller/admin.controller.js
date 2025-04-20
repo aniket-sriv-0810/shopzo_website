@@ -244,4 +244,24 @@ const addCategoryToVendor = async (req, res) => {
       return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
   };
-export { adminDashboardData , adminUserData , adminVendorData , adminCategoryData , adminProductData , adminBookingData , adminFeedbackData , addCategoryToVendor};
+
+  const adminDeleteBooking = async (req, res) => {
+    try {
+      const { bookingId } = req.params;
+  
+      const booking = await Booking.findById(bookingId);
+  
+      if (!booking) return res.status(404).json({ message: "Booking not found" });
+  
+      if (!["pending", "completed"].includes(booking.status)) {
+        return res.status(400).json({ message: "Only pending or completed bookings can be deleted by admin" });
+      }
+  
+      await booking.deleteOne();
+  
+      return res.status(200).json({ message: "Booking deleted successfully by admin" });
+    } catch (err) {
+      return res.status(500).json({ message: "Server error", error: err.message });
+    }
+  };
+export { adminDashboardData , adminUserData , adminVendorData , adminCategoryData , adminProductData , adminBookingData , adminFeedbackData , addCategoryToVendor , adminDeleteBooking};

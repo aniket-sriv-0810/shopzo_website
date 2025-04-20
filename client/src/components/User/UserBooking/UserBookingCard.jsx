@@ -1,7 +1,7 @@
 import React from "react";
 import CancelBooking from "../../../pages/User/UserBookingCancel";
 import { useNavigate } from "react-router-dom";
-
+import UserDeleteCancelledBooking from '../../../pages/User/UserCancelBooking';
 const BookingCard = ({ booking, userId , onCancelSuccess }) => {
   const navigate = useNavigate();
   const {
@@ -67,6 +67,15 @@ const BookingCard = ({ booking, userId , onCancelSuccess }) => {
           />
         </div>
       )}
+      {/* Delete Cancelled Booking Button */}
+{status === "cancelled" && (
+  <div className="mt-4 flex justify-end">
+    <UserDeleteCancelledBooking
+      bookingId={_id}
+      onDeleted={() => onCancelSuccess(_id)}
+    />
+  </div>
+)}
       <div className=" mt-6  ">
       <button
         onClick={() =>  navigate(`/booking/${_id}/confirmation`)}

@@ -493,4 +493,25 @@ const cancelUserBooking = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, { bookingId }, "Booking cancelled successfully"));
 });
 
-export { userAccountDetails  , getUserWishlists , toggleProductWishlist , getUserVendorWishlists , toggleVendorWishlist ,editUserDetails , deleteUserAccount , bookProduct, getUserBookings , cancelUserBooking};
+const userDeleteCancelledBooking = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+    const userId = req.user._id; // assuming user is authenticated
+
+    const booking = await Booking.findOne({
+      _id: bookingId,
+      user: userId,
+      status: "cancelled",
+    });
+
+    if (!booking) return res.status(404).json({ message: "Booking not found or not cancelled" });
+
+    await booking.deleteOne();
+
+    return res.status(200).json({ message: "Cancelled booking deleted by user" });
+  } catch (err) {
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+export { userAccountDetails  , getUserWishlists , toggleProductWishlist , getUserVendorWishlists , toggleVendorWishlist ,editUserDetails , deleteUserAccount , bookProduct, getUserBookings , cancelUserBooking , userDeleteCancelledBooking};
