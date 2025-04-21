@@ -67,6 +67,7 @@ app.use(session(expressSessionOption));
 app.use(passport.initialize());
 app.use(passport.session());
 
+
 // Serve static files from the public folder
 const clientBuildPath = path.join(__dirname, 'public');
 app.use(express.static(clientBuildPath, {
