@@ -5,7 +5,6 @@ import {uploadOnCloudinary} from "../utils/cloudinary.js";
 import {ApiError} from "../utils/ApiError.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
 import passport from "passport";
-//  Register a New Vendor
 const addNewVendor = asyncHandler(async (req, res) => {
   try {
     const {
@@ -24,14 +23,14 @@ const addNewVendor = asyncHandler(async (req, res) => {
 
     const { area, city, pincode, state, country } = address;
 
-    // 📛 Check if image is present (required)
+    // ✅ Validate image
     if (!req.file) {
       return res.status(400).json(
         new ApiError(400, ["Image is required"], "Validation Error")
       );
     }
 
-    // 🔍 Check if email, username, or phone already exists in Vendor model
+    // 🔍 Check for duplicates in Vendor model
     const [existingEmail, existingUsername, existingPhone] = await Promise.all([
       Vendor.findOne({ email: email.toLowerCase() }),
       Vendor.findOne({ username: username.toLowerCase() }),
@@ -56,7 +55,7 @@ const addNewVendor = asyncHandler(async (req, res) => {
       );
     }
 
-    // ☁️ Upload vendor image
+    // ☁️ Upload image
     const uploadedImage = await uploadOnCloudinary(req.file.path);
     const imageUrl = uploadedImage?.url;
 
@@ -66,19 +65,13 @@ const addNewVendor = asyncHandler(async (req, res) => {
       );
     }
 
-    // 👤 Create vendor
+    // 👤 Create new Vendor document
     const newVendor = new Vendor({
       name,
       username: username.toLowerCase(),
       email: email.toLowerCase(),
       phone,
-      address: {
-        area,
-        city,
-        pincode,
-        state,
-        country,
-      },
+      address: { area, city, pincode, state, country },
       image: imageUrl,
       role: role || "vendor",
       products,
@@ -87,7 +80,7 @@ const addNewVendor = asyncHandler(async (req, res) => {
       bookings,
     });
 
-    // 🔐 Register vendor
+    // 🔐 Register the vendor
     const registeredVendor = await Vendor.register(newVendor, password);
     if (!registeredVendor) {
       return res.status(400).json(
@@ -97,7 +90,7 @@ const addNewVendor = asyncHandler(async (req, res) => {
 
     console.log("✅ Vendor registered successfully!");
 
-    // 👥 Save to User model too (with only needed fields)
+    // 🧠 Save vendor to User model if not already there
     const userExists = await User.findOne({ email: email.toLowerCase() });
     if (!userExists) {
       const newUser = new User({
@@ -105,34 +98,43 @@ const addNewVendor = asyncHandler(async (req, res) => {
         email: email.toLowerCase(),
         phone,
         image: imageUrl,
-        role: "vendor", // so you can distinguish it in users too
+        role: "vendor",
       });
-
       await User.register(newUser, password);
       console.log("📦 Vendor also added to User model");
     } else {
       console.warn("⚠️ Email already exists in User model — skipping user creation");
     }
 
-    // 🔐 Auto-login after registration (optional)
-    req.login(registeredVendor, { session: true }, (err) => {
-      if (err) {
-        return res.status(500).json(
-          new ApiError(500, err, "Auto-login after registration failed!")
+    // 🛑 DO NOT AUTO-LOGIN if an admin is creating the vendor
+    if (!req.user || req.user.role !== "admin") {
+      // User is self-registering, allow auto-login
+      req.login(registeredVendor, { session: true }, (err) => {
+        if (err) {
+          return res.status(500).json(
+            new ApiError(500, err, "Auto-login after registration failed!")
+          );
+        }
+
+        console.log("🔐 Vendor auto-login successful!");
+        return res.status(201).json(
+          new ApiResponse(
+            201,
+            { vendor: registeredVendor },
+            "Vendor registered and logged in successfully!"
+          )
         );
-      }
-
-      console.log("🔐 Vendor auto-login successful!");
-
+      });
+    } else {
+      // Admin registered the vendor, skip login
       return res.status(201).json(
         new ApiResponse(
           201,
           { vendor: registeredVendor },
-          "Vendor registered and logged in successfully!"
+          "Vendor registered successfully by admin"
         )
       );
-    });
-
+    }
   } catch (error) {
     console.error("❌ Error during vendor registration:", error);
     return res.status(500).json(
@@ -140,6 +142,7 @@ const addNewVendor = asyncHandler(async (req, res) => {
     );
   }
 });
+
 
 
 // ✅ Vendor Login Controller

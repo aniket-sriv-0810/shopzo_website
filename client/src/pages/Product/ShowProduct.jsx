@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef ,useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import SkeletonCard from "../../components/LoadingSkeleton/SkeletonCard";
@@ -11,6 +11,8 @@ const ShowProduct = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
+const carouselRef = useRef(null);
   const navigate = useNavigate();
   const fetchProduct = async () => {
     try {
@@ -28,6 +30,37 @@ const ShowProduct = () => {
   useEffect(() => {
     fetchProduct();
   }, [id]);
+
+// Auto-slide logic for mobile only
+useEffect(() => {
+  if (!product || !product.images || product.images.length === 0) return;
+
+  const isMobile = window.innerWidth < 640;
+  if (!isMobile) return;
+
+  const interval = setInterval(() => {
+    setCurrentIndex((prevIndex) =>
+      (prevIndex + 1) % product.images.length
+    );
+  }, 2000);
+
+  return () => clearInterval(interval);
+}, [product, currentIndex]);
+
+// Scroll to current image on index change (only on small screens)
+useEffect(() => {
+  if (!product || !product.images || !carouselRef.current) return;
+
+  const isMobile = window.innerWidth < 640;
+  if (!isMobile) return;
+
+  const container = carouselRef.current;
+  const imageWidth = container.offsetWidth;
+  container.scrollTo({
+    left: imageWidth * currentIndex,
+    behavior: "smooth",
+  });
+}, [currentIndex, product]);
 
   if (loading)
     return (
@@ -58,21 +91,27 @@ const ShowProduct = () => {
       <section className="max-w-full bg-gray-500 mx-auto px-4 sm:px-6 py-12">
         {/* Image Carousel */}
         <div className="relative w-full  overflow-hidden mb-8">
-          <div className="flex overflow-x-auto gap-6 snap-x snap-mandatory scrollbar-hide">
-            {product.images ? product.images.map((img, idx) => (
-              <div
-                key={product._id-idx}
-                className="flex-shrink-0 w-full  sm:w-[350px] h-[320px] sm:h-[450px] snap-start rounded-2xl overflow-hidden bg-gray-100  shadow-md"
-
-              >
-                <img
-                  src={img}
-                  alt={`Product ${idx}`}
-                  className="w-full h-full object-cover object-center hover:scale-110  "
-                />
-              </div>
-            )) : "No image found !"}
-          </div>
+         <div
+    ref={carouselRef}
+    className="flex overflow-x-auto gap-6 snap-x snap-mandatory scrollbar-hide sm:scrollbar-default"
+  >
+    {product.images ? (
+      product.images.map((img, idx) => (
+        <div
+          key={product._id + "-" + idx}
+          className="flex-shrink-0 w-full sm:w-[350px] h-[320px] sm:h-[450px] snap-start rounded-2xl overflow-hidden bg-gray-100 shadow-md"
+        >
+          <img
+            src={img}
+            alt={`Product ${idx}`}
+            className="w-full h-full object-cover object-center transition-transform duration-300 hover:scale-110"
+          />
+        </div>
+      ))
+    ) : (
+      <p className="text-gray-500 text-center">No image found!</p>
+    )}
+  </div>
         </div>
 
         {/* Product Info */}

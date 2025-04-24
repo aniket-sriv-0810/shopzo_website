@@ -7,7 +7,7 @@ import ReviewCount from "../../Review/ReviewCount";
 
 const VendorCard = ({ vendor }) => {
   return (
-    <div className="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 w-full max-w-xs mx-auto group hover:shadow-gray-300">
+    <div className="bg-gray-100 rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 w-full h-full max-w-xs mx-auto group hover:shadow-gray-300">
       {/* Image Section - 60% height */}
       <div className="relative  overflow-hidden">
         {/* Share Button */}
@@ -31,12 +31,12 @@ const VendorCard = ({ vendor }) => {
         <img
           src={vendor.image}
           alt={vendor.name}
-          className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105 bg-gray-700"
+          className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105 bg-gray-800"
         />
       </div>
 
       {/* Info Section - 40% */}
-      <div className="p-4 space-y-2.5 bg-gray-100 ">
+      <div className="p-5 space-y-2.5 bg-gray-100 ">
         {/* Name */}
         <h3 className="text-2xl font-bold text-center text-gray-900">{vendor.name}
         </h3>
@@ -57,7 +57,7 @@ const VendorCard = ({ vendor }) => {
         </div>
 
         {/* Address */}
-        <div className="flex items-start text-gray-700 text-sm gap-3 capitalize">
+        <div className="flex items-start text-gray-700 text-sm  gap-3 capitalize">
           <FaMapMarkerAlt className="text-red-500 mt-1" />
           <span>
             {vendor.address.area}, {vendor.address.city} - {vendor.address.pincode}
