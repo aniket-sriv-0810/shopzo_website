@@ -51,7 +51,7 @@ const UserBookings = () => {
             <SkeletonList />
           </div>
       ) : bookings.length === 0 ? (
-        <div className="col-span-full text-center text-lg font-semibold text-gray-700">
+        <div className="col-span-full  text-center text-lg font-semibold text-gray-700">
                   <NotAvailable
                     content={"No Bookings Found"}
                     tagline={

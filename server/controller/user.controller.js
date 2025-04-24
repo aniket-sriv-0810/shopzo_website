@@ -54,55 +54,61 @@ const userAccountDetails = asyncHandler(async (req, res) => {
 
 // 🧾 Get all Wishlist Products for a User
 const getUserWishlists = asyncHandler(async (req, res) => {
-    const { id } = req.params;
-  
-    try {
-      // ✅ Validate ID presence
-      if (!id) {
-        return res.status(400).json(
-          new ApiError(400, "User ID is required!")
-        );
-      }
-  
-      // ✅ Validate ID format
-      if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json(
-          new ApiError(400, "Invalid ID", "Invalid User ID format!")
-        );
-      }
-  
-      // 🔍 Find user with populated wishlist product details
-      const user = await User.findById(id)
-        .populate({
-          path: "wishlists",
-          populate: {
-            path: "category", // optional: if you want full info
-            select: "-__v", // customize as needed
-          },
-          select: "-__v", // remove unwanted fields from product
-        })
-        .select("wishlists");
-  
-      // ❌ If no user or no wishlists
-      if (!user || !user.wishlists || user.wishlists.length === 0) {
-        return res.status(200).json(
-          new ApiResponse(200, { wishlists: [] }, "No products in wishlist.")
-        );
-      }
-  
-      console.log("✅ Wishlist products:", user.wishlists);
-  
-      // ✅ Success
-      return res.status(200).json(
-        new ApiResponse(200, { wishlists: user.wishlists }, "User wishlist fetched successfully.")
-      );
-    } catch (error) {
-      console.error("❌ Error fetching wishlist:", error);
-      return res.status(500).json(
-        new ApiError(500, error.message || "Something went wrong", "Internal Server Error")
+  const { id } = req.params;
+
+  try {
+    if (!id) {
+      return res.status(400).json(new ApiError(400, "User ID is required!"));
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json(
+        new ApiError(400, "Invalid ID", "Invalid User ID format!")
       );
     }
-  });
+
+    const user = await User.findById(id)
+      .populate({
+        path: "wishlists",
+        populate: [
+          {
+            path: "category",
+            select: "-__v",
+          },
+          {
+            path: "vendor",
+            select: "-__v -password -salt", // sanitize vendor data
+          },
+        ],
+        select: "-__v", // clean product output
+      })
+      .select("wishlists");
+
+    if (!user || !user.wishlists || user.wishlists.length === 0) {
+      return res.status(200).json(
+        new ApiResponse(200, { wishlists: [] }, "No products in wishlist.")
+      );
+    }
+
+    return res.status(200).json(
+      new ApiResponse(
+        200,
+        { wishlists: user.wishlists },
+        "User wishlist fetched successfully."
+      )
+    );
+  } catch (error) {
+    console.error("❌ Error fetching wishlist:", error);
+    return res.status(500).json(
+      new ApiError(
+        500,
+        error.message || "Something went wrong",
+        "Internal Server Error"
+      )
+    );
+  }
+});
+
 
   // 🔁 Add / Remove Product from User Wishlist
 const toggleProductWishlist = asyncHandler(async (req, res) => {

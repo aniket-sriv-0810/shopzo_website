@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import UserWishlistProductCard from "../../components/User/UserWishlist/UserWishlistProductCard";
+import ProductCard from '../../components/Products/ProductCard.jsx/ProductCard';
 import UserNavbar from "../../components/Navbars/UserNavbar/UserNavbar";
 import SkeletonList from '../../components/LoadingSkeleton/SkeletonList'
 import NotAvailable from "../Loaders/NotAvailable";
@@ -60,7 +60,7 @@ const UserWishlists = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-full px-6 md:px-10 lg:px-20 py-10">
             {wishlists.length > 0 ? (
               wishlists.map((product) => (
-                <UserWishlistProductCard key={product._id} product={product} />
+                <ProductCard key={product._id} product={product} />
               ))
             ) : (
               <div className="col-span-full  text-center text-lg font-semibold text-gray-700">

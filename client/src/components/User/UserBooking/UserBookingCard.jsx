@@ -2,7 +2,8 @@ import React from "react";
 import CancelBooking from "../../../pages/User/UserBookingCancel";
 import { useNavigate } from "react-router-dom";
 import UserDeleteCancelledBooking from '../../../pages/User/UserCancelBooking';
-const BookingCard = ({ booking, userId , onCancelSuccess }) => {
+
+const BookingCard = ({ booking, userId, onCancelSuccess }) => {
   const navigate = useNavigate();
   const {
     _id,
@@ -16,74 +17,67 @@ const BookingCard = ({ booking, userId , onCancelSuccess }) => {
   } = booking;
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-300 shadow-gray-400 p-4 md:p-6 mb-6 max-w-full transition-all hover:shadow-xl">
-      {/* Top Section */}
-      <div className="flex justify-between items-center mb-4">
+    <div className="bg-white rounded-3xl shadow-md border border-gray-200 p-4 sm:p-6 mb-6 w-full transition hover:shadow-lg">
+      {/* Top section with status */}
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-4">
         <div>
-          <h2 className="text-xl capitalize md:text-xl font-semibold text-gray-800">{product?.title || "Product Title"}</h2>
-          <p className=" text-gray-500">Booked on: {new Date(createdAt).toLocaleDateString("IN")}</p>
+          <h2 className="text-xl font-semibold text-gray-800">{product?.title || "Product Title"}</h2>
+          <p className="text-gray-500 text-sm">Booked on: {new Date(createdAt).toLocaleDateString("IN")}</p>
         </div>
-        <span className={`px-4 py-2 text-xs font-semibold rounded-full 
-          ${status === "cancelled"
-            ? "bg-red-500 text-white"
-            : "bg-green-500 text-white"}`}>
+        <span className={`mt-2 sm:mt-0 w-max px-3 py-1 text-xs font-semibold rounded-full
+          ${status === "cancelled" ? "bg-red-500 text-white" : "bg-green-500 text-white"}`}>
           {status.charAt(0).toUpperCase() + status.slice(1)}
         </span>
       </div>
 
-      {/* Grid Layout */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+      {/* Image + Booking Info */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-5">
         {/* Image */}
-        <div className="col-span-1">
+        <div className="w-full">
           <img
             src={product?.images?.[0] || "/fallback-image.jpg"}
-            alt={product?.title || "Product Not Available anymore"}
-            className="rounded-xl  w-full aspect-square object-cover border"
+            alt={product?.title || "Product Not Available"}
+            className="rounded-xl w-full object-cover aspect-square border"
           />
         </div>
 
-        {/* Booking Info */}
-        <div className="col-span-2 grid grid-cols-2 gap-4 space-y-2 text-sm md:text-base text-gray-700">
-          <div>
-            <p><span className="font-semibold p-2 m-2">Vendor:</span> {vendor?.name || "N/A"}</p>
-            <p><span className="font-semibold p-2 m-2">Category:</span> {product?.category?.title || "N/A"}</p>
-            <p><span className="font-semibold p-2 m-2">Size:</span> {sizeSelected || "N/A"}</p>
+        {/* Info Grid */}
+        <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm sm:text-base text-gray-700">
+          <div className="space-y-2">
+            <p><span className="font-medium text-gray-900">Vendor:</span> {vendor?.name || "N/A"}</p>
+            <p><span className="font-medium text-gray-900">Category:</span> {product?.category?.title || "N/A"}</p>
+            <p><span className="font-medium text-gray-900">Size:</span> {sizeSelected || "N/A"}</p>
           </div>
-          <div>
-            <p><span className="font-semibold p-2 m-2">Quantity:</span> {quantity || 1}</p>
-            <p><span className="font-semibold p-2 m-2">Price:</span> ₹{totalPrice || 0}</p>
-            <p><span className="font-semibold p-2 m-2">Vendor Email:</span> {vendor?.email || "N/A"}</p>
+          <div className="space-y-2">
+            <p><span className="font-medium text-gray-900">Quantity:</span> {quantity || 1}</p>
+            <p><span className="font-medium text-gray-900">Price:</span> ₹{totalPrice || 0}</p>
+            <p><span className="font-medium text-gray-900">Vendor Email:</span> {vendor?.email || "N/A"}</p>
           </div>
         </div>
       </div>
 
-      {/* Cancel Button */}
-      {status !== "cancelled" && (
-        <div className="mt-6 flex justify-end ">
-        <CancelBooking
+      {/* Action Buttons */}
+      <div className="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+        {status !== "cancelled" ? (
+          <CancelBooking
             bookingId={_id}
-            userId={userId} // ✅ Use correct user ID here
+            userId={userId}
             onCancelSuccess={onCancelSuccess}
           />
-        </div>
-      )}
-      {/* Delete Cancelled Booking Button */}
-{status === "cancelled" && (
-  <div className="mt-4 flex justify-end">
-    <UserDeleteCancelledBooking
-      bookingId={_id}
-      onDeleted={() => onCancelSuccess(_id)}
-    />
-  </div>
-)}
-      <div className=" mt-6  ">
-      <button
-        onClick={() =>  navigate(`/booking/${_id}/confirmation`)}
-        className=" text-white bg-gradient-to-bl from-indigo-500 to-fuchsia-600 hover:scale-110 hover:cursor-pointer shadow-md shadow-gray-500 px-5 py-2 rounded"
-      >
-        View Confirmation
-      </button>
-    </div>
+        ) : (
+          <UserDeleteCancelledBooking
+            bookingId={_id}
+            onDeleted={() => onCancelSuccess(_id)}
+          />
+        )}
+
+        <button
+          onClick={() => navigate(`/booking/${_id}/confirmation`)}
+          className="text-white bg-gradient-to-tr from-teal-800 to-green-600 hover:scale-105 hover:shadow-md transition px-5 py-3 hover:cursor-pointer rounded-xl text-sm sm:text-base"
+        >
+          View Confirmation
+        </button>
+      </div>
     </div>
   );
 };

@@ -40,7 +40,7 @@ const UserPasswordChange = () => {
       setConfirmPassword('');
       navigate(`/user/${user._id}/account`);
     } catch (err) {
-      setError(err.response?.data?.error || 'Something went wrong!');
+      setError(err.response?.data?.error || 'Invalid Password Credentials !');
     } finally {
       setLoading(false);
     }
