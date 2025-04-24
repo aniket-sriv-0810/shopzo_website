@@ -8,7 +8,7 @@ const PrivateRoute = ({ children }) => {
 
   if (!user) {
     // Redirect to login with the intended path
-    return <Navigate to="/user/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return children;
