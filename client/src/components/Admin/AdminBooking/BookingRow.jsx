@@ -78,10 +78,10 @@ const BookingRow = ({ booking, onDelete }) => {
 
       {/* Delete Column */}
       <td className="px-2 py-2">
-        {(status === "cancelled" || status === "completed") && (
+        {(status === "cancelled" || status === "completed" || status === "pending") && (
           <button
             onClick={handleDelete}
-            className="text-red-600 hover:text-red-800"
+            className="text-white p-3 rounded-full bg-red-500  hover:bg-red-600 hover:cursor-pointer"
             title="Delete Booking"
           >
             <FaTrashAlt />

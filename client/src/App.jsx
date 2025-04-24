@@ -5,6 +5,7 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { useUser } from "./components/UserContext/userContext";
 import Home from "./pages/Home";
 import { Routes, Route } from "react-router-dom";
+import IsVendor from "./components/UserContext/IsVendor";
 import About from "./pages/Navigation/About/About";
 import Contact from "./pages/Navigation/Contact/Contact";
 import Policies from "./pages/Navigation/Policies/Policies";
@@ -140,8 +141,16 @@ function App() {
 
               {/* Product Routes - CLIENT Side */}
           <Route path="/product/:id" element={<ShowProduct />} />
-          <Route path="/product/:id/booking" element={<ProductBooking />} />
-          <Route path="/product/:id/booking/:bookingId/confirmation" element={<BookingConfirmation />} />
+          <Route path="/product/:id/booking" element={
+            <PrivateRoute>
+            <ProductBooking />
+            </PrivateRoute>
+            } />
+          <Route path="/product/:id/booking/:bookingId/confirmation" element={
+            <PrivateRoute>
+            <BookingConfirmation />
+            </PrivateRoute>
+            } />
         
               {/* Category Routes - CLIENT Side */}
           <Route path="/categories" element={<AllCategories />} />
@@ -255,43 +264,110 @@ function App() {
           </Route>
           <Route
             path="/admin/vendor/:vendorId/add-category"
-            element={<AddCategoryToVendor />}
+            element={
+              <PrivateRoute>
+              <IsAdmin>
+            <AddCategoryToVendor />
+              </IsAdmin>
+              </PrivateRoute>
+            }
           />
             {/* Vendor Routes - VENDOR Side */}
           <Route path="/vendor/login" element={<VendorLoginForm />} />
-          <Route path="/vendor/:id/account" element={<VendorAccount />} />
-          <Route path="/vendor/:id/account/edit" element={<VendorAccountEdit />} />
-          <Route path="/vendor/:id/account/dashboard" element={<VendorDashboard />} />
-          <Route path="/vendor/:id/account/categories-listed" element={<VendorCategories />}/>
-          <Route path="/vendor/:id/account/products-listed" element={<VendorProducts />}/>
-          <Route path="/vendor/:id/account/bookings" element={<VendorBookings />}/>
-          <Route path="/vendor/:id/account/change-password" element={<VendorPasswordChange />}/>
-          <Route path="/vendor/:id/:categoryId/:tag/all-products" element={<VendorFilteredProducts />}/>
+
+          <Route path="/vendor/:id/account" element={
+            <PrivateRoute>
+            <VendorAccount />
+            </PrivateRoute>
+
+            } />
+          <Route path="/vendor/:id/account/edit" element={
+            <PrivateRoute>
+            <VendorAccountEdit />
+            </PrivateRoute>
+            } />
+          <Route path="/vendor/:id/account/dashboard" element={
+            <PrivateRoute>
+            <VendorDashboard />
+            </PrivateRoute>
+            } />
+          <Route path="/vendor/:id/account/categories-listed" element={
+            <PrivateRoute>
+            <VendorCategories />
+            </PrivateRoute>
+            }/>
+          <Route path="/vendor/:id/account/products-listed" element={
+            <PrivateRoute>
+            <VendorProducts />
+            </PrivateRoute>
+            }/>
+          <Route path="/vendor/:id/account/bookings" element={
+            <PrivateRoute>
+            <VendorBookings />
+            </PrivateRoute>
+            }/>
+          <Route path="/vendor/:id/account/change-password" element={
+            <PrivateRoute>
+            <VendorPasswordChange />
+            </PrivateRoute>
+            }/>
+              
+          <Route path="/vendor/:id/:categoryId/:tag/all-products" element={
+            <PrivateRoute>
+            <VendorFilteredProducts />
+            </PrivateRoute>
+            }/>
 
              {/* Vendor Routes - CLIENT Side */}
           <Route path="/vendors" element={<AllVendors />} />
           <Route path="/all-vendors" element={<AllVendors />} />
           <Route path="/vendor" element={<AllVendors />} />
-          <Route path="/vendor/:id/details" element={<ShowVendor />} />
-          <Route path="/vendor/:id/details/:categoryId/:tag/all-products" element={<ShowVendorProducts />} />
-          <Route path="/vendor/:id/details" element={<ShowVendor />} />
+          <Route path="/vendor/:id/details" element={
+            <PrivateRoute>
+            <ShowVendor />
+            </PrivateRoute>
+            } />
+          <Route path="/vendor/:id/details/:categoryId/:tag/all-products" element={
+            <PrivateRoute>
+            <ShowVendorProducts />
+            </PrivateRoute>
+            } />
           
           {/*Loader Routes */}
-          <Route path="/auth/successfully" element={<AuthSuccessPopup />} />
+          <Route path="/auth/successfully" element={
+            <PrivateRoute>
+            <AuthSuccessPopup />
+            </PrivateRoute>
+            } />
           <Route
             path="/saved/successfully"
             element={
               <PrivateRoute>
+              <IsAdmin>
                 <SuccessLoader />
+              </IsAdmin>
               </PrivateRoute>
             }
           />
           
-          <Route path="/booking/:bookingId/confirmation" element={<BookingConfirmation />} />
-          <Route path="/:userId/account/bookings/:bookingId/cancel" element={<UserBookingCancel />} />
-          <Route path="/error" element={<ErrorPopup />} />
-          <Route path="/review/done" element={<ReviewLoader />} />
-          <Route path="/delete" element={<DeleteSuccessToast />} />
+          <Route path="/booking/:bookingId/confirmation" element={
+            <PrivateRoute>
+            <BookingConfirmation />
+            </PrivateRoute>
+            } />
+          <Route path="/:userId/account/bookings/:bookingId/cancel" element={
+            <PrivateRoute>
+            <UserBookingCancel />
+            </PrivateRoute>
+            } />
+
+          <Route path="/review/done" element={
+            <PrivateRoute>
+            <ReviewLoader />
+            </PrivateRoute>
+            } />
+
+
           {/* 404 Page Not Found Route */}
           <Route path="*" element={<PageNotFound />} />
         </Routes>

@@ -51,7 +51,7 @@ const AdminProduct = () => {
       )  : products.length === 0 ? (
         <div className="text-center text-gray-600 font-medium"><AdminNotAvailableLoader content={"No Products data Found"} tagline={" Oops! It looks like your product data is empty"}/></div>
       ): (
-        <ProductTable products={products} />
+        <ProductTable products={products} refreshProducts={fetchProducts} />
       )}
     </div>
   );

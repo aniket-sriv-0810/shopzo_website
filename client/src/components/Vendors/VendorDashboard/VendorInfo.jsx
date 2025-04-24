@@ -1,8 +1,32 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import {  useParams } from "react-router-dom";
 import { FaEnvelope, FaUser, FaIdBadge, FaPhoneAlt, FaUserAlt } from "react-icons/fa";
+import { useUser } from "../../UserContext/userContext";
+const VendorInfo = () => {
+ const [vendor, setVendor] = useState(null);
+   const [loading, setLoading] = useState(true);
+   const [error, setError] = useState("");
+   const { id } = useParams();
+   const {user} = useUser();
+  const fetchVendorDetails = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/vendor/${id}/account`,
+        { withCredentials: true }
+      );
+      setVendor(data.data.vendorInfo);
+    } catch (err) {
+      setError("Error fetching vendor details.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-const VendorInfo = ({ user }) => {
-  if (!user) return null;
+  useEffect(() => {
+    fetchVendorDetails();
+  }, [id]);
 
   return (
     <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 max-w-xl mx-auto">
@@ -22,7 +46,7 @@ const VendorInfo = ({ user }) => {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="text-green-600 bg-green-100 p-2 rounded-full">
+          <div className="text-orange-600 bg-green-100 p-2 rounded-full">
             <FaUserAlt />
           </div>
           <div>

@@ -12,8 +12,7 @@ const VendorPasswordChange = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const handlePasswordChange = async (e) => {
+  const navigate = useNavigate();  const handlePasswordChange = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
@@ -23,14 +22,14 @@ const VendorPasswordChange = () => {
     }
 
     if (newPassword !== confirmPassword) {
-      return setError('New password and confirmation do not match.');
+      return setError('New password and confirm password do not match.');
     }
 
     setLoading(true);
 
     try {
       const res = await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/vendor/${user._id}/account/change-password`,
+        `${import.meta.env.VITE_API_URL}/api/vendor/${id}/account/change-password`,
         { oldPassword, newPassword },
         { withCredentials: true }
       );
@@ -41,7 +40,7 @@ const VendorPasswordChange = () => {
       setConfirmPassword('');
       navigate(`/vendor/${id}/account`)
     } catch (err) {
-      const errMsg = err?.response?.data?.error || 'Something went wrong!';
+      const errMsg = err?.response?.data?.error || 'Invalid password credentials !';
       setError(errMsg);
     } finally {
       setLoading(false);
@@ -51,7 +50,7 @@ const VendorPasswordChange = () => {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br from-blue-100 via-white to-pink-100">
       <div className="w-full max-w-md bg-white bg-opacity-30 backdrop-blur-lg rounded-3xl p-8 border border-white border-opacity-40 shadow-2xl">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
           🔐 Change Password
         </h2>
 

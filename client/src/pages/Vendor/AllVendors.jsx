@@ -14,8 +14,6 @@ const AllVendors = () => {
     const fetchVendors = async () => {
       try {
         const  {data}  = await axios.get(`${import.meta.env.VITE_API_URL}/api/vendor/all-vendors`);
-        console.log("res of vendor" , data.data.image);
-        
         setVendors(data.data);
       } catch (error) {
         setError("Failed to load categories.");

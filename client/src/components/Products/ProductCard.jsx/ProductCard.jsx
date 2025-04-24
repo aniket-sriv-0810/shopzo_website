@@ -12,7 +12,7 @@ const ProductCard = ({ product }) => {
   const originalPrice = product.originalPrice;
   const discountedPrice = product.discountedPrice;
   const discount = Math.round(((originalPrice - discountedPrice) / originalPrice) * 100);
-console.log("product => ", product);
+
 
   return (
     <div className="hover:shadow-gray-500 rounded-2xl shadow-md hover:shadow-2xl  overflow-hidden transition-transform duration-300 hover:scale-[1.02] w-full sm:max-w-[350px] mx-auto flex flex-col">

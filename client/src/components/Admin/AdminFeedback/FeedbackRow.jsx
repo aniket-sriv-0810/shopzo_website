@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaTrash } from 'react-icons/fa';
+import { FaTrash, FaTrashAlt } from 'react-icons/fa';
 
 const FeedbackRow = ({ feedback, onDelete }) => {
   const { user, message } = feedback;
@@ -21,10 +21,10 @@ const FeedbackRow = ({ feedback, onDelete }) => {
       <td className="px-4 py-2">
         <button
           onClick={onDelete}
-          className="text-red-600 hover:text-red-800 transition-colors"
+          className="text-white p-3 rounded-full bg-red-500  hover:bg-red-600 hover:cursor-pointer"
           title="Delete Feedback"
         >
-          <FaTrash />
+          <FaTrashAlt />
         </button>
       </td>
     </tr>

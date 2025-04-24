@@ -28,39 +28,54 @@ const EditPricingModal = ({ isOpen, onClose, product, vendorId, onPriceUpdate })
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex justify-center items-center">
-      <div className="bg-white p-6 rounded-lg shadow-xl w-96 space-y-4">
-        <h2 className="text-lg font-bold">Edit Pricing</h2>
-        <div className="space-y-2">
-          <label className="block text-sm font-medium">Original Price</label>
-          <input
-            type="number"
-            value={originalPrice}
-            onChange={(e) => setOriginalPrice(Number(e.target.value))}
-            className="w-full border px-3 py-1.5 rounded-md"
-          />
-          <label className="block text-sm font-medium">Discounted Price</label>
-          <input
-            type="number"
-            value={discountedPrice}
-            onChange={(e) => setDiscountedPrice(Number(e.target.value))}
-            className="w-full border px-3 py-1.5 rounded-md"
-          />
-          {error && <p className="text-red-600 text-sm">{error}</p>}
-        </div>
-        <div className="flex justify-end gap-3 pt-4">
-          <button onClick={onClose} className="text-gray-600 px-4 py-1 border rounded-md hover:bg-gray-100">
-            Cancel
-          </button>
-          <button
-            onClick={handleUpdate}
-            className="bg-blue-600 text-white px-4 py-1 rounded-md hover:bg-blue-700"
-          >
-            Save
-          </button>
-        </div>
+    <>
+
+<div className="fixed inset-0 p-3 z-50 flex items-center justify-center bg-gradient-to-br from-purple-600 via-blue-500 to-indigo-700 bg-opacity-60 backdrop-blur-sm">
+  <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 w-[24rem] shadow-2xl text-white space-y-6">
+    <h2 className="text-xl font-semibold text-center">Change Pricing</h2>
+
+    <div className="space-y-3">
+      <div>
+        <label className="block text-sm font-medium mb-1">Original Price</label>
+        <input
+          type="number"
+          value={originalPrice}
+          onChange={(e) => setOriginalPrice(Number(e.target.value))}
+          className="w-full px-4 py-2 rounded-md bg-white/20 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white focus:bg-white/30 placeholder-white/70 text-white"
+          placeholder="Enter original price"
+        />
       </div>
+      <div>
+        <label className="block text-sm font-medium mb-1">Discounted Price</label>
+        <input
+          type="number"
+          value={discountedPrice}
+          onChange={(e) => setDiscountedPrice(Number(e.target.value))}
+          className="w-full px-4 py-2 rounded-md bg-white/20 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white focus:bg-white/30 placeholder-white/70 text-white"
+          placeholder="Enter discounted price"
+        />
+      </div>
+      {error && <p className="text-red-400 text-sm">{error}</p>}
     </div>
+
+    <div className="flex justify-end gap-3 pt-2">
+      <button
+        onClick={onClose}
+        className="px-4 py-1.5 rounded-md border border-white/40 bg-white/10 hover:bg-white/20 transition text-white"
+      >
+        Cancel
+      </button>
+      <button
+        onClick={handleUpdate}
+        className="px-4 py-1.5 rounded-md bg-gradient-to-r from-blue-500 to-purple-500 hover:from-purple-500 hover:to-blue-500 transition text-white font-semibold shadow-md"
+      >
+        Save
+      </button>
+    </div>
+  </div>
+</div>
+
+    </>
   );
 };
 

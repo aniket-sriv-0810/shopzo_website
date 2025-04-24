@@ -5,7 +5,7 @@ import VendorBookingStatusUpdater from '../VendorPaymentStatusUpdater/VendorPaym
 import axios from 'axios';
 
 const VendorBookingRow = ({ booking, onDelete }) => {
-  const { id: vendorId } = useParams();
+  const { id } = useParams();
 
   const {
     bookingId,
@@ -59,7 +59,7 @@ const VendorBookingRow = ({ booking, onDelete }) => {
 
       <td className="px-2 py-2">
         <VendorBookingStatusUpdater
-          vendorId={vendorId}
+          vendorId={id}
           bookingId={bookingId}
           currentStatus={paymentStatus}
           onStatusUpdate={() => {}}
@@ -72,8 +72,8 @@ const VendorBookingRow = ({ booking, onDelete }) => {
       <td className="px-2 py-2 text-xs text-gray-600">{bookingId}</td>
 
       {/* Delete Column */}
-      <td className="px-2 py-2 text-red-500 cursor-pointer hover:text-red-700">
-        <FaTrashAlt onClick={handleDelete} />
+      <td className="px-3 py-3  mx-2 rounded-full flex justify-center items-center mt-2 bg-red-500 text-white cursor-pointer hover:bg-red-600" onClick={handleDelete}>
+        <FaTrashAlt  />
       </td>
     </tr>
   );

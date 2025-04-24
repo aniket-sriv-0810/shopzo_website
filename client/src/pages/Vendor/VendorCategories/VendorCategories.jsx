@@ -44,7 +44,7 @@ const VendorCategories = () => {
 
     <div className="min-h-screen bg-gray-100 px-4 py-8">
       <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-        Categories Listed by Vendor
+        Categories Listed
       </h1>
 
       {loading ? (

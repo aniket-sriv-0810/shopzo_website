@@ -38,13 +38,14 @@ const VendorProductRow = ({ product, vendorId, onPriceUpdate }) => {
         <td className="px-4 py-2 border">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="text-blue-600 hover:text-blue-800"
+            className="text-blue-600 p-3 bg-green-500 rounded-full hover:scale-110"
             title="Edit Pricing"
           >
-            <FaEdit />
+            <FaEdit className="text-white" />
           </button>
         </td>
       </tr>
+<div>
 
       {isModalOpen && (
         <EditPricingModal
@@ -55,6 +56,7 @@ const VendorProductRow = ({ product, vendorId, onPriceUpdate }) => {
           onPriceUpdate={onPriceUpdate}
         />
       )}
+</div>
     </>
   );
 };

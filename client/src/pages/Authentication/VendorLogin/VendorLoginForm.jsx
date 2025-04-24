@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import InputField from "./InputField";
 import { useUser } from "../../../components/UserContext/userContext";
-import { FaEnvelope } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
 import { BsShieldLockFill } from "react-icons/bs";
 import  validateLoginForm  from "./validateForm";
 
@@ -44,7 +44,7 @@ const VendorLoginForm = () => {
         setUser(vendorData);
         localStorage.setItem("vendor", JSON.stringify(vendorData));
         window.open(`/vendor/${vendorData._id}/account`, "_blank");
-
+        setLoginVendor({ username: "", password: "" });
       }
     } catch (error) {
       const details = error.response?.data?.details;
@@ -89,7 +89,7 @@ const VendorLoginForm = () => {
             value={loginVendor.username}
             onChange={handleChange}
             placeholder="Enter your username"
-            icon={FaEnvelope}
+            icon={FaUser}
             error={formErrors.username}
           />
 

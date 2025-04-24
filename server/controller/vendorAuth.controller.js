@@ -273,7 +273,7 @@ const checkVendorAuthentication = asyncHandler(async (req, res) => {
     }
   });
   
-const changePassword = async (req, res) => {
+  const changePassword = async (req, res) => {
     try {
       const { id } = req.params;
       const { oldPassword, newPassword } = req.body;
@@ -288,16 +288,37 @@ const changePassword = async (req, res) => {
         return res.status(404).json({ error: "Vendor not found!" });
       }
   
-      // 2. Authenticate old password and update Vendor password
-      await new Promise((resolve, reject) => {
-        vendor.changePassword(oldPassword, newPassword, async (err) => {
-          if (err) return reject("Incorrect old password.");
-          await vendor.save();
-          resolve();
+      // 2. Authenticate old password
+      const isMatch = await new Promise((resolve, reject) => {
+        vendor.authenticate(oldPassword, (err, matched) => {
+          if (err) return reject(new Error("Error during password authentication."));
+          resolve(matched);
         });
+      }).catch(err => {
+        console.error(err);
+        return res.status(500).json({ error: err.message });
       });
   
-      // 3. Find corresponding User by unique field (email or phone) and role === "vendor"
+      if (!isMatch) {
+        return res.status(400).json({ error: "Incorrect old password." });
+      }
+  
+      // 3. Set new password for Vendor
+      const updatedVendor = await new Promise((resolve, reject) => {
+        vendor.setPassword(newPassword, (err, updatedVendor) => {
+          if (err) return reject(new Error("Error updating vendor password."));
+          resolve(updatedVendor);
+        });
+      }).catch(err => {
+        console.error(err);
+        return res.status(500).json({ error: err.message });
+      });
+  
+      if (!updatedVendor) return; // Response already sent in .catch()
+  
+      await updatedVendor.save();
+  
+      // 4. Find linked User account (by vendor's email or phone)
       const user = await User.findOne({
         role: "vendor",
         $or: [{ email: vendor.email }, { phone: vendor.phone }],
@@ -307,21 +328,30 @@ const changePassword = async (req, res) => {
         return res.status(404).json({ error: "Linked user account not found!" });
       }
   
-      // 4. Set new password for the User model
-      await new Promise((resolve, reject) => {
-        user.setPassword(newPassword, async (err, updatedUser) => {
-          if (err) return reject("Error updating user password.");
-          await updatedUser.save();
-          resolve();
+      // 5. Update password in User model
+      const updatedUser = await new Promise((resolve, reject) => {
+        user.setPassword(newPassword, (err, updatedUser) => {
+          if (err) return reject(new Error("Error updating user password."));
+          resolve(updatedUser);
         });
+      }).catch(err => {
+        console.error(err);
+        return res.status(500).json({ error: err.message });
       });
   
-      return res.status(200).json({ message: "Password successfully changed for both Vendor and User." });
+      if (!updatedUser) return; // Response already sent in .catch()
+  
+      await updatedUser.save();
+  
+      return res.status(200).json({
+        message: "Password successfully changed for both Vendor and linked User account.",
+      });
   
     } catch (error) {
-      console.error("Password Change Error:", error);
-      return res.status(500).json({ error: error.message || "Server Error" });
+      console.error("Change Vendor Password Error:", error);
+      return res.status(500).json({ error: "Unexpected server error occurred." });
     }
   };
+  
   
 export { addNewVendor , loginVendor , logOutAccount , checkVendorAuthentication ,  changePassword};

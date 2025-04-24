@@ -54,7 +54,7 @@ router
 //  Adding  categories to vendors Route
 router
      .route("/vendor/:vendorId/add-categories")
-     .post(isLoggedIn , isAdmin, validate(addCategoryToVendorValidation) , addCategoriesToVendor)
+     .post(isLoggedIn , isAdmin , addCategoriesToVendor)
 
 // Editing categories Route
 router
@@ -75,7 +75,7 @@ router
 // particular product Edit Route
 router
      .route("/product/:id/edit")
-     .put(isLoggedIn , isAdmin , upload.array("images", 7)  , validate(editProductSchemaValidation) , updateProductById )
+     .put(isLoggedIn , isAdmin , upload.array("images", 7)  , updateProductById )
 
 //check for the particular product Delete Route
 router

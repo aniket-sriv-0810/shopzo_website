@@ -52,67 +52,78 @@ const AddCategoryToVendor = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-3xl bg-white bg-opacity-40 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border border-white/30 hover:border-blue-300 transition-all duration-500">
-        <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">Add Categories to Vendor</h2>
-
-        {message && <p className="text-center text-sm font-medium text-blue-600 mb-4">{message}</p>}
-
-        {loading ? (
-          <p className="text-center text-gray-500 animate-pulse"><SkeletonCard/></p>
-        ) : categories.length === 0 ? (
-          <p className="text-center text-red-500"><AdminNotAvailableLoader/></p>
-        ) : (
-          <form onSubmit={handleSubmit}>
-            <div className="flex-col m-5 max-h-72 overflow-y-auto pr-2">
-              {categories.map((cat) => (
-                <label
-                  key={cat._id}
-                  htmlFor={`cat-${cat._id}`}
-                  className="flex items-center gap-7 m-4 p-3 bg-gray-50 bg-opacity-50 backdrop-blur-lg rounded-xl shadow-sm hover:shadow-lg border border-white/30 hover:border-blue-300 transition-all duration-300"
-                >
-                  <input
-                    type="checkbox"
-                    value={cat._id}
-                    id={`cat-${cat._id}`}
-                    onChange={handleCategoryChange}
-                    className="accent-blue-600"
-                  />
-                  <img
-                    src={cat.image}
-                    alt={cat.title}
-                    className="w-12 h-12 rounded-full object-cover border"
-                  />
-                  <div className="flex gap-3">
-                    <p className="font-semibold text-gray-800 capitalize">{cat.title}</p>
-                    <p className="text-xs text-white bg-blue-500 inline-block px-2 py-0.5 rounded-md mt-1">
-                      {cat.tag}
-                    </p>
-                  </div>
-                </label>
-              ))}
-            </div>
-
-            <div className="mt-6 text-center">
-              <button
-                type="submit"
-                disabled={submitLoading}
-                className="relative w-full py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-all duration-300"
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-blue-50 flex items-center justify-center px-4 py-10">
+    <div className="w-full max-w-3xl bg-white/20 backdrop-blur-xl rounded-3xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] p-10 border border-white/30 transition-all duration-500">
+      <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-8 tracking-wide drop-shadow-sm">
+        Add Categories to Vendor
+      </h2>
+  
+      {message && (
+        <p className="text-center text-md font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-lg py-2 px-4 mb-6 shadow-sm">
+          {message}
+        </p>
+      )}
+  
+      {loading ? (
+        <p className="text-center text-gray-500 animate-pulse">
+          <SkeletonCard />
+        </p>
+      ) : categories.length === 0 ? (
+        <p className="text-center text-red-500">
+          <AdminNotAvailableLoader />
+        </p>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="max-h-72 overflow-y-auto px-2 pr-4 space-y-4">
+            {categories.map((cat) => (
+              <label
+                key={cat._id}
+                htmlFor={`cat-${cat._id}`}
+                className="flex items-center gap-5 p-4 bg-white/30 backdrop-blur-md rounded-2xl border border-white/30 hover:border-blue-400 transition duration-300 shadow-sm"
               >
-                {submitLoading ? (
-                  <span className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
-                    <span className="w-4 h-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
-                    Processing...
-                  </span>
-                ) : (
-                  "Add Categories"
-                )}
-              </button>
-            </div>
-          </form>
-        )}
-      </div>
+                <input
+                  type="checkbox"
+                  value={cat._id}
+                  id={`cat-${cat._id}`}
+                  onChange={handleCategoryChange}
+                  className="accent-blue-600 scale-125"
+                />
+                <img
+                  src={cat.image}
+                  alt={cat.title}
+                  className="w-14 h-14 rounded-full object-cover border-2 border-white shadow"
+                />
+                <div>
+                  <p className="font-semibold text-gray-800 capitalize">{cat.title}</p>
+                  <p className="text-xs text-white bg-blue-600 px-2 py-1 rounded-md mt-1 inline-block shadow-md">
+                    {cat.tag}
+                  </p>
+                </div>
+              </label>
+            ))}
+          </div>
+  
+          <div className="pt-6">
+            <button
+              type="submit"
+              disabled={submitLoading}
+              className="w-full py-3 text-lg bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold rounded-xl shadow-md hover:from-blue-600 hover:to-blue-800 transition-all duration-300 relative"
+            >
+              {submitLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-5 h-5 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+                  Processing...
+                </span>
+              ) : (
+                "Add Categories"
+              )}
+            </button>
+          </div>
+        </form>
+      )}
     </div>
+  </div>
+  
   );
 };
 

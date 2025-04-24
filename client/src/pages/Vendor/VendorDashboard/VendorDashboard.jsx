@@ -4,8 +4,10 @@ import { useUser } from "../../../components/UserContext/userContext";
 import VendorInfo from "../../../components/Vendors/VendorDashboard/VendorInfo";
 import VendorStat from "../../../components/Vendors/VendorDashboard/VendorStat";
 import VendorNavbar from '../../../components/Navbars/VendorNavbar/VendorNavbar';
+import { useParams } from "react-router-dom";
 const VendorDashboard = () => {
   const { user } = useUser();
+  const {id} = useParams();
   const [vendorData, setVendorData] = useState({
     productCount: 0,
     categoryCount: 0,
@@ -13,10 +15,10 @@ const VendorDashboard = () => {
   });
 
   useEffect(() => {
-    if (!user?._id) return;
+    if (!id) return;
 
     axios
-      .get(`${import.meta.env.VITE_API_URL}/api/vendor/${user._id}/account/dashboard`, {
+      .get(`${import.meta.env.VITE_API_URL}/api/vendor/${id}/account/dashboard`, {
         withCredentials: true,
       })
       .then((res) => setVendorData(res.data.data))

@@ -25,7 +25,7 @@ const ShowVendorCategory = () => {
 
       if (res.status === 200) {
         setCategories(res.data.categories);
-        console.log("Vendor categories:", res.data.categories);
+
         setError("");
       }
     } catch (err) {

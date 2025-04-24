@@ -26,7 +26,7 @@ const VendorProduct = ({ vendorId, categoryTitle, tag }) => {
           setError("Failed to fetch products.");
         }
       } catch (err) {
-        console.error("Error fetching vendor products:", err);
+
         setError("Something went wrong while fetching products.");
       } finally {
         setLoading(false);

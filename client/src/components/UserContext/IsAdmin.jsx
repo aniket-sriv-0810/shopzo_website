@@ -1,5 +1,6 @@
 import React from "react";
 import { useUser } from "./userContext";
+import PageNotFound from "../../pages/Loaders/PageNotFound";
 
 
 const IsAdmin = ({ children }) => {
@@ -7,7 +8,9 @@ const IsAdmin = ({ children }) => {
 
   // Check if user is not logged in or not an admin
   if (!user || user.role !== "admin") {
-    return <p>Page Not Found !</p>  // Redirect to 404 page
+    return <div>
+      <PageNotFound/>
+    </div>  // Redirect to 404 page
   }
 
   return children;
