@@ -14,20 +14,12 @@ const editProductSchemaValidation = Joi.object({
     "number.min": "Price must be a positive number.",
   }),
 
-  images: Joi.array()
-    .items(Joi.string().uri().messages({ "string.uri": "Each image must be a valid URL." }))
-    .max(7)
-    .optional()
-    .messages({
-      "array.max": "A maximum of 7 images are allowed per product.",
-    }),
-
-  sizes: Joi.array()
-    .items(Joi.string().valid("xs", "s", "m", "l", "xl", "xxl", "xxxl"))
-    .optional()
-    .messages({
-      "any.only": "Invalid size. Allowed values: xs, s, m, l, xl, xxl, xxxl.",
-    }),
+  sizes: Joi.alternatives().try(
+    Joi.array().items(
+      Joi.string().valid("XS", "S", "M", "L", "XL", "XXL", "XXXL")
+    ),
+    Joi.string().valid("XS", "S", "M", "L", "XL", "XXL", "XXXL")
+  ).optional(),
 
   tag: Joi.string()
     .valid("male", "female")
@@ -35,6 +27,8 @@ const editProductSchemaValidation = Joi.object({
     .messages({
       "any.only": "Tag must be either 'male' or 'female'.",
     }),
+
+  imagesToKeep: Joi.string().optional(), // Should be a JSON.stringified array from frontend
 });
 
 export { editProductSchemaValidation };

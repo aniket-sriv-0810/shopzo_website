@@ -208,7 +208,7 @@ const adminFeedbackData = asyncHandler(async (req, res) => {
     }
 });
 
-// 1️⃣ Admin adds a category to a vendor with tag
+// 1️Admin adds a category to a vendor with tag
 const addCategoryToVendor = async (req, res) => {
     const { vendorId } = req.params;
     const { title, description, image, tag } = req.body;

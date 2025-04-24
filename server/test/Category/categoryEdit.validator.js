@@ -1,4 +1,3 @@
-// validators/editCategory.validator.js
 import Joi from "joi";
 
 const updateCategorySchemaValidation = Joi.object({
@@ -8,6 +7,7 @@ const updateCategorySchemaValidation = Joi.object({
 
   description: Joi.string().trim().optional(),
 
+  image: Joi.any().optional(), // For file upload via Multer
 });
 
 export { updateCategorySchemaValidation };

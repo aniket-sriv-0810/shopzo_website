@@ -1,3 +1,4 @@
+// validators/reviewValidation.js
 import Joi from "joi";
 
 // Custom ObjectId validator
@@ -13,7 +14,7 @@ const reviewSchemaValidation = Joi.object({
     .required()
     .messages({
       "any.required": "User ID is required!",
-      "any.invalid": "User ID must be a valid ObjectId.",
+      "any.invalid": "User ID must be a valid MongoDB ObjectId.",
     }),
 
   vendor: Joi.string()
@@ -21,7 +22,7 @@ const reviewSchemaValidation = Joi.object({
     .required()
     .messages({
       "any.required": "Vendor ID is required!",
-      "any.invalid": "Vendor ID must be a valid ObjectId.",
+      "any.invalid": "Vendor ID must be a valid MongoDB ObjectId.",
     }),
 
   rating: Joi.number()
@@ -37,10 +38,12 @@ const reviewSchemaValidation = Joi.object({
 
   comment: Joi.string()
     .trim()
+    .min(5)
     .max(200)
     .required()
     .messages({
       "string.empty": "Comment can't be left empty! Please share your feedback!",
+      "string.min": "Comment should be at least 5 characters long.",
       "string.max": "Comment can't exceed 200 characters.",
       "any.required": "Comment is required!",
     }),

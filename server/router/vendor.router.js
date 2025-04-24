@@ -1,124 +1,126 @@
 import express from 'express' ;
 import { isLoggedIn } from '../middleware/auth.middleware.js';
+import {isVendor} from "../middleware/vendor.middleware.js"
 import {upload} from "../multer.js";
 import {validate} from '../middleware/validator.js';
-
-import {editVendorValidation} from '../test/vendorEdit.validator.js' ;
-import { getAllVendors,vendorAccountDetails ,   updateVendorById , getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData , addCategoriesToVendor , productOfVendorData, allProductsOfVendor, getVendorAllBookings, updateBookingStatusByVendor, vendorDeleteBooking, updateProductPrices } from "../controller/vendor.controller.js";
-import { reviewSchemaValidation } from '../test/review.validator.js';
+import { getAllVendors,vendorAccountDetails ,   updateVendorById , getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData  , productOfVendorData, allProductsOfVendor, getVendorAllBookings, updateBookingStatusByVendor, vendorDeleteBooking, updateProductPrices } from "../controller/vendor.controller.js";
+import { loginVendorValidation } from '../test/Vendor/vendorLogin.validator.js';
+import { changePasswordValidation } from '../test/Vendor/vendorChangePassword.validator.js';
+import { updateBookingStatusValidation } from '../test/Vendor/vendorBookingStatusBar.js';
+import { reviewSchemaValidation } from '../test/User/userReview.validator.js';
+import { editVendorValidation } from '../test/Vendor/vendorEdit.validator.js';
+import { updateProductPricesValidation } from '../test/Vendor/vendorPriceUpdate.validator.js';
 import { addReviewToVendor, getVendorReviews, getVendorReviewStats } from '../controller/review.controller.js';
 import { loginVendor, logOutAccount , checkVendorAuthentication , changePassword } from '../controller/vendorAuth.controller.js';
-import { loginVendorValidation } from '../test/loginVendor.validator.js';
+
 const router = express.Router();
 
 //Core router - /api/vendor
 
-// Check for the All vendors Route
+// provide  the login feature for registered vendors Route
 router
      .route('/login')
-     .post(validate(loginVendorValidation) ,loginVendor)
+     .post(  validate(loginVendorValidation) ,loginVendor)
 
-
+// provide the logout feature for the registered vendor Route
 router
      .route('/logout')
-     .post(logOutAccount)
+     .post( isVendor , logOutAccount)
 
-
+// checking for the authentication of the vendor route
 router
      .route('/check-auth')
      .get(checkVendorAuthentication)
 
+//changing the password feature for vendor Route
 router
      .route('/:id/account/change-password')
-     .put(changePassword)
+     .put( isVendor , validate(changePasswordValidation) , changePassword)
 
-
+// provides all vendor details Route
 router
      .route('/all-vendors')
      .get(getAllVendors)
 
-// Check for the  vendor account Route
+// provides the  vendor account details Route
 router
      .route("/:id/account")
-     .get(isLoggedIn , vendorAccountDetails)
+     .get(isLoggedIn , isVendor , vendorAccountDetails)
 
 
-// Check for the  vendor account bookings Route
+// provides the  vendor account bookings details Route
 router
      .route("/:id/account/bookings")
-     .get(isLoggedIn , vendorAccountDetails)
+     .get(isLoggedIn , isVendor , vendorAccountDetails)
 
 
-// Check for the  vendor account bookings Route
-router
-     .route("/:id/account/booking/:bookingId/update-payment-status")
-     .get(isLoggedIn , vendorAccountDetails)
-
-
-// Check for the  vendor account categories Route
+// provides the  vendor account categories details Route
 router
      .route("/:id/account/categories-listed")
-     .get(isLoggedIn , vendorCategoriesData)
-     
-// Check for the  vendor account categories Route
-router
-     .route("/:id/details/categories-listed")
-     .get(isLoggedIn , vendorCategoriesData)
+     .get(isLoggedIn , isVendor , vendorCategoriesData)
 
 
-
-// Check for the  vendor account products Route
+//  provides the  vendor account products details Route
 router
      .route("/:id/account/products-listed")
-     .get(isLoggedIn , allProductsOfVendor)
+     .get(isLoggedIn , isVendor , allProductsOfVendor)
 
-// Check for the  vendor account Route
-router
-     .route("/:id/account")
-     .get(isLoggedIn , vendorAccountDetails)
-
-
-// Check for the  vendor account all categories Route
-router
-     .route("/:id/account/all-categories")
-     .get(isLoggedIn , vendorAccountDetails)
-
-// Check for the  vendor account all categories Route
+// provides the  vendor account all bookings details Route
 router
      .route("/:id/account/all-bookings")
-     .get(isLoggedIn , getVendorAllBookings )
+     .get(isLoggedIn , isVendor , getVendorAllBookings )
 
+
+//provides the  vendor updating booking status  details Route
 router
      .route("/:vendorId/bookings/:bookingId/status")
-     .put(isLoggedIn, updateBookingStatusByVendor);
+     .put(isLoggedIn, isVendor ,  validate(updateBookingStatusValidation) ,updateBookingStatusByVendor);
+
+// CLIENT SIDE - provides the  vendor categories details Route
+router
+     .route("/:id/details/categories-listed")
+     .get( vendorCategoriesData)
+
+
+// CLIENT SIDE - provides the  vendor show page details Route
+router
+     .route("/:id")
+     .get(vendorAccountDetails)
+
+
+// CLIENT SIDE - provides the  vendor all categories details Route
+router
+     .route("/:id/all-categories")
+     .get( vendorAccountDetails)
+
 
 // Check for the  vendor account all particular products having the particular vendor/category/tag Route
 router
      .route("/:id/account/:categoryId/:tag/all-products")
-     .get(isLoggedIn , productOfVendorData)
+     .get(isLoggedIn , isVendor , productOfVendorData)
 
 
-// Fetch all products by vendor + category + tag Route
+//CLIENT-side -  Fetch all products by vendor + category + tag Route
 router
       .route("/:vendorId/products")
       .get( getVendorProductsByCategoryAndTag);
 
-// Check for the All vendors Required Counts  Route
+// provides vendors dashboard Counts  Route
 router
       .route("/:vendorId/account/dashboard")
-      .get( getVendorCounts);
+      .get( isLoggedIn , isVendor ,getVendorCounts);
 
 
-//  Check for the  vendor  Full dashboard data Route
+//  provides vendors full dashboard data  Route
 router
-      .route("/:vendorId/dashboard-data")
-      .get(getVendorDashboardData);
+      .route("/:vendorId/account /dashboard-data")
+      .get( isLoggedIn , isVendor , getVendorDashboardData);
 
 
 //  Check for the posting review on  vendor  Route
 router
      .route("/:id/review")
-     .post(isLoggedIn ,  addReviewToVendor)
+     .post(isLoggedIn , validate(reviewSchemaValidation) , addReviewToVendor)
 
 //  Check for the  vendor all reviews data Route
 router
@@ -133,26 +135,19 @@ router
 //  Check for the  vendor  Edit Account Route
 router
      .route("/:id/account/edit")
-     .put( isLoggedIn, upload.single("image"),updateVendorById);
+     .put( isLoggedIn, upload.single("image"), validate(editVendorValidation) ,updateVendorById);
 
-// Change password for Vendor Account Route
+
+// DELETE booking by vendor Route
 router
-     .route("/:id/all-reviews")
-     .get(isLoggedIn , getVendorReviews)
+      .route("/:id/account/bookings/:bookingId/:userId/:productId")
+      .delete(isLoggedIn, isVendor ,vendorDeleteBooking);
 
+
+// PUT  route to update product prices Route
 router
-     .route("/bookings/:bookingId/:userId/:productId")
-     .get(isLoggedIn , vendorDeleteBooking)
-
-// DELETE booking by vendor
-router.delete(
-     "/bookings/:bookingId/:userId/:productId",
-     isLoggedIn,
-     vendorDeleteBooking
-   );
-
-// PUT or PATCH route to update product prices
-router.put("/product/:vendorId/:productId/update-prices", updateProductPrices);
+      .route("/:id/account/product/:vendorId/:productId/update-prices")
+      .put( isLoggedIn , isVendor , validate(updateProductPricesValidation) ,updateProductPrices);
 
 
 export default router;

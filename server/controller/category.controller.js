@@ -6,7 +6,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import mongoose from "mongoose";
 
-// 📌 Create Category Controller
+//  Create Category Controller
 const createCategory = asyncHandler(async (req, res) => {
   try {
     const {

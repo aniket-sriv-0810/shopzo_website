@@ -188,7 +188,7 @@ const toggleProductWishlist = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, { vendorWishlists: user.vendorWishlists }, "Vendor wishlist fetched successfully."));
 });
 
-// 🔁 Add / Remove Vendor from Wishlist
+//  Add / Remove Vendor from Wishlist
  const toggleVendorWishlist = asyncHandler(async (req, res) => {
   const { id } = req.params;           // user ID
   const { vendorId } = req.body;       // vendor ID
@@ -223,7 +223,7 @@ const toggleProductWishlist = asyncHandler(async (req, res) => {
     new ApiResponse(200, { vendorWishlists: user.vendorWishlists }, "Vendor wishlist updated successfully!")
   );
 });
-// ✏️ Edit User Controller
+//  Edit User Controller
 
 const editUserDetails = asyncHandler(async (req, res) => {
   const { id } = req.params;

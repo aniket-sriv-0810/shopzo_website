@@ -2,9 +2,12 @@ import express from 'express' ;
 import { isLoggedIn } from '../middleware/auth.middleware.js';
 import {upload} from "../multer.js";
 import {validate} from '../middleware/validator.js';
-import {userSchemaValidation} from '../test/user.validator.js' ;
-import {userEditValidationSchema} from '../test/userEdit.validator.js' ;
-import { loginUserValidation } from '../test/login.validator.js';
+import {userSchemaValidation} from '../test/User/user.validator.js' ;
+import {userEditValidationSchema} from '../test/User/userEdit.validator.js' ;
+import { loginUserValidation } from '../test/User/userLogin.validator.js';
+import { toggleProductWishlistSchema } from '../test/User/userProductWishlists.validator..js';
+import { toggleVendorWishlistSchema } from '../test/User/userVendorWishlists.validator.js';
+import { changeUserPasswordSchema } from '../test/User/userPasswordChange.validator.js';
 import { createNewUser , loginUser , logOutUser , checkAuthentication, changeUserPassword } from '../controller/userAuth.controller.js';
 import {userAccountDetails , getUserWishlists , toggleProductWishlist , editUserDetails , deleteUserAccount, getUserBookings , cancelUserBooking ,getUserVendorWishlists ,  toggleVendorWishlist, userDeleteCancelledBooking} from "../controller/user.controller.js";
 const router = express.Router();
@@ -35,51 +38,59 @@ router
      .route('/auth')
      .get(checkAuthentication)
 
-// Check for the user Account Route
+
+// provide the user Account details Route
 router
      .route('/:id/account')
      .get(isLoggedIn , userAccountDetails);
 
-// Check for the user Wishlists Route
+
+// provide the user product Wishlists details Route
 router
      .route('/:id/account/wishlists')
      .get(isLoggedIn , getUserWishlists);
 
 
-// Check for the user Wishlists Route
+// provide  the toggling user products Wishlists Route
 router
      .route('/:id/account/wishlist')
-     .post(isLoggedIn , toggleProductWishlist);
+     .post(isLoggedIn ,validate(toggleProductWishlistSchema) ,  toggleProductWishlist);
 
-// ✅ Vendor Wishlist Routes
+
+// provide the user vendor Wishlists details Route
 router
   .route("/:id/account/vendor-wishlists")
   .get(isLoggedIn, getUserVendorWishlists);
 
+
+// provide  the toggling user vendor Wishlists Route
 router
   .route("/:id/account/vendor-wishlist")
-  .post(isLoggedIn, toggleVendorWishlist);
+  .post(isLoggedIn, validate(toggleVendorWishlistSchema) , toggleVendorWishlist);
 
 
-// Check for the user Bookings Route
+// provide the user Bookings details Route
 router
      .route('/:id/account/bookings')
-     .get(isLoggedIn , getUserBookings);
+     .get(isLoggedIn  ,getUserBookings);
+
 
 // Cancel the user bookings Route
 router
       .route('/:userId/account/bookings/:bookingId/cancel')
       .delete( isLoggedIn, cancelUserBooking);
 
+
 // Change the user Account Details Route
 router
      .route('/:id/account/edit')
      .put(isLoggedIn , upload.single("image"), validate(userEditValidationSchema) , editUserDetails);
 
+
 // Change the user password Details Route
 router
      .route('/:id/account/change-password')
-     .put(isLoggedIn , changeUserPassword);
+     .put(isLoggedIn , validate(changeUserPasswordSchema)  , changeUserPassword);
 
 
 // Delete the user Account Route
@@ -87,8 +98,9 @@ router
      .route('/:id/account/delete')
      .delete(isLoggedIn , deleteUserAccount);
 
+// delete  the user's cancelled bookings Route
 router
-     .route('/bookings/:bookingId')
+     .route(':id/account/bookings/:bookingId')
      .delete(isLoggedIn , userDeleteCancelledBooking);
 
 

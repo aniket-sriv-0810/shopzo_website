@@ -3,16 +3,17 @@ import { validate } from '../middleware/validator.js';
 import { isLoggedIn } from '../middleware/auth.middleware.js';
 import {upload} from "../multer.js";
 import { isAdmin } from '../middleware/admin.middleware.js';
+import { addCategoryToVendorValidation } from '../test/Vendor/vendorAddCategory.validator.js';
 import { adminBookingData, adminCategoryData, adminDashboardData, adminFeedbackData, adminProductData, adminUserData, adminVendorData , addCategoryToVendor, adminDeleteBooking, deleteContactById} from '../controller/admin.controller.js';
 import { createCategory ,  editCategory, deleteCategory } from '../controller/category.controller.js';
 import {addProductController  , updateProductById , deleteProductById} from "../controller/product.controller.js";
 import { addCategoriesToVendor, deleteVendorById} from "../controller/vendor.controller.js";
 import { addNewVendor } from '../controller/vendorAuth.controller.js';
-import { categorySchemaValidation } from "../test/category.validator.js";
-import { updateCategorySchemaValidation } from "../test/categoryEdit.validator.js";
-import {productSchemaValidation} from "../test/product.validator.js";
-import { editProductSchemaValidation } from '../test/productEdit.validator.js';
-import {vendorSchemaValidation} from '../test/vendor.validator.js' ;
+import { categorySchemaValidation } from '../test/Category/category.validator.js';
+import { productSchemaValidation } from '../test/Product/product.validator.js';
+import { editProductSchemaValidation } from '../test/Product/productEdit.validator.js';
+import { vendorSchemaValidation } from '../test/Vendor/vendor.validator.js';
+import { updateCategorySchemaValidation } from '../test/Category/categoryEdit.validator.js';
 const router = express.Router();
 
 // Core router - /api/admin
@@ -45,35 +46,36 @@ router
      .route("/feedbacks")
      .get(isLoggedIn , isAdmin , adminFeedbackData)
 
-// Check for Adding categories Route
+//  Adding categories Route
 router
      .route("/add-category")
      .post(isLoggedIn , isAdmin , upload.single('image') , validate(categorySchemaValidation) , createCategory)
 
+//  Adding  categories to vendors Route
 router
      .route("/vendor/:vendorId/add-categories")
-     .post(isLoggedIn , addCategoriesToVendor)
+     .post(isLoggedIn , isAdmin, validate(addCategoryToVendorValidation) , addCategoriesToVendor)
 
-// Check for Editing categories Route
+// Editing categories Route
 router
      .route("/category/:id/edit")
      .put(isLoggedIn , isAdmin , upload.single('image') , validate(updateCategorySchemaValidation) , editCategory)
 
-// Check for the Deleting categories Route
+//  the Deleting categories Route
 router
      .route("/category/:id/delete")
      .delete(isLoggedIn ,  isAdmin , deleteCategory)
 
-//check for Adding  product Route
+// Adding  product Route
 router
      .route("/add-product")
      .post(isLoggedIn , isAdmin , upload.array("images" , 7) ,
          validate(productSchemaValidation) , addProductController)
 
-//check for the particular product Edit Route
+// particular product Edit Route
 router
      .route("/product/:id/edit")
-     .put(isLoggedIn , isAdmin , upload.array("images", 7)  , updateProductById )
+     .put(isLoggedIn , isAdmin , upload.array("images", 7)  , validate(editProductSchemaValidation) , updateProductById )
 
 //check for the particular product Delete Route
 router
@@ -83,24 +85,27 @@ router
 // Adding Vendor Route
 router
      .route("/add-vendor")
-     .post(isLoggedIn , upload.single("image") ,  validate(vendorSchemaValidation) , addNewVendor)
+     .post(isLoggedIn , isAdmin , upload.single("image") ,  validate(vendorSchemaValidation) , addNewVendor)
 
 // Admin adds a category to a specific vendor
 router
       .route("/add-category-to-vendor/:vendorId")
-      .post( isAdmin, addCategoryToVendor);
+      .post(isLoggedIn ,isAdmin, validate(addCategoryToVendorValidation) ,addCategoryToVendor);
 
 // Deleting a  vendor Account Route
 router
      .route("/vendor/:id/account/delete")
-     .delete(isLoggedIn, deleteVendorById);
+     .delete(isLoggedIn, isAdmin , deleteVendorById);
 
+// Deleting a  booking details Route
 router
      .route("/bookings/:bookingId")
-     .delete(isLoggedIn, adminDeleteBooking);
+     .delete(isLoggedIn, isAdmin , adminDeleteBooking);
 
 // DELETE /api/admin/contact/:contactId
-router.delete("/contact/:contactId", deleteContactById);
+router
+      .route('/contact/:contactId')
+      .delete(isLoggedIn , isAdmin , deleteContactById);
 
 
 export default router;

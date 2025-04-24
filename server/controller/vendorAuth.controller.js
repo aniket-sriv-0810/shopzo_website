@@ -5,7 +5,7 @@ import {uploadOnCloudinary} from "../utils/cloudinary.js";
 import {ApiError} from "../utils/ApiError.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
 import passport from "passport";
-// 📌 Register a New Vendor
+//  Register a New Vendor
 const addNewVendor = asyncHandler(async (req, res) => {
   try {
     const {
@@ -273,7 +273,7 @@ const checkVendorAuthentication = asyncHandler(async (req, res) => {
     }
   });
   
-  const changePassword = async (req, res) => {
+const changePassword = async (req, res) => {
     try {
       const { id } = req.params;
       const { oldPassword, newPassword } = req.body;

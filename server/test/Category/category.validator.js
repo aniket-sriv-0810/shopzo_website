@@ -9,7 +9,8 @@ const categorySchemaValidation = Joi.object({
 
   description: Joi.string().trim().optional(),
 
-  image: Joi.any(),
+  // This will be handled by Multer, but included for completeness
+  image: Joi.any().optional(),
 
   tag: Joi.string()
     .valid("male", "female")
@@ -20,18 +21,10 @@ const categorySchemaValidation = Joi.object({
     }),
 
   products: Joi.array()
-    .items(Joi.string().regex(objectIdPattern))
-    .optional()
-    .messages({
-      "string.pattern.base": "Each product ID must be a valid ObjectId.",
-    }),
+    .items(Joi.string().pattern(objectIdPattern).message("Each product ID must be a valid ObjectId."))
+    .optional(),
 
-  vendors: Joi.array()
-    .items(Joi.string().regex(objectIdPattern))
-    .optional()
-    .messages({
-      "string.pattern.base": "Each vendor ID must be a valid ObjectId.",
-    }),
+  // `vendors` is not accepted via create endpoint in your controller, so this can be omitted
 });
 
 export { categorySchemaValidation };

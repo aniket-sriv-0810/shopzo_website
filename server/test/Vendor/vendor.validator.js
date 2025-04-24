@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { Vendor } from "../models/vendor.model.js";
+import { Vendor } from "../../models/vendor.model.js";
 
 const objectId = Joi.string().regex(/^[0-9a-fA-F]{24}$/);
 
