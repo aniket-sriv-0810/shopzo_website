@@ -14,7 +14,7 @@ const EditPricingModal = ({ isOpen, onClose, product, vendorId, onPriceUpdate })
 
     try {
       await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/vendor/product/${vendorId}/${product._id}/update-prices`,
+        `${import.meta.env.VITE_API_URL}/api/vendor/${vendorId}/account/product/${vendorId}/${product._id}/update-prices`,
         { originalPrice, discountedPrice },
         { withCredentials: true }
       );

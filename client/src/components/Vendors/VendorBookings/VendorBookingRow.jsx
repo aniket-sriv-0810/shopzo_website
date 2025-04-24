@@ -29,7 +29,7 @@ const VendorBookingRow = ({ booking, onDelete }) => {
 
     try {
       await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/vendor/bookings/${bookingId}/${user?._id}/${product?._id}`,
+        `${import.meta.env.VITE_API_URL}/api/vendor/${id}/account/bookings/${bookingId}/${user?._id}/${product?._id}`,
         { withCredentials: true }
       );
       onDelete(bookingId);

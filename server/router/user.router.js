@@ -100,7 +100,7 @@ router
 
 // delete  the user's cancelled bookings Route
 router
-     .route(':id/account/bookings/:bookingId')
+     .route('/:id/account/bookings/:bookingId')
      .delete(isLoggedIn , userDeleteCancelledBooking);
 
 

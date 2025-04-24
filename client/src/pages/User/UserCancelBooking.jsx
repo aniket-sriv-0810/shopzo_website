@@ -7,7 +7,7 @@ const UserCancelBooking = ({ bookingId, onDeleted }) => {
   const handleDelete = async () => {
     try {
       const { data } = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/user/bookings/${bookingId}`,
+        `${import.meta.env.VITE_API_URL}/api/user/${user._id}/account/bookings/${bookingId}`,
         {
             withCredentials : true
         }

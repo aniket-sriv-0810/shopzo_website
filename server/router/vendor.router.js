@@ -88,12 +88,6 @@ router
      .get(vendorAccountDetails)
 
 
-// CLIENT SIDE - provides the  vendor all categories details Route
-router
-     .route("/:id/all-categories")
-     .get( vendorAccountDetails)
-
-
 // Check for the  vendor account all particular products having the particular vendor/category/tag Route
 router
      .route("/:id/account/:categoryId/:tag/all-products")
@@ -135,7 +129,7 @@ router
 //  Check for the  vendor  Edit Account Route
 router
      .route("/:id/account/edit")
-     .put( isLoggedIn, upload.single("image"), validate(editVendorValidation) ,updateVendorById);
+     .put( isLoggedIn, isVendor,upload.single("image"), validate(editVendorValidation) ,updateVendorById);
 
 
 // DELETE booking by vendor Route

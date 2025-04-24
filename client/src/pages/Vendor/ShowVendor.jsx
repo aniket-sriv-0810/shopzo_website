@@ -17,7 +17,7 @@ const ShowVendor = () => {
   const fetchVendorDetails = async () => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/vendor/${id}/account`,
+        `${import.meta.env.VITE_API_URL}/api/vendor/${id}`,
         {
           withCredentials: true,
         }
