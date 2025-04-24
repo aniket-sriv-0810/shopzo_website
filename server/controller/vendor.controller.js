@@ -432,11 +432,11 @@ const getVendorAllBookings = asyncHandler(async (req, res) => {
     })
     .populate({
       path: "user",
-      select: "name email phone image",
+      select: "id name email phone image",
     })
     .populate({
       path: "product",
-      select: "title price images",
+      select: "id title price images",
     })
     .select("sizeSelected quantity totalPrice status bookingDate");
 
@@ -455,6 +455,7 @@ const getVendorAllBookings = asyncHandler(async (req, res) => {
     sizeSelected: booking.sizeSelected,
     quantity: booking.quantity,
     user: {
+      _id: booking.user?._id,
       name: booking.user?.name || "N/A",
       email: booking.user?.email || "N/A",
       phone: booking.user?.phone || "N/A",
@@ -467,6 +468,7 @@ const getVendorAllBookings = asyncHandler(async (req, res) => {
       image: booking.vendor?.image || "N/A",
     },
     product: {
+      _id: booking.product?._id,
       title: booking.product?.title || "N/A",
       price: booking.product?.price || 0,
       image: booking.product?.images?.[0] || "",
@@ -543,7 +545,14 @@ const vendorDeleteBooking = async (req, res) => {
       product: productId,
     });
 
-    if (!booking) return res.status(404).json({ message: "Booking not found or unauthorized" });
+    if (!booking)
+      return res.status(404).json({ message: "Booking not found or unauthorized" });
+
+    if (!["cancelled", "completed"].includes(booking.status)) {
+      return res.status(400).json({
+        message: "Only cancelled or completed bookings can be deleted by vendor",
+      });
+    }
 
     await booking.deleteOne();
 
@@ -553,4 +562,45 @@ const vendorDeleteBooking = async (req, res) => {
   }
 };
 
-export {getAllVendors,  vendorAccountDetails  , updateVendorById , deleteVendorById ,getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData ,addCategoriesToVendor , productOfVendorData , allProductsOfVendor  , getVendorAllBookings , updateBookingStatusByVendor , vendorDeleteBooking};
+const updateProductPrices = async (req, res) => {
+  const { productId, vendorId } = req.params;
+  const { originalPrice, discountedPrice } = req.body;
+
+  // Validate IDs
+  if (!mongoose.Types.ObjectId.isValid(productId) || !mongoose.Types.ObjectId.isValid(vendorId)) {
+    throw new ApiError(400, "Invalid Product ID or Vendor ID");
+  }
+
+  try {
+    // Find product and verify ownership
+    const product = await Product.findOne({ _id: productId, vendor: vendorId });
+
+    if (!product) {
+      throw new ApiError(404, "Product not found or not owned by vendor");
+    }
+
+    // Validate prices
+    if (discountedPrice >= originalPrice) {
+      throw new ApiError(400, "Discounted price must be less than original price");
+    }
+
+    // Update prices
+    product.originalPrice = originalPrice;
+    product.discountedPrice = discountedPrice;
+
+    await product.save();
+
+    return res.status(200).json(
+      new ApiResponse(200, product, "Product prices updated successfully")
+    );
+  } catch (error) {
+    console.error(error);
+    return res.status(error.statusCode || 500).json({
+      status: "error",
+      message: error.message || "Something went wrong",
+    });
+  }
+};
+
+
+export {getAllVendors,  vendorAccountDetails  , updateVendorById , deleteVendorById ,getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData ,addCategoriesToVendor , productOfVendorData , allProductsOfVendor  , getVendorAllBookings , updateBookingStatusByVendor , vendorDeleteBooking , updateProductPrices};

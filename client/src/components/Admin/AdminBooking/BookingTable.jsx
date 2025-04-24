@@ -1,11 +1,11 @@
 import React from 'react';
 import BookingRow from './BookingRow';
 
-const BookingTable = ({ bookings }) => {
+const BookingTable = ({ bookings, onDelete }) => {
   return (
     <div className="overflow-x-auto bg-white shadow-md rounded">
       <table className="min-w-full table-auto border">
-        {/* Main Headers */}
+        {/* Headers */}
         <thead className="bg-gradient-to-b from-zinc-700 to-slate-700 text-white text-sm">
           <tr>
             <th colSpan={3} className="px-4 py-2 border text-center">User Details</th>
@@ -14,9 +14,9 @@ const BookingTable = ({ bookings }) => {
             <th className="px-4 py-2 border">Status</th>
             <th className="px-4 py-2 border">Booking Date</th>
             <th className="px-4 py-2 border">Booking ID</th>
+            <th className="px-4 py-2 border">Action</th> {/* Delete column */}
           </tr>
 
-          {/* Sub-Headers */}
           <tr className="bg-slate-800 text-white text-xs">
             <th className="px-4 py-2 border">Name</th>
             <th className="px-4 py-2 border">Email</th>
@@ -35,12 +35,13 @@ const BookingTable = ({ bookings }) => {
             <th className="px-4 py-2 border">Status</th>
             <th className="px-4 py-2 border">Date</th>
             <th className="px-4 py-2 border">ID</th>
+            <th className="px-4 py-2 border">Delete</th>
           </tr>
         </thead>
 
         <tbody>
           {bookings.map((booking) => (
-            <BookingRow key={booking._id} booking={booking} />
+            <BookingRow key={booking._id} booking={booking} onDelete={onDelete} />
           ))}
         </tbody>
       </table>

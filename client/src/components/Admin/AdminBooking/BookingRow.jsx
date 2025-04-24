@@ -1,6 +1,8 @@
 import React from 'react';
+import { FaTrashAlt } from 'react-icons/fa';
+import axios from 'axios';
 
-const BookingRow = ({ booking }) => {
+const BookingRow = ({ booking, onDelete }) => {
   const {
     _id,
     user,
@@ -13,14 +15,25 @@ const BookingRow = ({ booking }) => {
     bookingDate,
   } = booking;
 
+  const handleDelete = async () => {
+    try {
+      const res = await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/admin/bookings/${_id}`,
+        { withCredentials: true }
+      );
+      onDelete(_id); // Callback to update parent state
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to delete booking");
+    }
+  };
+
   return (
     <tr className="border text-center text-sm">
-      {/* User Details */}
+      {/* Existing cells */}
       <td className="px-2 py-2">{user?.name || "N/A"}</td>
       <td className="px-2 py-2">{user?.email || "N/A"}</td>
       <td className="px-2 py-2">{user?.phone || "N/A"}</td>
 
-      {/* Vendor Details */}
       <td className="px-2 py-2">
         <img
           src={vendor?.image || "/default-vendor.jpg"}
@@ -31,7 +44,6 @@ const BookingRow = ({ booking }) => {
       <td className="px-2 py-2">{vendor?.name || "N/A"}</td>
       <td className="px-2 py-2">{vendor?.phone || "N/A"}</td>
 
-      {/* Product Details */}
       <td className="px-2 py-2">
         <img
           src={product?.images?.[0] || "/default-product.jpg"}
@@ -44,30 +56,38 @@ const BookingRow = ({ booking }) => {
       <td className="px-2 py-2">{quantity}</td>
       <td className="px-2 py-2">₹{totalPrice}</td>
 
-      {/* Status */}
       <td className="px-2 py-2">
-        <span
-          className={`px-3 py-1 rounded-full text-white text-xs ${
-            status === 'completed'
-              ? 'bg-green-600'
-              : status === 'cancelled'
-              ? 'bg-red-500'
-              : status === 'pending'
-              ? 'bg-yellow-500'
-              : 'bg-blue-500'
-          }`}
-        >
+        <span className={`px-3 py-1 rounded-full text-white text-xs ${
+          status === 'completed'
+            ? 'bg-green-600'
+            : status === 'cancelled'
+            ? 'bg-red-500'
+            : status === 'pending'
+            ? 'bg-yellow-500'
+            : 'bg-blue-500'
+        }`}>
           {status}
         </span>
       </td>
 
-      {/* Booking Date */}
       <td className="px-2 py-2">
         {new Date(bookingDate).toLocaleDateString("en-IN")}
       </td>
 
-      {/* Booking ID */}
       <td className="px-2 py-2 text-xs text-gray-600">{_id}</td>
+
+      {/* Delete Column */}
+      <td className="px-2 py-2">
+        {(status === "cancelled" || status === "completed") && (
+          <button
+            onClick={handleDelete}
+            className="text-red-600 hover:text-red-800"
+            title="Delete Booking"
+          >
+            <FaTrashAlt />
+          </button>
+        )}
+      </td>
     </tr>
   );
 };

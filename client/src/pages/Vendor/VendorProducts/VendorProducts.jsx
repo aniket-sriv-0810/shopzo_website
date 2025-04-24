@@ -52,7 +52,11 @@ const VendorProducts = () => {
       ) : products.length === 0 ? (
         <p className="text-center text-gray-600">No products found.</p>
       ) : (
-        <VendorProductTable products={products} />
+        <VendorProductTable
+  products={products}
+  vendorId={id}
+  onPriceUpdate={() => fetchVendorProducts()}
+/>
       )}
     </div>
     </>

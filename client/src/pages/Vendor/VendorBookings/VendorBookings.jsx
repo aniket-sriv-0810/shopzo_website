@@ -63,7 +63,12 @@ const VendorBookings = () => {
           />
         </div>
       ) : (
-        <VendorBookingTable bookings={bookings} />
+        <VendorBookingTable
+          bookings={bookings}
+          onDelete={(deletedId) =>
+            setBookings((prev) => prev.filter((b) => b.bookingId !== deletedId))
+          }
+        />
       )}
     </div>
     </>

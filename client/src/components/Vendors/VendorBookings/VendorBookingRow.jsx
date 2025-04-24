@@ -1,11 +1,13 @@
 import React from 'react';
-import VendorBookingStatusUpdater from '../VendorPaymentStatusUpdater/VendorPaymentStatusUpdater'; // adjust path as needed
-import { useUser } from '../../UserContext/userContext'; // adjust path to your user context
 import { useParams } from 'react-router-dom';
+import { FaTrashAlt } from 'react-icons/fa';
+import VendorBookingStatusUpdater from '../VendorPaymentStatusUpdater/VendorPaymentStatusUpdater';
+import axios from 'axios';
 
-const VendorBookingRow = ({ booking }) => {
-    const {id} = useParams();
-   const {
+const VendorBookingRow = ({ booking, onDelete }) => {
+  const { id: vendorId } = useParams();
+
+  const {
     bookingId,
     bookingDate,
     paymentStatus,
@@ -16,14 +18,33 @@ const VendorBookingRow = ({ booking }) => {
     product,
   } = booking;
 
+  const handleDelete = async () => {
+    if (!["cancelled", "completed"].includes(paymentStatus)) {
+      alert("Only cancelled or completed bookings can be deleted.");
+      return;
+    }
+
+    const confirm = window.confirm("Are you sure you want to delete this booking?");
+    if (!confirm) return;
+
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/vendor/bookings/${bookingId}/${user?._id}/${product?._id}`,
+        { withCredentials: true }
+      );
+      onDelete(bookingId);
+    } catch (error) {
+      console.error("Delete failed:", error);
+      alert("Failed to delete booking.");
+    }
+  };
+
   return (
     <tr className="border text-center text-sm">
-      {/* User Details */}
-      <td className="px-2 py-2">{user?.name || "N/A"}</td>
+      <td className="px-2 py-2">{user?.name  || "N/A"}</td>
       <td className="px-2 py-2">{user?.email || "N/A"}</td>
       <td className="px-2 py-2">{user?.phone || "N/A"}</td>
 
-      {/* Product Details */}
       <td className="px-2 py-2">
         <img
           src={product?.image || "/default-product.jpg"}
@@ -36,23 +57,24 @@ const VendorBookingRow = ({ booking }) => {
       <td className="px-2 py-2">{quantity}</td>
       <td className="px-2 py-2">₹{totalPrice}</td>
 
-      {/* Status */}
       <td className="px-2 py-2">
-  <VendorBookingStatusUpdater
-    vendorId={id}
-    bookingId={booking?.bookingId}
-    currentStatus={booking?.paymentStatus}
-    onStatusUpdate={() => {}} // Optional callback if you want to refresh parent list
-  />
-</td>
+        <VendorBookingStatusUpdater
+          vendorId={vendorId}
+          bookingId={bookingId}
+          currentStatus={paymentStatus}
+          onStatusUpdate={() => {}}
+        />
+      </td>
 
-      {/* Booking Date */}
       <td className="px-2 py-2">
         {new Date(bookingDate).toLocaleDateString("en-IN")}
       </td>
-
-      {/* Booking ID */}
       <td className="px-2 py-2 text-xs text-gray-600">{bookingId}</td>
+
+      {/* Delete Column */}
+      <td className="px-2 py-2 text-red-500 cursor-pointer hover:text-red-700">
+        <FaTrashAlt onClick={handleDelete} />
+      </td>
     </tr>
   );
 };

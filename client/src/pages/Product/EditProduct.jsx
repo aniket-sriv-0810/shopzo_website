@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import ImageUploader from "../../components/Products/AddProduct/ImageUploader"; // Adjust the path as needed
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -12,37 +13,39 @@ const EditProduct = () => {
     discountedPrice: "",
     sizes: [],
     tag: "male",
-    images: [], // Default to empty array to avoid .map crash
+    images: [], // existing images URLs
   });
 
   const [newImages, setNewImages] = useState([]);
+  const [imagesToKeep, setImagesToKeep] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const sizeOptions = ["xs", "s", "m", "l", "xl", "xxl", "xxxl"];
+  const sizeOptions = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
 
-  const fetchProduct = async () => {
-    try {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/product/${id}`);
-      const product = data.data.product;
-  
-      setFormData({
-        title: product.title || "",
-        description: product.description || "",
-        discountedPrice: product.discountedPrice || "",
-        sizes: Array.isArray(product.sizes) ? product.sizes : [],
-        tag: product.tag || "male",
-        images: Array.isArray(product.images) ? product.images : [],
-      });
-  
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching product:", error);
-      setLoading(false);
-    }
-  };
-  
   useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/product/${id}`);
+        const product = data.data.product;
+
+        setFormData({
+          title: product.title || "",
+          description: product.description || "",
+          discountedPrice: product.discountedPrice || "",
+          sizes: Array.isArray(product.sizes) ? product.sizes : [],
+          tag: product.tag || "male",
+          images: Array.isArray(product.images) ? product.images : [],
+        });
+
+        setImagesToKeep(Array.isArray(product.images) ? product.images : []);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching product:", error);
+        setLoading(false);
+      }
+    };
+
     fetchProduct();
   }, [id]);
 
@@ -63,8 +66,17 @@ const EditProduct = () => {
     }));
   };
 
-  const handleImageUpload = (e) => {
-    setNewImages(Array.from(e.target.files));
+  const handleNewImagesChange = (imgs) => {
+    if (imgs.length + imagesToKeep.length > 7) {
+      alert("You can only have up to 7 images in total (existing + new).");
+      return;
+    }
+    setNewImages(imgs);
+  };
+
+  const handleRemoveExistingImage = (url) => {
+    const updated = imagesToKeep.filter((img) => img !== url);
+    setImagesToKeep(updated);
   };
 
   const handleSubmit = async (e) => {
@@ -77,7 +89,9 @@ const EditProduct = () => {
       sendData.append("discountedPrice", formData.discountedPrice);
       sendData.append("tag", formData.tag);
       formData.sizes.forEach((size) => sendData.append("sizes", size));
+
       newImages.forEach((img) => sendData.append("images", img));
+      sendData.append("imagesToKeep", JSON.stringify(imagesToKeep));
 
       await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/product/${id}/edit`, sendData, {
         withCredentials: true,
@@ -86,7 +100,7 @@ const EditProduct = () => {
       navigate("/admin");
     } catch (error) {
       console.error("Error updating product:", error);
-    }finally {
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -162,27 +176,33 @@ const EditProduct = () => {
         <div>
           <label className="block font-medium">Current Images</label>
           <div className="grid grid-cols-3 gap-2">
-            {(formData.images || []).map((img, i) => (
-              <img
-                key={i}
-                src={img}
-                alt={`product-${i}`}
-                className="h-24 w-full object-cover rounded"
-              />
+            {imagesToKeep.map((img, i) => (
+              <div key={i} className="relative">
+                <img
+                  src={img}
+                  alt={`product-${i}`}
+                  className="h-24 w-full object-cover rounded"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveExistingImage(img)}
+                  className="absolute top-1 right-1 bg-red-600 text-white text-xs px-2 py-0.5 rounded-full hover:bg-red-700"
+                >
+                  ✕
+                </button>
+              </div>
             ))}
           </div>
+          <p className="text-sm text-gray-600 mt-1">
+            {imagesToKeep.length} existing image{imagesToKeep.length !== 1 ? "s" : ""}
+          </p>
         </div>
 
-        <div>
-          <label className="block font-medium">Upload New Images (Max 7)</label>
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleImageUpload}
-            className="w-full"
-          />
-        </div>
+        <ImageUploader images={newImages} onChange={handleNewImagesChange} />
+
+        <p className="text-sm text-gray-600 mt-1">
+          Total: {imagesToKeep.length + newImages.length} / 7 images
+        </p>
 
         <button
           type="submit"

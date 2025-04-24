@@ -53,7 +53,7 @@ const expressSessionOption = {
   }),
   cookie: {
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000, // 1 day expiry time
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week expiry time
     secure: isProduction, // Secure only in production
     sameSite: isProduction ? 'none' : 'lax',
   },

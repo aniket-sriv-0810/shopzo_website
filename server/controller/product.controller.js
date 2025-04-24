@@ -132,7 +132,14 @@ const getProductById = asyncHandler(async (req, res) => {
 
 const updateProductById = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { title, description, price, sizes, tag } = req.body;
+  const {
+    title,
+    description,
+    price,
+    sizes,
+    tag,
+    imagesToKeep = "[]", // this should come as a JSON stringified array
+  } = req.body;
 
   try {
     let product = await Product.findById(id);
@@ -140,25 +147,37 @@ const updateProductById = asyncHandler(async (req, res) => {
       return res.status(404).json(new ApiError(404, "Product not found"));
     }
 
-    // Handle image uploads if new images are provided
-    let images = product.images;
+    // Parse retained images from frontend
+    let retainedImages = JSON.parse(imagesToKeep); // array of URLs
+    if (!Array.isArray(retainedImages)) retainedImages = [];
+
+    let newUploadedImages = [];
+
+    // Upload new images if any
     if (req.files && req.files.length > 0) {
-      images = [];
       for (const file of req.files) {
         const uploaded = await uploadOnCloudinary(file.path);
         if (uploaded?.secure_url) {
-          images.push(uploaded.secure_url);
+          newUploadedImages.push(uploaded.secure_url);
         }
       }
     }
 
-    // Update fields
+    const combinedImages = [...retainedImages, ...newUploadedImages];
+
+    if (combinedImages.length > 7) {
+      return res
+        .status(400)
+        .json(new ApiError(400, "You can only have up to 7 images."));
+    }
+
+    // Update product fields
     product.title = title || product.title;
     product.description = description || product.description;
     product.price = price || product.price;
     product.sizes = sizes || product.sizes;
     product.tag = tag || product.tag;
-    product.images = images;
+    product.images = combinedImages;
 
     await product.save();
 
@@ -172,6 +191,7 @@ const updateProductById = asyncHandler(async (req, res) => {
       .json(new ApiError(500, error.message, "Failed to update product"));
   }
 });
+
 
 const deleteProductById = asyncHandler(async (req, res) => {
   const { id } = req.params;

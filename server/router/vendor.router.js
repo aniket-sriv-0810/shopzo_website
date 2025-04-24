@@ -4,7 +4,7 @@ import {upload} from "../multer.js";
 import {validate} from '../middleware/validator.js';
 
 import {editVendorValidation} from '../test/vendorEdit.validator.js' ;
-import { getAllVendors,vendorAccountDetails ,   updateVendorById , getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData , addCategoriesToVendor , productOfVendorData, allProductsOfVendor, getVendorAllBookings, updateBookingStatusByVendor, vendorDeleteBooking } from "../controller/vendor.controller.js";
+import { getAllVendors,vendorAccountDetails ,   updateVendorById , getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData , addCategoriesToVendor , productOfVendorData, allProductsOfVendor, getVendorAllBookings, updateBookingStatusByVendor, vendorDeleteBooking, updateProductPrices } from "../controller/vendor.controller.js";
 import { reviewSchemaValidation } from '../test/review.validator.js';
 import { addReviewToVendor, getVendorReviews, getVendorReviewStats } from '../controller/review.controller.js';
 import { loginVendor, logOutAccount , checkVendorAuthentication , changePassword } from '../controller/vendorAuth.controller.js';
@@ -144,6 +144,15 @@ router
      .route("/bookings/:bookingId/:userId/:productId")
      .get(isLoggedIn , vendorDeleteBooking)
 
+// DELETE booking by vendor
+router.delete(
+     "/bookings/:bookingId/:userId/:productId",
+     isLoggedIn,
+     vendorDeleteBooking
+   );
+
+// PUT or PATCH route to update product prices
+router.put("/product/:vendorId/:productId/update-prices", updateProductPrices);
 
 
 export default router;

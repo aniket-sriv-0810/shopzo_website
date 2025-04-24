@@ -251,17 +251,51 @@ const addCategoryToVendor = async (req, res) => {
   
       const booking = await Booking.findById(bookingId);
   
-      if (!booking) return res.status(404).json({ message: "Booking not found" });
+      if (!booking) {
+        return res.status(404).json({ message: "Booking not found" });
+      }
   
-      if (!["pending", "completed"].includes(booking.status)) {
-        return res.status(400).json({ message: "Only pending or completed bookings can be deleted by admin" });
+      // ✅ Allow deletion only if status is 'cancelled' or 'completed'
+      if (!["cancelled", "completed"].includes(booking.status)) {
+        return res.status(400).json({
+          message: "Only cancelled or completed bookings can be deleted by admin",
+        });
       }
   
       await booking.deleteOne();
   
-      return res.status(200).json({ message: "Booking deleted successfully by admin" });
+      return res
+        .status(200)
+        .json({ message: "Booking deleted successfully by admin" });
     } catch (err) {
-      return res.status(500).json({ message: "Server error", error: err.message });
+      return res
+        .status(500)
+        .json({ message: "Server error", error: err.message });
     }
   };
-export { adminDashboardData , adminUserData , adminVendorData , adminCategoryData , adminProductData , adminBookingData , adminFeedbackData , addCategoryToVendor , adminDeleteBooking};
+  
+  const deleteContactById = asyncHandler(async (req, res) => {
+    const { contactId } = req.params;
+  
+    // Find the contact
+    const contact = await Contact.findById(contactId);
+  
+    if (!contact) {
+      return res.status(404).json(
+        new ApiError(404, null, "Contact not found")
+      );
+    }
+  
+    // Remove reference from user's feedbacks array
+    await User.findByIdAndUpdate(contact.user, {
+      $pull: { feedbacks: contact._id },
+    });
+  
+    // Delete the contact
+    await Contact.findByIdAndDelete(contactId);
+  
+    return res.status(200).json(
+      new ApiResponse(200, null, "Contact deleted successfully")
+    );
+  });
+export { adminDashboardData , adminUserData , adminVendorData , adminCategoryData , adminProductData , adminBookingData , adminFeedbackData , addCategoryToVendor , adminDeleteBooking , deleteContactById};

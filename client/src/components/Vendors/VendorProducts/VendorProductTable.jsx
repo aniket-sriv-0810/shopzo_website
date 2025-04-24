@@ -1,7 +1,7 @@
 import React from "react";
 import VendorProductRow from "./VendorProductRow";
 
-const VendorProductTable = ({ products }) => {
+const VendorProductTable = ({ products, vendorId, onPriceUpdate }) => {
   return (
     <div className="overflow-x-auto bg-white shadow-xl rounded-xl">
       <table className="min-w-full text-sm md:text-base border border-gray-200">
@@ -15,11 +15,17 @@ const VendorProductTable = ({ products }) => {
             <th className="px-4 py-3 border">Category</th>
             <th className="px-4 py-3 border">Tag</th>
             <th className="px-4 py-3 border">Product ID</th>
+            <th className="px-4 py-3 border">Edit Pricing</th>
           </tr>
         </thead>
         <tbody>
           {products.map((product) => (
-            <VendorProductRow key={product._id} product={product} />
+            <VendorProductRow
+              key={product._id}
+              product={product}
+              vendorId={vendorId}
+              onPriceUpdate={onPriceUpdate}
+            />
           ))}
         </tbody>
       </table>

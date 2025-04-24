@@ -1,7 +1,7 @@
 import React from 'react';
 import FeedbackRow from './FeedbackRow';
 
-const FeedbackTable = ({ feedbacks }) => {
+const FeedbackTable = ({ feedbacks, onDeleteFeedback }) => {
   return (
     <div className="overflow-x-auto bg-white shadow-md rounded">
       <table className="min-w-full table-auto border">
@@ -18,7 +18,11 @@ const FeedbackTable = ({ feedbacks }) => {
         </thead>
         <tbody>
           {feedbacks.map((feedback) => (
-            <FeedbackRow key={feedback._id} feedback={feedback} />
+            <FeedbackRow
+              key={feedback._id}
+              feedback={feedback}
+              onDelete={() => onDeleteFeedback(feedback._id)}
+            />
           ))}
         </tbody>
       </table>
