@@ -104,17 +104,6 @@ const Footer = () => {
           </Link>
           . All rights reserved.
         </p>
-        <p>
-          Developed and maintained by{" "}
-          <a
-            href="https://www.instagram.com/shobhiitttt_fs?igsh=MWVjdWxqbm0wYzMyMg=="
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-cyan-400 hover:underline transition"
-          >
-            Shobhit Srivastava
-          </a>
-        </p>
       </div>
     </footer>
   );
