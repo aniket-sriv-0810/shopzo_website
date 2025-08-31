@@ -11,11 +11,11 @@ const Footer = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 max-w-7xl mx-auto">
         
         {/* 🌐 About Section */}
-        <div className="flex flex-col items-center sm:items-start space-y-4 text-center sm:text-left">
+        <div className="flex flex-col items-center sm:items-start space-y-1 text-center sm:text-left">
           <img
             src={Logo}
             alt="The Shopzo Logo"
-            className="w-24 sm:w-28 object-contain transition-transform duration-300 hover:scale-105 mx-auto sm:mx-0"
+            className="w-40 sm:w-48 object-contain transition-transform duration-300 hover:scale-105 mx-auto sm:mx-0"
           />
           <p className="text-sm text-gray-400 leading-relaxed max-w-xs mx-auto sm:mx-0">
             The Shopzo is your one-stop platform to book offline products from trusted vendors, categorized by products for a seamless shopping experience.

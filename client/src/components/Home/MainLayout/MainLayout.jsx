@@ -63,7 +63,7 @@ const MainLayout = () => {
             data-aos="fade-up"
           />
           <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-            <button onClick={() => navigate('/categories')} className="bg-gradient-to-r from-indigo-600 to-pink-500 hover:from-indigo-700 hover:to-pink-600 hover:cursor-pointer text-white font-semibold py-2 px-6 rounded-full shadow-md">
+            <button onClick={() => navigate('/categories')} className="bg-gradient-to-bl from-red-600 to-purple-700 hover:from-indigo-700 hover:to-pink-600 hover:cursor-pointer text-white font-semibold py-2 px-6 rounded-full shadow-md">
               Explore Now
             </button> 
           </div>
