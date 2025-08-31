@@ -17,6 +17,7 @@ const UserRow = ({ user, loggedInUser, deleteUser  }) => {
       <td className="px-4 py-2 border">{user.phone}</td>
       <td className="px-4 py-2 border">{user.email}</td>
       <td className="px-4 py-2 border">{user._id}</td>
+      <td className="px-4 py-2 border">{user.role}</td>
       <td className="px-4 py-2 border">
         <button
           onClick={() => deleteUser(user._id)}

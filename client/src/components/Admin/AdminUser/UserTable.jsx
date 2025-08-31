@@ -12,6 +12,7 @@ const UserTable = ({ users, loggedInUser, deleteUser  }) => {
             <th className="px-4 py-3 border border-gray-200">Phone</th>
             <th className="px-4 py-3 border border-gray-200">Email</th>
             <th className="px-4 py-3 border border-gray-200">User ID</th>
+            <th className="px-4 py-3 border border-gray-200">Role</th>
             <th className="px-4 py-3 border border-gray-200">Delete Account</th>
           </tr>
         </thead>
