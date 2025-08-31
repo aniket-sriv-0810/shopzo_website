@@ -7,7 +7,7 @@ const AboutHeader = () => {
       <img
         src={Logo}
         alt="Shopzo Logo"
-        className="w-32 h-32 -p-1.5 md:mt-6 sm:ml-5 bg-gray-100 rounded-full shadow-lg object-cover hover:scale-105 transition-transform duration-300"
+        className="w-48 -p-1.5 md:mt-1 sm:ml-5 bg-gray-100  object-cover hover:scale-105 transition-transform duration-300"
         data-aos="fade-down"
       />
     </div>

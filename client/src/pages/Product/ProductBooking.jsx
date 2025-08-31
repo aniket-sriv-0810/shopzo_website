@@ -6,6 +6,7 @@ import Navbar from "../../components/Navbars/Navbar/Navbar";
 import { FaTags } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import SkeletonForm from "../../components/LoadingSkeleton/SkeletonForm";
+import { BsCashCoin } from "react-icons/bs";
 const ProductBooking = () => {
   const { id } = useParams(); // product ID
   const { user } = useUser();
@@ -75,7 +76,7 @@ const ProductBooking = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-700 via-gray-500 to-zinc-800 px-4 py-10 flex justify-center items-center">
   <div className="w-full max-w-6xl bg-white rounded-3xl shadow-xl p-6 mt-5 sm:p-10">
     <h1 className="text-xl md:text-3xl sm:text-4xl font-extrabold mb-10 text-center text-gray-800">
-      Book Your Product
+      Book Your Product for In-Store Shopping
     </h1>
 
     <div className="grid lg:grid-cols-2 gap-12 items-start">
@@ -175,6 +176,10 @@ const ProductBooking = () => {
   </div>
 
   <div className="flex justify-between text-sm text-gray-700">
+    <span>Discount</span>
+    <span className="text-green-500 font-bold">- ₹{ Math.abs(product.originalPrice - product.discountedPrice)}</span>
+  </div>
+  <div className="flex justify-between text-sm text-gray-700">
     <span>Offer Price</span>
     <span className="text-teal-600 font-medium">₹{product.discountedPrice}</span>
   </div>
@@ -188,9 +193,9 @@ const ProductBooking = () => {
 
   <hr className="my-2 border-t" />
 
-  <div className="flex justify-between text-lg font-semibold text-cyan-600">
+  <div className="flex justify-between text-lg font-semibold text-green-600">
     <span className="text-gray-500">Total Amount Payable</span>
-    <span>₹{(product.discountedPrice * quantity).toFixed(2)}</span>
+    <span className="text-xl font-bold">₹ {(product.discountedPrice * quantity).toLocaleString("INR")}</span>
   </div>
 </div>
 

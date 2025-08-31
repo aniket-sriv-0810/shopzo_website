@@ -65,6 +65,8 @@ import BookingConfirmation from "./pages/Product/BookingConfirmation";
 import UserBookingCancel from './pages/User/UserBookingCancel';
 import ReviewLoader from "./pages/Loaders/ReviewLoader";
 import VendorBookings from "./pages/Vendor/VendorBookings/VendorBookings";
+import ProductDelivery from "./pages/Product/ProductDelivery";
+import MainLoader from "./pages/Loaders/MainLoader";
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -97,15 +99,19 @@ function App() {
       {isLoading ? (
         // Display loading animation while isLoading is true
         <div className="loading-page flex flex-col justify-center gap-6 items-center h-screen">
+        {/*
           <DotLottieReact
             src="https://lottie.host/e32980de-2d5a-4f0c-96ae-853d398fecab/qJq4lBxhtz.lottie"
             loop
             autoplay
             className="w-40 h-40"
           />
-          <p className="uppercase text-lg font-bold text-gray-900 animate-pulse py-2">
-            Loading...
-          </p>
+        */}
+        <>
+          
+        <MainLoader/>
+          
+        </>
         </div>
       ) : (
         <Routes>
@@ -138,12 +144,18 @@ function App() {
           <Route path="/register" element={<SignUp />} />
           <Route path="/logout" element={<Logout />} />
 
+            
 
               {/* Product Routes - CLIENT Side */}
           <Route path="/product/:id" element={<ShowProduct />} />
           <Route path="/product/:id/booking" element={
             <PrivateRoute>
             <ProductBooking />
+            </PrivateRoute>
+            } />
+          <Route path="/product/:id/delivery" element={
+            <PrivateRoute>
+            <ProductDelivery />
             </PrivateRoute>
             } />
           <Route path="/product/:id/booking/:bookingId/confirmation" element={

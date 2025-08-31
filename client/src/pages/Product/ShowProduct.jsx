@@ -6,7 +6,8 @@ import NotAvailable from "../Loaders/NotAvailable";
 import Navbar from "../../components/Navbars/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import { FaRupeeSign } from "react-icons/fa";
-import { BsCashCoin } from "react-icons/bs";
+import { RiMotorbikeFill } from "react-icons/ri";
+import { TiShoppingCart } from "react-icons/ti";
 const ShowProduct = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -196,10 +197,17 @@ useEffect(() => {
 
             <button
               onClick={() => navigate(`/product/${id}/booking`)}
-              className="w-full m-auto  flex justify-center items-center gap-3 bg-gradient-to-tr from-green-500 to-teal-500 hover:cursor-pointer  text-white py-3 rounded-xl font-semibold text-lg shadow-md transition duration-300  hover:from-teal-700 hover:to-green-600"
+              className="w-full m-auto  flex justify-center items-center gap-3 bg-gradient-to-tr from-pink-400 to-purple-600 hover:cursor-pointer  text-white py-3 rounded-xl font-semibold text-lg shadow-md transition duration-300  hover:from-pink-700 hover:to-purple-600 mb-5"
             >
-              Proceed to Booking
-              <BsCashCoin className="text-xl text-white mt-2"/>
+              In-Store Shopping
+              <TiShoppingCart className="text-2xl text-white "/>
+            </button>
+            <button
+              onClick={() => navigate(`/product/${id}/delivery`)}
+              className="w-full m-auto  flex justify-center items-center gap-3 bg-gradient-to-tr from-green-500 to-teal-600 hover:cursor-pointer  text-white py-3 rounded-xl font-semibold text-lg shadow-md transition duration-300  hover:from-teal-700 hover:to-green-600"
+            >
+              Seamless Home Delivery
+              <RiMotorbikeFill className="text-2xl text-white "/>
             </button>
           </div>
         </div>

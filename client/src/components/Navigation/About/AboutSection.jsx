@@ -14,7 +14,7 @@ const AboutSection = ({ title, text, imageUrl, reverse }) => {
         <h2 className="text-2xl lg:text-3xl font-bold text-red-700 mb-4">
           {title}
         </h2>
-        <p className="text-base sm:text-lg text-gray-600 leading-relaxed">
+        <p className="text-base text-justify sm:text-lg text-gray-600 leading-relaxed">
           {text}
         </p>
       </div>

@@ -51,7 +51,7 @@ const Contact = () => {
       <div className="text-center">
         {error && <ErrorPopup message={error} onClose={() => setError("")} />}
       </div>
-      <section className="bg-gradient-to-b from-teal-700 to-gray-600 text-gray-900 py-16 px-6 md:px-12 lg:px-24 xl:px-32">
+      <section className="bg-gradient-to-tr from-teal-400 to-slate-500 text-gray-900 py-16 px-6 md:px-12 lg:px-24 xl:px-32">
         <div className="max-w-7xl mx-auto">
           <ContactHeader />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-24">
