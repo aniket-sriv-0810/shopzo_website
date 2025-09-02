@@ -15,7 +15,7 @@ const CategoryRow = ({ category }) => {
           className="w-12 h-12 md:w-14 md:h-14 shadow-md shadow-gray-400 rounded-full mx-auto object-cover border border-gray-300"
         />
       </td>
-      <td className="px-4 py-2 border font-semibold capitalize">{title}</td>
+      <td className="px-4 py-2 border font-normal capitalize">{title}</td>
       <td className="px-4 py-2 border text-sm break-all">{_id}</td>
       <td className="px-4 py-2 border capitalize">{tag}</td>
 

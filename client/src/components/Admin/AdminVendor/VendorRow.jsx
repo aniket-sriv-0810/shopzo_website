@@ -33,9 +33,9 @@ const VendorRow = ({ vendor, categories, refreshVendors, deleteVendor }) => {
         />
       </td>
 
-      <td className="px-4 py-2 capitalize text-sm border">{name}</td>
-      <td className="px-4 py-2 border">{username}</td>
-      <td className="px-4 py-2 border text-xs break-all">{_id}</td>
+      <td className="px-5 py-2 capitalize text-xs border">{name}</td>
+      <td className="px-2 py-2 border">{username}</td>
+      <td className="px-7 py-2 border text-xs break-all">{_id}</td>
       <td className="px-4 py-2 border">{phone}</td>
       <td className="px-4 py-2 border">{email}</td>
       <td className="px-4 py-2 border text-sm text-left">
@@ -47,7 +47,7 @@ const VendorRow = ({ vendor, categories, refreshVendors, deleteVendor }) => {
     to={`/admin/vendor/${_id}/add-category`}
     className="flex justify-center items-center"
   >
-    <TbTagPlus className="text-green-600  text-3xl rounded-full hover:scale-110"/>
+    <TbTagPlus className="text-green-600 bg-white -p-1 text-3xl rounded-full hover:scale-110"/>
   </Link>
 </td>
 

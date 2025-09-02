@@ -30,28 +30,28 @@ const EditPricingModal = ({ isOpen, onClose, product, vendorId, onPriceUpdate })
   return (
     <>
 
-<div className="fixed inset-0 p-3 z-50 flex items-center justify-center bg-gradient-to-br from-purple-600 via-blue-500 to-indigo-700 bg-opacity-60 backdrop-blur-sm">
-  <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 w-[24rem] shadow-2xl text-white space-y-6">
-    <h2 className="text-xl font-semibold text-center">Change Pricing</h2>
+<div className="fixed inset-0 p-3 z-50 flex items-center justify-center bg-gradient-to-br from-gray-200 via-slate-300 to-zinc-300 bg-opacity-60 backdrop-blur-sm">
+  <div className="bg-white backdrop-blur-xl border border-gray-500 rounded-2xl p-6 w-[24rem] shadow-2xl text-white space-y-6">
+    <h2 className="text-xl text-gray-700 font-semibold text-center">Change Pricing</h2>
 
     <div className="space-y-3">
       <div>
-        <label className="block text-sm font-medium mb-1">Original Price</label>
+        <label className="block text-sm text-gray-700 font-medium mb-1">Original Price</label>
         <input
           type="number"
           value={originalPrice}
           onChange={(e) => setOriginalPrice(Number(e.target.value))}
-          className="w-full px-4 py-2 rounded-md bg-white/20 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white focus:bg-white/30 placeholder-white/70 text-white"
+          className="w-full px-4 py-2 rounded-md bg-gray-200 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-white focus:bg-white/30 placeholder-gray-700 text-gray-900"
           placeholder="Enter original price"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium mb-1">Discounted Price</label>
+        <label className="block text-sm text-gray-700 font-medium mb-1">Discounted Price</label>
         <input
           type="number"
           value={discountedPrice}
           onChange={(e) => setDiscountedPrice(Number(e.target.value))}
-          className="w-full px-4 py-2 rounded-md bg-white/20 border border-white/30 focus:outline-none focus:ring-2 focus:ring-white focus:bg-white/30 placeholder-white/70 text-white"
+          className="w-full px-4 py-2 rounded-md bg-gray-200 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-white focus:bg-white/30 placeholder-gray-700 text-gray-900"
           placeholder="Enter discounted price"
         />
       </div>
@@ -61,7 +61,7 @@ const EditPricingModal = ({ isOpen, onClose, product, vendorId, onPriceUpdate })
     <div className="flex justify-end gap-3 pt-2">
       <button
         onClick={onClose}
-        className="px-4 py-1.5 rounded-md border border-white/40 bg-white/10 hover:bg-white/20 transition text-white"
+        className="px-4 py-1.5 rounded-md border border-white/40 bg-red-500 hover:bg-red-600 transition text-white"
       >
         Cancel
       </button>

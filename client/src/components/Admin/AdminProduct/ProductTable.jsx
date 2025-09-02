@@ -12,7 +12,7 @@ const ProductTable = ({ products, refreshProducts }) => {
     <th className="px-4 py-3 border" colSpan={3}>Vendor Details</th>
     <th className="px-4 py-3 border" colSpan={2}>Actions</th>
   </tr>
-  <tr className="bg-gradient-to-b from-indigo-700 to-slate-700">
+  <tr className="bg-gradient-to-b from-gray-500 to-slate-500">
     <th className="px-3 py-2 border">Image</th>
     <th className="px-3 py-2 border">Title</th>
     <th className="px-3 py-2 border">ID</th>

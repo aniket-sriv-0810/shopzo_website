@@ -126,7 +126,7 @@ const AddVendor = () => {
   );
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-blue-100 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-slate-100 px-4">
       <div className="w-full max-w-4xl bg-white/60 backdrop-blur-md shadow-2xl rounded-2xl p-8 sm:p-12 space-y-6">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">Add Vendor</h2>
 
@@ -147,7 +147,7 @@ const AddVendor = () => {
           {renderInput("Username", "username", "text", "Choose a unique username")}
           {renderInput("Email", "email", "email", "Enter vendor email")}
           {renderInput("Phone", "phone", "tel", "e.g. +1 123 456 7890")}
-          {renderInput("Password", "password", "password", "Create a password")}
+          {renderInput("Set Password", "password", "password", "Create a password")}
           {renderInput("Area", "area", "text", "Enter area/street")}
           {renderInput("City", "city", "text", "Enter city")}
           {renderInput("Pincode", "pincode", "text", "Enter postal code")}
@@ -185,7 +185,7 @@ const AddVendor = () => {
               type="submit"
               disabled={loading}
               className={`w-full py-3 rounded-lg font-semibold text-white transition ${
-                loading ? "bg-blue-400" : "bg-blue-600 hover:bg-blue-700"
+                loading ? "bg-green-400" : "bg-green-600 hover:bg-green-700"
               }`}
             >
               {loading ? "Submitting..." : "Add Vendor"}

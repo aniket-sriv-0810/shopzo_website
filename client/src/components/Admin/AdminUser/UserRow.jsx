@@ -1,11 +1,13 @@
 import React from "react";
 import { MdDeleteForever } from "react-icons/md";
 
-const UserRow = ({ user, loggedInUser, deleteUser  }) => {
+const UserRow = ({ user, loggedInUser, deleteUser }) => {
   const isCurrentUser = loggedInUser?._id === user._id;
+  const isAdmin = user.role === "admin";
 
   return (
     <tr className="hover:bg-gray-100 text-gray-900 text-center transition-all">
+      {/* Profile Image */}
       <td className="px-4 py-2 border">
         <img
           src={user.image}
@@ -13,17 +15,36 @@ const UserRow = ({ user, loggedInUser, deleteUser  }) => {
           className="w-12 h-12 md:w-14 md:h-14 shadow-md shadow-gray-300 rounded-full mx-auto object-cover border border-gray-300"
         />
       </td>
+
+      {/* Basic Info */}
       <td className="px-4 py-2 border capitalize">{user.name}</td>
       <td className="px-4 py-2 border">{user.phone}</td>
       <td className="px-4 py-2 border">{user.email}</td>
-      <td className="px-4 py-2 border">{user._id}</td>
-      <td className="px-4 py-2 border">{user.role}</td>
+      <td className="px-4 py-2 text-gray-500 border">{user._id}</td>
+
+      {/* Role Badge */}
+      <td className="px-4 py-2 border">
+        <p
+          className={`px-2 py-1 text-center font-medium rounded-full
+            ${user.role === "admin" ? "bg-red-500 text-white" : ""}
+            ${user.role === "user" ? "bg-green-500 text-white" : ""}
+            ${user.role === "vendor" ? "bg-indigo-500 text-white" : ""}`}
+        >
+          {user.role}
+        </p>
+      </td>
+
+      {/* Delete Button */}
       <td className="px-4 py-2 border">
         <button
           onClick={() => deleteUser(user._id)}
-          disabled={isCurrentUser}
-          className={`hover:cursor-pointer flex items-center m-auto justify-center gap-2 px-4 py-2 text-white font-semibold rounded-full transition-transform 
-            ${isCurrentUser ? "bg-gray-400 cursor-not-allowed" : "bg-red-500 hover:bg-red-600 hover:scale-110"}`}
+          disabled={isCurrentUser || isAdmin}
+          className={`flex items-center m-auto justify-center gap-2 px-4 py-2 text-white font-semibold rounded-full transition-transform
+            ${
+              isCurrentUser || isAdmin
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-red-500 hover:bg-red-600 hover:scale-110"
+            }`}
         >
           <MdDeleteForever className="text-xl" />
         </button>

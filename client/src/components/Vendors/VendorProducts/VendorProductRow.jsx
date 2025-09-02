@@ -27,8 +27,8 @@ const VendorProductRow = ({ product, vendorId, onPriceUpdate }) => {
           />
         </td>
         <td className="px-4 py-2 border font-semibold capitalize">{title}</td>
-        <td className="px-4 py-2 border font-medium">₹{discountedPrice}</td>
-        <td className="px-4 py-2 border line-through font-medium">₹{originalPrice}</td>
+        <td className="px-4 py-2 border  font-medium"><p className="text-green-600 font-semibold ">₹{discountedPrice}</p></td>
+        <td className="px-4 py-2 border   font-medium"><p className="line-through text-gray-500">₹{originalPrice}</p></td>
         <td className="px-4 py-2 border">
           {sizes?.length > 0 ? sizes.join(", ") : "N/A"}
         </td>

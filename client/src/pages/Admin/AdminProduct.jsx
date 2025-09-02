@@ -5,25 +5,47 @@ import SkeletonTable from "../../components/LoadingSkeleton/SkeletonTable";
 import AdminNotAvailableLoader from "../Loaders/AdminNotAvailableLoader";
 import ErrorPopup from "../../components/Popups/ErrorPopUp";
 import { useNavigate } from "react-router-dom";
+import AdminSearchBar from "../../components/Admin/AdminSearchBar/AdminSearchBar";
+
 const AdminProduct = () => {
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
   const fetchProducts = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/products`, {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/admin/products`,
+        { withCredentials: true }
+      );
 
       if (res.status === 200) {
         setProducts(res.data.data.allProductDetails);
+        setFilteredProducts(res.data.data.allProductDetails); // ✅ keep copy
       }
     } catch (err) {
       setError(err.response?.data?.message || "Unable to fetch product data.");
     } finally {
       setLoading(false);
     }
+  };
+
+  // 🔍 Search Handler
+  const handleSearch = (query) => {
+    if (!query) {
+      setFilteredProducts(products); // reset
+      return;
+    }
+
+    const lower = query.toLowerCase();
+    const filtered = products.filter(
+      (p) =>
+        (p?.title && p.title.toLowerCase().includes(lower)) ||
+        (p?._id && p._id.toLowerCase().includes(lower))
+    );
+    setFilteredProducts(filtered);
   };
 
   useEffect(() => {
@@ -37,21 +59,39 @@ const AdminProduct = () => {
       </h1>
 
       {loading ? (
-        <div className='flex justify-center items-center mt-10'>
-      <SkeletonTable/> 
+        <div className="flex justify-center items-center mt-10">
+          <SkeletonTable />
         </div>
-      ) :  error ? (
-        <div className="text-center text-red-600 font-medium"><ErrorPopup
+      ) : error ? (
+        <div className="text-center text-red-600 font-medium">
+          <ErrorPopup
             message={error}
             onClose={() => {
               setError("");
-              navigate("/admin"); // Optional: redirect or reload logic
+              navigate("/admin");
             }}
-          /></div>
-      )  : products.length === 0 ? (
-        <div className="text-center text-gray-600 font-medium"><AdminNotAvailableLoader content={"No Products data Found"} tagline={" Oops! It looks like your product data is empty"}/></div>
-      ): (
-        <ProductTable products={products} refreshProducts={fetchProducts} />
+          />
+        </div>
+      ) : products.length === 0 ? (
+        <div className="text-center text-gray-600 font-medium">
+          <AdminNotAvailableLoader
+            content={"No Products data Found"}
+            tagline={"Oops! It looks like your product data is empty"}
+          />
+        </div>
+      ) : (
+        <>
+          {/* 🔍 Search Bar */}
+          <AdminSearchBar
+            placeholder="Search products by name, brand, or ID..."
+            onSearch={handleSearch}
+          />
+
+          <ProductTable
+            products={filteredProducts}
+            refreshProducts={fetchProducts}
+          />
+        </>
       )}
     </div>
   );

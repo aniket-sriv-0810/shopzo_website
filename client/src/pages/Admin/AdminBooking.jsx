@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import BookingTable from '../../components/Admin/AdminBooking/BookingTable';
-import SkeletonTable from '../../components/LoadingSkeleton/SkeletonTable';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import BookingTable from "../../components/Admin/AdminBooking/BookingTable";
+import SkeletonTable from "../../components/LoadingSkeleton/SkeletonTable";
 import AdminNotAvailableLoader from "../Loaders/AdminNotAvailableLoader";
 import ErrorPopup from "../../components/Popups/ErrorPopUp";
 import { useNavigate } from "react-router-dom";
+import AdminSearchBar from "../../components/Admin/AdminSearchBar/AdminSearchBar";
 
 const AdminBooking = () => {
   const [bookings, setBookings] = useState([]);
+  const [filteredBookings, setFilteredBookings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -15,10 +17,12 @@ const AdminBooking = () => {
   const fetchBookings = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/bookings`, {
-        withCredentials: true
-      });
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/admin/bookings`,
+        { withCredentials: true }
+      );
       setBookings(res.data.data.allBookingDetails);
+      setFilteredBookings(res.data.data.allBookingDetails); // ✅ keep copy
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch booking details");
     } finally {
@@ -30,15 +34,37 @@ const AdminBooking = () => {
     fetchBookings();
   }, []);
 
+  // ❌ Delete Handler
   const handleDeleteBooking = (deletedId) => {
-    setBookings(prev => prev.filter(booking => booking._id !== deletedId));
+    setBookings((prev) => prev.filter((booking) => booking._id !== deletedId));
+    setFilteredBookings((prev) =>
+      prev.filter((booking) => booking._id !== deletedId)
+    );
+  };
+
+  // 🔍 Search Handler
+  const handleSearch = (query) => {
+    if (!query) {
+      setFilteredBookings(bookings);
+      return;
+    }
+
+    const lower = query.toLowerCase();
+    const filtered = bookings.filter(
+      (b) =>
+        (b?._id && b._id.toLowerCase().includes(lower)) ||
+        (b?.status && b.status.toLowerCase().includes(lower))
+    );
+    setFilteredBookings(filtered);
   };
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl text-center font-bold mb-9">All Bookings Received</h2>
+      <h2 className="text-2xl text-center font-bold mb-9">
+        All Bookings Received
+      </h2>
       {loading ? (
-        <div className='flex justify-center items-center mt-10'>
+        <div className="flex justify-center items-center mt-10">
           <SkeletonTable />
         </div>
       ) : error ? (
@@ -59,7 +85,18 @@ const AdminBooking = () => {
           />
         </div>
       ) : (
-        <BookingTable bookings={bookings} onDelete={handleDeleteBooking} />
+        <>
+          {/* 🔍 Search Bar */}
+          <AdminSearchBar
+            placeholder="Search bookings by ID, customer name, or status..."
+            onSearch={handleSearch}
+          />
+
+          <BookingTable
+            bookings={filteredBookings}
+            onDelete={handleDeleteBooking}
+          />
+        </>
       )}
     </div>
   );

@@ -140,13 +140,13 @@ const AddProductForm = () => {
         <button
   type="submit"
   disabled={loading}
-  className={`flex items-center justify-center gap-2 bg-blue-600 text-white font-medium px-6 py-3 rounded-lg transition 
-    ${loading ? "cursor-not-allowed opacity-70" : "hover:bg-blue-700"}`}
+  className={`w-full lex items-center justify-center gap-2 bg-red-600 text-white font-medium px-6 py-3 rounded-lg transition 
+    ${loading ? "cursor-not-allowed opacity-70" : "hover:bg-red-700"}`}
 >
   {loading && (
     <span className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
   )}
-  {loading ? "Submitting..." : "Submit Product"}
+  {loading ? "Submitting..." : "Add Product"}
 </button>
 
         </div>

@@ -54,7 +54,7 @@ const BookingRow = ({ booking, onDelete }) => {
       <td className="px-2 py-2">{product?.title || "N/A"}</td>
       <td className="px-2 py-2">{sizeSelected || "N/A"}</td>
       <td className="px-2 py-2">{quantity}</td>
-      <td className="px-2 py-2">₹{totalPrice}</td>
+      <td className="px-2 py-2 text-green-500 font-medium">₹{totalPrice}</td>
 
       <td className="px-2 py-2">
         <span className={`px-3 py-1 rounded-full text-white text-xs ${
