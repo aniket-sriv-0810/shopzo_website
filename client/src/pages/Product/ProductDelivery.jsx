@@ -147,16 +147,16 @@ const ProductDelivery = () => {
         <Navbar />
       </div>
 
-      <div className="min-h-screen bg-white px-4 py-10 flex justify-center items-center">
+      <div className="min-h-screen bg-slate-100 px-4 py-10 flex justify-center items-center">
         <div className="w-full max-w-6xl  rounded-3xl  p-6 mt-5 sm:p-10">
           <div className="flex flex-col items-center gap-2 mb-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs sm:text-sm bg-gray-50">
+            <div className="inline-flex mb-2 items-center gap-2 px-3 py-1 rounded-full border text-xs sm:text-sm bg-gray-50">
               <FaTruck className="text-gray-700" />
               <span className="font-semibold tracking-wide uppercase">
                 Home Delivery
               </span>
             </div>
-            <h1 className="text-xl md:text-3xl sm:text-4xl font-extrabold text-center text-gray-800">
+            <h1 className="text-xl md:text-3xl sm:text-4xl font-extrabold text-center text-gray-600">
               Get it Delivered to Your Doorstep
             </h1>
             {bookingStatus && (
@@ -169,7 +169,7 @@ const ProductDelivery = () => {
           <div className="grid lg:grid-cols-1 gap-12 items-start mt-6">
             {/* Product Info */}
             <div className=" md:flex gap-10 justify-center items-center space-y-6">
-              <div className="overflow-hidden rounded-2xl shadow-md">
+              <div className="overflow-hidden rounded-2xl shadow-md shadow-gray-400">
                 <img
                   src={product.images[0]}
                   alt={product.title}
@@ -178,7 +178,7 @@ const ProductDelivery = () => {
               </div>
 
               <div className="space-y-2">
-                <h2 className="text-3xl font-bold capitalize text-gray-800">
+                <h2 className="text-3xl -mt-3 font-bold capitalize text-gray-800">
                   {product.title}
                 </h2>
 
@@ -207,8 +207,8 @@ const ProductDelivery = () => {
                   </p>
                 </div>
 
-                <p className="text-sm font-medium text-teal-600">
-                  👤 Ordering as: {user?.name} ({user?.email} | {user?.phone})
+                <p className="text-sm font-medium text-gray-600">
+                 Ordering as: {user?.name} ({user?.email} | {user?.phone})
                 </p>
               </div>
             </div>
@@ -227,7 +227,7 @@ const ProductDelivery = () => {
                   required
                   value={sizeSelected}
                   onChange={(e) => setSizeSelected(e.target.value)}
-                  className={`w-full px-4 py-2.5 border rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm ${
+                  className={`w-full px-4 py-2.5 border rounded-xl shadow-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm text-center ${
                     errors.sizeSelected ? "border-red-400" : "border-gray-300"
                   }`}
                 >
@@ -414,7 +414,7 @@ const ProductDelivery = () => {
                       className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm ${
                         errors.pincode ? "border-red-400" : "border-gray-300"
                       }`}
-                      placeholder="6-digit code"
+                      placeholder="Enter 6-digit pincode"
                     />
                     {errors.pincode && (
                       <p className="mt-1 text-xs text-red-600">
@@ -476,6 +476,7 @@ const ProductDelivery = () => {
               </div>
 
               {/* Submit Button */}
+              
               <button
                 type="submit"
                 disabled={loading}

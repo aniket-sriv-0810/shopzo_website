@@ -33,7 +33,7 @@ const CancelBooking = ({ bookingId, userId, onCancelSuccess }) => {
       <button
         onClick={cancelBooking}
         disabled={loading}
-        className=" text-white bg-gradient-to-bl from-red-500 to-fuchsia-500 hover:scale-110 hover:cursor-pointer shadow-md shadow-gray-500 px-5 py-2 rounded"
+        className=" text-white bg-gradient-to-bl from-red-500 to-fuchsia-500 hover:scale-110 hover:cursor-pointer shadow-md shadow-gray-500 px-6 py-2 rounded-xl"
       >
         {loading ? "Cancelling..." : "Cancel Booking"}
       </button>

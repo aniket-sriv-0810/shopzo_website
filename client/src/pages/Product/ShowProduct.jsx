@@ -89,7 +89,7 @@ useEffect(() => {
   return (
     <>
       <Navbar />
-      <section className="max-w-full bg-gray-500 mx-auto px-4 sm:px-6 py-12">
+      <section className="max-w-full bg-gray-400 mx-auto px-4 sm:px-6 py-12">
         {/* Image Carousel */}
         <div className="relative w-full  overflow-hidden mb-8">
          <div

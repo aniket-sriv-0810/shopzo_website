@@ -13,7 +13,7 @@ const {user} = useUser();
             withCredentials : true
         }
       );
-      alert(data.message || "Cancelled booking deleted successfully");
+     
       onDeleted?.();
     } catch (err) {
       console.log("error => ", err);

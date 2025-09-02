@@ -70,7 +70,7 @@ const BookingConfirmation = () => {
     </div>
     
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-gray-100 p-4 sm:p-10">
-      <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
+      <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
 
         {/* Header */}
         <div className="bg-gradient-to-br from-green-500 via-teal-500 to-green-600 text-white py-8 px-6 text-center">

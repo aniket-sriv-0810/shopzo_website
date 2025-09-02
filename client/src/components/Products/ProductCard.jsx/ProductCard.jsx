@@ -50,7 +50,7 @@ const ProductCard = ({ product }) => {
       </div>
 
       {/* Content Section (30%) */}
-      <div className="p-4 sm:p-3 bg-gray-200 space-y-3 flex-grow flex flex-col justify-between">
+      <div className="p-4 sm:p-3 bg-gray-50 space-y-3 flex-grow flex flex-col justify-between">
         
         {/* Title */}
         <h2 className="text-xl ml-3 sm:text-2xl capitalize font-bold text-gray-800 line-clamp-2">
