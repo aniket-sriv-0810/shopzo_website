@@ -8,7 +8,7 @@ import { loginUserValidation } from '../test/User/userLogin.validator.js';
 import { toggleProductWishlistSchema } from '../test/User/userProductWishlists.validator..js';
 import { toggleVendorWishlistSchema } from '../test/User/userVendorWishlists.validator.js';
 import { changeUserPasswordSchema } from '../test/User/userPasswordChange.validator.js';
-import { createNewUser , loginUser , logOutUser , checkAuthentication, changeUserPassword } from '../controller/userAuth.controller.js';
+import { createNewUser , loginUser , logOutUser , checkAuthentication, changeUserPassword, forgotPassword, resetPassword } from '../controller/userAuth.controller.js';
 import {userAccountDetails , getUserWishlists , toggleProductWishlist , editUserDetails , deleteUserAccount, getUserBookings , cancelUserBooking ,getUserVendorWishlists ,  toggleVendorWishlist, userDeleteCancelledBooking} from "../controller/user.controller.js";
 const router = express.Router();
 
@@ -38,7 +38,8 @@ router
      .route('/auth')
      .get(checkAuthentication)
 
-
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:token", resetPassword);
 // provide the user Account details Route
 router
      .route('/:id/account')

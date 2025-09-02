@@ -52,12 +52,15 @@ const LoginForm = () => {
         const fieldErrors = {};
         details.forEach((msg) => {
           if (msg.toLowerCase().includes("email")) fieldErrors.email = msg;
-          else if (msg.toLowerCase().includes("password")) fieldErrors.password = msg;
+          else if (msg.toLowerCase().includes("password"))
+            fieldErrors.password = msg;
           else fieldErrors.general = msg;
         });
         setFormErrors((prev) => ({ ...prev, ...fieldErrors }));
       } else {
-        setServerError(error.response?.data?.message || "Login failed. Try again later.");
+        setServerError(
+          error.response?.data?.message || "Login failed. Try again later."
+        );
       }
     } finally {
       setIsLoading(false);
@@ -102,6 +105,26 @@ const LoginForm = () => {
             icon={BsShieldLockFill}
             error={formErrors.password}
           />
+          <div className="flex items-center justify-between mt-3 text-sm">
+            {/* Remember Me */}
+            <label className="flex items-center space-x-2 cursor-pointer text-gray-200 hover:text-green-200 transition-colors">
+              <input
+                type="checkbox"
+                className="w-4 h-4 accent-green-500 rounded-xl "
+              />
+              <span className="select-none">Remember me</span>
+            </label>
+
+            {/* Forgot Password */}
+            <Link to="/forgot-password">
+            <button
+              type="button"
+              className="text-gray-200 hover:text-gray-300 hover:underline hover:cursor-pointer font-medium transition-colors"
+            >
+              Forgot Password ?
+            </button>
+            </Link>
+          </div>
 
           <button
             type="submit"
@@ -121,7 +144,10 @@ const LoginForm = () => {
 
         <p className="text-sm text-center text-gray-300 mt-6">
           Don’t have an account?{" "}
-          <Link to="/register" className="text-green-400 font-semibold hover:underline">
+          <Link
+            to="/register"
+            className="text-green-400 font-semibold hover:underline"
+          >
             Sign Up
           </Link>
         </p>

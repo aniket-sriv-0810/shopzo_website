@@ -5,6 +5,7 @@ import {  getAllBookings , deleteBooking} from '../controller/booking.controller
 import { bookProduct } from '../controller/user.controller.js';
 import { validate } from '../middleware/validator.js';
 import { bookProductSchema } from '../test/User/userBooking.validator.js';
+import { createDelivery, getDeliveryConfirmation } from '../controller/delivery.controller.js';
 const router = express.Router();
 
 // CORE router - /api/product
@@ -28,6 +29,13 @@ router
 router
      .route("/:id/booking")
      .delete( isLoggedIn , deleteBooking)
+
+
+// Place delivery order
+router.post("/:productId/delivery", isLoggedIn, createDelivery);
+
+// Get confirmation
+router.get("/delivery/:id/confirmation", isLoggedIn, getDeliveryConfirmation);
 
 
 

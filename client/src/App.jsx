@@ -67,6 +67,9 @@ import ReviewLoader from "./pages/Loaders/ReviewLoader";
 import VendorBookings from "./pages/Vendor/VendorBookings/VendorBookings";
 import ProductDelivery from "./pages/Product/ProductDelivery";
 import MainLoader from "./pages/Loaders/MainLoader";
+import ForgotPassword from "./pages/Authentication/Password/ForgotPassword";
+import ResetPassword from "./pages/Authentication/Password/ResetPassword";
+import DeliveryConfirmation from "./pages/Product/DeliveryConfirmation";
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -143,6 +146,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<SignUp />} />
           <Route path="/logout" element={<Logout />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
             
 
@@ -161,6 +166,11 @@ function App() {
           <Route path="/product/:id/booking/:bookingId/confirmation" element={
             <PrivateRoute>
             <BookingConfirmation />
+            </PrivateRoute>
+            } />
+          <Route path="/delivery/:deliveryId/confirmation" element={
+            <PrivateRoute>
+            <DeliveryConfirmation />
             </PrivateRoute>
             } />
         

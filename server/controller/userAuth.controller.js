@@ -3,6 +3,8 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import crypto from "crypto";
+import { sendEmail } from "../utils/sendEmail.js";
 import passport from "passport";
 // Register a New User
 const createNewUser = asyncHandler(async (req, res) => {
@@ -239,5 +241,110 @@ const checkAuthentication = asyncHandler(async (req, res) => {
       return res.status(500).json({ error: error.message || "Server Error" });
     }
   };
-  
-export { createNewUser , loginUser , logOutUser , checkAuthentication , changeUserPassword };
+  // 1. Forget password request
+ const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: "Email is required" });
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(404).json({ message: "Email is not registered" });
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenHash = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+    user.resetPasswordToken = resetTokenHash;
+    user.resetPasswordExpires = Date.now() + 15 * 60 * 1000; // 15 min
+    await user.save();
+
+    // Reset link
+    const resetURL = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    console.log("reset URL => ", resetURL);
+    
+    // Send Email
+   await sendEmail({
+  to: user.email,
+  subject: "🔒 Password Reset Instructions | The Shopzo",
+  text: `Greetings,
+
+We received a request to reset your password for your The Shopzo account. 
+If you made this request, please use the link below to securely reset your password:
+
+${resetURL}
+
+⚠️ This link will expire in 15 minutes for your security.
+
+If you did not request a password reset, please ignore this email. Your account will remain secure.
+
+Best regards,  
+The Shopzo Security Team`,
+  html: `
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px; background: #f9f9f9;">
+      <div style="text-align: center; margin-bottom: 20px;">
+        <h2 style="color: #ff6600;">The Shopzo</h2>
+      </div>
+
+      <p style="font-size: 16px; color: #333;">Greetings,</p>
+      <p style="font-size: 16px; color: #333;">
+        We received a request to reset your password for your <strong>The Shopzo</strong> account. 
+        If this was you, please click the button below to securely reset your password:
+      </p>
+
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="${resetURL}" style="background: linear-gradient(to right, #ff6600, #ff3300); color: #fff; text-decoration: none; padding: 12px 25px; border-radius: 5px; font-size: 16px; font-weight: bold;">
+          Reset My Password
+        </a>
+      </div>
+
+      <p style="font-size: 14px; color: #666;">⚠️ This link will expire in <strong>15 minutes</strong> for your security.</p>
+      <p style="font-size: 14px; color: #666;">
+        If you did not request a password reset, you can safely ignore this email. Your account will remain secure.
+      </p>
+
+      <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;" />
+
+      <p style="font-size: 13px; color: #999; text-align: center;">
+        &copy; ${new Date().getFullYear()} The Shopzo. All rights reserved.  
+      </p>
+    </div>
+  `,
+});
+
+
+    res.status(200).json({ message: "Reset link sent to your email" });
+  } catch (err) {
+    res.status(500).json({ message: "Error sending reset email", error: err.message });
+  }
+};
+
+// 2. Reset password
+ const resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    if (!password) return res.status(400).json({ message: "Password is required" });
+
+    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+
+    const user = await User.findOne({
+      resetPasswordToken: tokenHash,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) return res.status(400).json({ message: "Invalid or expired token" });
+
+    // passport-local-mongoose provides setPassword
+    await user.setPassword(password);
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successful" });
+  } catch (err) {
+    res.status(500).json({ message: "Error resetting password", error: err.message });
+  }
+};
+
+export { createNewUser , loginUser , logOutUser , checkAuthentication , changeUserPassword , forgotPassword , resetPassword };

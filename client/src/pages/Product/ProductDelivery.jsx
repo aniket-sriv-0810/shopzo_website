@@ -70,8 +70,7 @@ const ProductDelivery = () => {
       e.buildingName = "Building/Apartment name is required.";
     if (!address.fullAddress?.trim())
       e.fullAddress = "Full address is required.";
-    if (!address.landmark?.trim())
-      e.landmark = "Please add a nearby landmark.";
+    if (!address.landmark?.trim()) e.landmark = "Please add a nearby landmark.";
     if (!address.city?.trim()) e.city = "City is required.";
     if (!/^\d{6}$/.test(address.pincode || "")) {
       e.pincode = "Enter a valid 6-digit pincode.";
@@ -110,17 +109,19 @@ const ProductDelivery = () => {
       };
 
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/product/${id}/booking`,
-        payload,
+        `${import.meta.env.VITE_API_URL}/api/product/${id}/delivery`,
+        {
+          product: id,
+          sizeSelected,
+          quantity,
+          address,
+        },
         { withCredentials: true }
       );
 
-      const bookingId =
-        res.data?.booking?._id || res.data?.data?.booking?._id;
-
-      if (bookingId) {
-        setBookingStatus("Order placed for Home Delivery!");
-        navigate(`/booking/${bookingId}/confirmation`);
+      const deliveryId = res.data?.data?._id;
+      if (deliveryId) {
+        navigate(`/delivery/${deliveryId}/confirmation`);
       } else {
         navigate(`/product/${id}`);
       }
@@ -252,9 +253,7 @@ const ProductDelivery = () => {
                 <div className="flex justify-center items-center gap-4">
                   <button
                     type="button"
-                    onClick={() =>
-                      setQuantity((prev) => Math.max(1, prev - 1))
-                    }
+                    onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
                     className="w-9 h-9 border pb-1 border-red-500 font-bold bg-gray-200 hover:bg-red-400 hover:text-white hover:cursor-pointer text-xl rounded-full "
                     aria-label="Decrease quantity"
                   >
@@ -312,7 +311,8 @@ const ProductDelivery = () => {
                   {/* Required fields */}
                   <div className="sm:col-span-2">
                     <label className="block text-xs font-medium text-gray-700 mb-1">
-                      Building / Apartment Name <span className="text-red-500">*</span>
+                      Building / Apartment Name{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
@@ -321,7 +321,9 @@ const ProductDelivery = () => {
                         handleChange("buildingName", e.target.value)
                       }
                       className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm ${
-                        errors.buildingName ? "border-red-400" : "border-gray-300"
+                        errors.buildingName
+                          ? "border-red-400"
+                          : "border-gray-300"
                       }`}
                       placeholder="e.g., Skyline Residency"
                     />
@@ -343,7 +345,9 @@ const ProductDelivery = () => {
                         handleChange("fullAddress", e.target.value)
                       }
                       className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm ${
-                        errors.fullAddress ? "border-red-400" : "border-gray-300"
+                        errors.fullAddress
+                          ? "border-red-400"
+                          : "border-gray-300"
                       }`}
                       placeholder="House/Street/Area"
                     />
@@ -388,9 +392,7 @@ const ProductDelivery = () => {
                       placeholder="e.g., Lucknow"
                     />
                     {errors.city && (
-                      <p className="mt-1 text-xs text-red-600">
-                        {errors.city}
-                      </p>
+                      <p className="mt-1 text-xs text-red-600">{errors.city}</p>
                     )}
                   </div>
 
@@ -431,13 +433,16 @@ const ProductDelivery = () => {
 
                 <div className="flex justify-between text-sm text-gray-700">
                   <span>Original Price</span>
-                  <span className="text-gray-600">₹{product.originalPrice}</span>
+                  <span className="text-gray-600">
+                    ₹{product.originalPrice}
+                  </span>
                 </div>
 
                 <div className="flex justify-between text-sm text-gray-700">
                   <span>Discount</span>
                   <span className="text-green-500 font-bold">
-                    - ₹{Math.abs(product.originalPrice - product.discountedPrice)}
+                    - ₹
+                    {Math.abs(product.originalPrice - product.discountedPrice)}
                   </span>
                 </div>
 
