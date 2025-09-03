@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { useUser } from "./components/UserContext/UserContext";
+import { useUser } from "./components/UserContext/userContext";
 import Home from "./pages/Home";
 import { Routes, Route } from "react-router-dom";
 import IsVendor from "./components/UserContext/IsVendor";
@@ -63,13 +63,13 @@ import ProductBooking from "./pages/Product/ProductBooking";
 import BookingConfirmation from "./pages/Product/BookingConfirmation";
 import UserBookingCancel from './pages/User/UserBookingCancel';
 import ReviewLoader from "./pages/Loaders/ReviewLoader";
-import VendorBookings from "./pages/Vendor/VendorBookings/VendorBookings";
 import ProductDelivery from "./pages/Product/ProductDelivery";
 import ForgotPassword from "./pages/Authentication/Password/ForgotPassword";
 import ResetPassword from "./pages/Authentication/Password/ResetPassword";
 import DeliveryConfirmation from "./pages/Product/DeliveryConfirmation";
 import AdminOrders from "./pages/Admin/AdminOrders";
 import UserOrders from "./pages/User/UserOrders";
+import VendorOrders from "./pages/Vendor/Vendororders";
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -321,7 +321,7 @@ function App() {
             }/>
           <Route path="/vendor/:id/account/bookings" element={
             <PrivateRoute>
-            <VendorBookings />
+            <VendorOrders />
             </PrivateRoute>
             }/>
           <Route path="/vendor/:id/account/change-password" element={

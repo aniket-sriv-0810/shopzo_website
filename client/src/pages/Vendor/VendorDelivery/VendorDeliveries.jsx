@@ -1,34 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import VendorBookingTable from '../../../components/Vendors/VendorBookings/VendorBookingTable';
+import VendorDeliveryTable from '../../../components/Vendors/VendorDelivery/VendorDeliveryTable';
 import SkeletonTable from '../../../components/LoadingSkeleton/SkeletonTable';
 import NotAvailable from '../../Loaders/NotAvailable';
 import ErrorPopup from '../../../components/Popups/ErrorPopUp';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useUser } from '../../../components/UserContext/userContext';
 import VendorNavbar from '../../../components/Navbars/VendorNavbar/VendorNavbar';
 import AdminSearchBar from "../../../components/Admin/AdminSearchBar/AdminSearchBar";
 
-const VendorBookings = () => {
-  const { user } = useUser();
-  const [bookings, setBookings] = useState([]);
-  const [filteredBookings, setFilteredBookings] = useState([]);
+const VendorDeliveries = () => {
+  const [deliveries, setDeliveries] = useState([]);
+  const [filteredDeliveries, setFilteredDeliveries] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { id: vendorId } = useParams(); 
+  const { id: vendorId } = useParams();
   const navigate = useNavigate();
 
-  const fetchBookings = async () => {
+  const fetchDeliveries = async () => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/vendor/${vendorId}/account/all-bookings`,
+        `${import.meta.env.VITE_API_URL}/api/vendor/${vendorId}/account/all-deliveries`,
         { withCredentials: true }
       );
-      setBookings(res.data.data);
-      setFilteredBookings(res.data.data);
+      setDeliveries(res.data.data);
+      setFilteredDeliveries(res.data.data);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch booking details');
+      setError(err.response?.data?.message || 'Failed to fetch delivery details');
     } finally {
       setLoading(false);
     }
@@ -36,26 +34,32 @@ const VendorBookings = () => {
 
   const handleSearch = (query) => {
     if (!query) {
-      setFilteredBookings(bookings);
+      setFilteredDeliveries(deliveries);
       return;
     }
     const lower = query.toLowerCase();
-    const filtered = bookings.filter(
-      (b) =>
-        b.user?.name?.toLowerCase().includes(lower) ||
-        b.bookingId?.toLowerCase().includes(lower)
+    const filtered = deliveries.filter(
+      (d) =>
+        d.user?.name?.toLowerCase().includes(lower) ||
+        d.deliveryId?.toLowerCase().includes(lower)
     );
-    setFilteredBookings(filtered);
+    setFilteredDeliveries(filtered);
+  };
+
+  const handleDeleteSuccess = (deletedId) => {
+    const updatedDeliveries = deliveries.filter(d => d.deliveryId !== deletedId);
+    setDeliveries(updatedDeliveries);
+    setFilteredDeliveries(updatedDeliveries);
   };
 
   useEffect(() => {
-    if (vendorId) fetchBookings();
+    if (vendorId) fetchDeliveries();
   }, [vendorId]);
 
   return (
     <>
-
       <div className="p-6">
+
         {loading ? (
           <div className="flex justify-center items-center mt-10">
             <SkeletonTable />
@@ -70,24 +74,22 @@ const VendorBookings = () => {
               }}
             />
           </div>
-        ) : filteredBookings.length === 0 ? (
+        ) : filteredDeliveries.length === 0 ? (
           <div className="text-center text-gray-600 font-medium">
             <NotAvailable
-              content={'No Booking data Found'}
-              tagline={'Oops! It looks like your booking data is empty'}
+              content={'No Delivery data Found'}
+              tagline={'Oops! It looks like your delivery data is empty'}
             />
           </div>
         ) : (
           <>
             <AdminSearchBar
-              placeholder="Search bookings by customer or Booking ID..."
+              placeholder="Search deliveries by customer or Delivery ID..."
               onSearch={handleSearch}
             />
-            <VendorBookingTable
-              bookings={filteredBookings}
-              onDelete={(deletedId) =>
-                setBookings((prev) => prev.filter((b) => b.bookingId !== deletedId))
-              }
+            <VendorDeliveryTable
+              deliveries={filteredDeliveries}
+              onDelete={handleDeleteSuccess}
             />
           </>
         )}
@@ -96,4 +98,4 @@ const VendorBookings = () => {
   );
 };
 
-export default VendorBookings;
+export default VendorDeliveries;
