@@ -9,9 +9,9 @@ const VendorBookingTable = ({ bookings, onDelete }) => {
           <tr>
             <th colSpan={3} className="px-4 py-2 border text-center">User Details</th>
             <th colSpan={5} className="px-4 py-2 border text-center">Product Details</th>
-            <th className="px-4 py-2 border">Status</th>
-            <th className="px-4 py-2 border">Booking Date</th>
-            <th className="px-4 py-2 border">Booking ID</th>
+            <th className="px-4 py-2 border">Order Status</th>
+            <th className="px-4 py-2 border">Order Date</th>
+            <th className="px-4 py-2 border">Order ID</th>
             <th className="px-4 py-2 border">Delete</th> {/* NEW */}
           </tr>
           <tr className="bg-slate-800 text-white text-xs">

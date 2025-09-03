@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import CategoryTable from "../../../components/Vendors/VendorCategory/VendorCategoryTable";
+import VendorCategoryTable from "../../../components/Vendors/VendorCategory/VendorCategoryTable";
 import SkeletonTable from "../../../components/LoadingSkeleton/SkeletonTable";
 import VendorNavbar from '../../../components/Navbars/VendorNavbar/VendorNavbar';
 import AdminSearchBar from "../../../components/Admin/AdminSearchBar/AdminSearchBar";
@@ -79,7 +79,7 @@ const VendorCategories = () => {
               placeholder="Search categories by name or ID..."
               onSearch={handleSearch}
             />
-            <CategoryTable categories={filteredCategories} />
+            <VendorCategoryTable categories={filteredCategories} />
           </>
         )}
       </div>

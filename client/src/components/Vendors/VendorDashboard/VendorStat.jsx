@@ -23,9 +23,9 @@ const VendorStat = ({ vendorData }) => {
     {
       id: "bookings",
       count: vendorData.bookingCount,
-      label: "Bookings Received",
+      label: "Orders Received",
       icon: <FaClipboardList className="text-pink-500 text-4xl" />,
-      link: `/vendor/${id}/account/bookings-received`,
+      link: `/vendor/${id}/account/bookings`,
     },
   ];
 
