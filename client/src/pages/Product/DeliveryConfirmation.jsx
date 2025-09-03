@@ -83,7 +83,7 @@ const DeliveryConfirmation = () => {
         <div className="space-y-2 text-sm sm:text-base">
           <p><span className="font-semibold">Product:</span> {product?.title}</p>
           <p><span className="font-semibold">Status:</span> <span className="bg-purple-500 -mt-1 px-3 py-1 rounded-full text-white"> {status} </span></p>
-          <p><span className="font-semibold">Expected Date:</span> <span className="text-green-600 text-lg">60 mins </span></p>
+          <p><span className="font-semibold">Estimated Time of Delivery:</span> <span className="text-green-600 text-lg">60 mins </span></p>
         </div>
       </div>
 
@@ -98,7 +98,7 @@ const DeliveryConfirmation = () => {
           <p><span className="font-semibold">Phone:</span> {user.phone || "N/A"}</p>
           <p>
             <span className="font-semibold">Delivery Address:</span> <br />
-            Area: {address?.street} <br />
+            Area: {address?.fullAddress} <br />
             Landmark: {address?.landmark} <br />
             City: {address?.city} - {address?.pincode}
           </p>

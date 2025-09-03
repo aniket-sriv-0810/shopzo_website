@@ -21,7 +21,7 @@ const MobileNavbar = () => {
     { to: "vendors", label: "Vendors Details", tooltip: "Vendors" ,icon: <FaStore /> },
     { to: "categories", label: "Categories Details", tooltip: "Categories" , icon: <FaTags /> },
     { to: "products", label: "Products Details", tooltip: "Products" , icon: <FaBoxOpen />},
-    { to: "bookings", label: "Bookings Details", tooltip: "Bookings" , icon: <FaClipboardList />},
+    { to: "bookings", label: "Orders Details", tooltip: "Orders" , icon: <FaClipboardList />},
     { to: "feedbacks", label: "Feedbacks Details", tooltip: "Feedbacks" , icon: <FaComments />},
   ];
 

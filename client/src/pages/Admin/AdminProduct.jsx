@@ -10,26 +10,36 @@ import AdminSearchBar from "../../components/Admin/AdminSearchBar/AdminSearchBar
 const AdminProduct = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const fetchProducts = async () => {
+    setLoading(true);
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/admin/products`,
         { withCredentials: true }
       );
-
-      if (res.status === 200) {
-        setProducts(res.data.data.allProductDetails);
-        setFilteredProducts(res.data.data.allProductDetails); // ✅ keep copy
-      }
+      setProducts(res.data.data.allProductDetails);
+      setFilteredProducts(res.data.data.allProductDetails); // ✅ keep copy
     } catch (err) {
       setError(err.response?.data?.message || "Unable to fetch product data.");
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  // ❌ Delete Handler
+  const handleDeleteProduct = (deletedId) => {
+    setProducts((prev) => prev.filter((product) => product._id !== deletedId));
+    setFilteredProducts((prev) =>
+      prev.filter((product) => product._id !== deletedId)
+    );
   };
 
   // 🔍 Search Handler
@@ -48,16 +58,11 @@ const AdminProduct = () => {
     setFilteredProducts(filtered);
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
   return (
-    <div className="min-h-screen bg-gray-100 px-4 py-8">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-9">
+    <div className="p-6">
+      <h2 className="text-2xl text-center font-bold mb-9">
         All Products Listed
-      </h1>
-
+      </h2>
       {loading ? (
         <div className="flex justify-center items-center mt-10">
           <SkeletonTable />
@@ -83,13 +88,12 @@ const AdminProduct = () => {
         <>
           {/* 🔍 Search Bar */}
           <AdminSearchBar
-            placeholder="Search products by name, brand, or ID..."
+            placeholder="Search products by ID, title, or vendor name..."
             onSearch={handleSearch}
           />
-
           <ProductTable
             products={filteredProducts}
-            refreshProducts={fetchProducts}
+            onDelete={handleDeleteProduct}
           />
         </>
       )}

@@ -48,7 +48,7 @@ const UserBookings = () => {
 
       <div className="bg-gray-100 max-w-full mx-auto px-4 py-8">
         <h2 className="text-center text-3xl font-bold text-gray-900 mt-10 mb-7">
-          My Bookings
+          My Orders
         </h2>
 
         {loading ? (

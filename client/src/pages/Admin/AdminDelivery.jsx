@@ -1,69 +1,68 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import VendorTable from "../../components/Admin/AdminVendor/VendorTable";
+import DeliveryTable from "../../components/Admin/AdminDelivery/DeliveryTable";
 import SkeletonTable from "../../components/LoadingSkeleton/SkeletonTable";
 import AdminNotAvailableLoader from "../Loaders/AdminNotAvailableLoader";
 import ErrorPopup from "../../components/Popups/ErrorPopUp";
 import { useNavigate } from "react-router-dom";
 import AdminSearchBar from "../../components/Admin/AdminSearchBar/AdminSearchBar";
 
-const AdminVendor = () => {
-  const [vendors, setVendors] = useState([]);
-  const [filteredVendors, setFilteredVendors] = useState([]);
+const AdminDelivery = () => {
+  const [deliveries, setDeliveries] = useState([]);
+  const [filteredDeliveries, setFilteredDeliveries] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  const fetchVendors = async () => {
+  const fetchDeliveries = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/admin/vendors`,
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/admin/deliveries`,
         { withCredentials: true }
       );
-      setVendors(response.data.data.allVendorDetails);
-      setFilteredVendors(response.data.data.allVendorDetails); // ✅ keep a copy for search
+      setDeliveries(res.data.data.allDeliveryDetails);
+      setFilteredDeliveries(res.data.data.allDeliveryDetails); // ✅ keep copy
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to fetch vendors");
+      setError(err.response?.data?.message || "Failed to fetch delivery details");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchVendors();
+    fetchDeliveries();
   }, []);
 
   // ❌ Delete Handler
-  const handleDeleteVendor = (deletedId) => {
-    setVendors((prev) => prev.filter((vendor) => vendor._id !== deletedId));
-    setFilteredVendors((prev) =>
-      prev.filter((vendor) => vendor._id !== deletedId)
+  const handleDeleteDelivery = (deletedId) => {
+    setDeliveries((prev) => prev.filter((delivery) => delivery._id !== deletedId));
+    setFilteredDeliveries((prev) =>
+      prev.filter((delivery) => delivery._id !== deletedId)
     );
   };
 
-  // 🔍 Search function
+  // 🔍 Search Handler
   const handleSearch = (query) => {
     if (!query) {
-      setFilteredVendors(vendors); // reset if empty
+      setFilteredDeliveries(deliveries);
       return;
     }
 
     const lower = query.toLowerCase();
-    const filtered = vendors.filter(
-      (v) =>
-        (v?.name && v.name.toLowerCase().includes(lower)) ||
-        (v?._id && v._id.toLowerCase().includes(lower))
+    const filtered = deliveries.filter(
+      (d) =>
+        (d?._id && d._id.toLowerCase().includes(lower)) ||
+        (d?.status && d.status.toLowerCase().includes(lower))
     );
-    setFilteredVendors(filtered);
+    setFilteredDeliveries(filtered);
   };
 
   return (
     <div className="p-6">
       <h2 className="text-2xl text-center font-bold mb-9">
-        All Registered Vendors
+        All Deliveries Received
       </h2>
-
       {loading ? (
         <div className="flex justify-center items-center mt-10">
           <SkeletonTable />
@@ -78,23 +77,24 @@ const AdminVendor = () => {
             }}
           />
         </div>
-      ) : vendors.length === 0 ? (
+      ) : deliveries.length === 0 ? (
         <div className="text-center text-gray-600 font-medium">
           <AdminNotAvailableLoader
-            content={"No Vendors Found"}
-            tagline={"Oops! It looks like your vendor data is empty"}
+            content={"No Delivery data Found"}
+            tagline={"Oops! It looks like your delivery data is empty"}
           />
         </div>
       ) : (
         <>
           {/* 🔍 Search Bar */}
           <AdminSearchBar
-            placeholder="Search vendors by name or ID..."
+            placeholder="Search deliveries by ID, customer name, or status..."
             onSearch={handleSearch}
           />
-          <VendorTable
-            vendors={filteredVendors}
-            onDelete={handleDeleteVendor}
+
+          <DeliveryTable
+            deliveries={filteredDeliveries}
+            onDelete={handleDeleteDelivery}
           />
         </>
       )}
@@ -102,4 +102,4 @@ const AdminVendor = () => {
   );
 };
 
-export default AdminVendor;
+export default AdminDelivery;

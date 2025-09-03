@@ -168,7 +168,7 @@ const Home = () => {
           start={0}
           end={100}
           duration={2000}
-          value="Booking Accomplished"
+          value="Orders Accomplished"
           color="green"
           icon={<FaClipboardList className="text-green-500 text-2xl md:text-3xl lg:text-5xl" />}
         />

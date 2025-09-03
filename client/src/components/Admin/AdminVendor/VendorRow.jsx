@@ -1,71 +1,56 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
-import { MdDeleteForever } from "react-icons/md";
-import { TbTagPlus } from "react-icons/tb";
-const VendorRow = ({ vendor, categories, refreshVendors, deleteVendor }) => {
-  const { name, username, _id, email, phone, address, image } = vendor;
+import React from 'react';
+import { FaTrashAlt } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { TbTagPlus } from 'react-icons/tb';
+import axios from 'axios';
 
-  const [deleting, setDeleting] = useState(false);
-  const [message, setMessage] = useState("");
+const VendorRow = ({ vendor, onDelete }) => {
+  const { name, username, _id, email, phone, image } = vendor;
 
-  const handleDeleteVendor = async () => {
+  const handleDelete = async () => {
     try {
-      setDeleting(true);
-      await deleteVendor(_id); // Call the delete function passed as a prop
-    } catch (err) {
-      setMessage(err.response?.data?.message || "Delete failed");
-    } finally {
-      setTimeout(() => {
-        setMessage("");
-        setDeleting(false);
-      }, 2000);
+      const res = await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/admin/vendor/${_id}/account/delete`,
+        { withCredentials: true }
+      );
+      onDelete(_id); // Callback to update parent state
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to delete vendor");
     }
   };
 
   return (
-    <tr className="hover:bg-gray-50 text-center text-gray-900 transition-all">
-      <td className="px-4 py-2 border">
+    <tr className="border text-center text-sm">
+      {/* Personal Details */}
+      <td className="px-2 py-2">
         <img
-          src={image}
+          src={image || "/default-vendor.jpg"}
           alt={name}
-          className="w-12 h-12 md:w-14 md:h-14 shadow-md shadow-gray-400 rounded-full mx-auto object-cover border border-gray-300"
+          className="w-10 h-10 object-cover rounded-full mx-auto"
         />
       </td>
+      <td className="px-2 py-2">{name || "N/A"}</td>
+      <td className="px-2 py-2">{username || "N/A"}</td>
 
-      <td className="px-5 py-2 capitalize text-xs border">{name}</td>
-      <td className="px-2 py-2 border">{username}</td>
-      <td className="px-7 py-2 border text-xs break-all">{_id}</td>
-      <td className="px-4 py-2 border">{phone}</td>
-      <td className="px-4 py-2 border">{email}</td>
-      <td className="px-4 py-2 border text-sm text-left">
-        {address.area}, {address.city} - {address.pincode}
+      {/* Contact Info */}
+      <td className="px-2 py-2">{phone || "N/A"}</td>
+      <td className="px-2 py-2">{email || "N/A"}</td>
+      <td className="px-2 py-2 text-xs text-gray-600">{_id}</td>
+
+      {/* Actions */}
+      <td className="px-2 py-2">
+        <Link to={`/admin/vendor/${_id}/add-category`}>
+          <TbTagPlus className="text-green-600 text-3xl mx-auto hover:scale-110 transition" />
+        </Link>
       </td>
-
-      <td className="px-4 py-2 border">
-  <Link
-    to={`/admin/vendor/${_id}/add-category`}
-    className="flex justify-center items-center"
-  >
-    <TbTagPlus className="text-green-600 bg-white -p-1 text-3xl rounded-full hover:scale-110"/>
-  </Link>
-</td>
-
-
-      <td className="px-4 py-2 border">
+      <td className="px-2 py-2">
         <button
-          disabled={deleting}
-          onClick={handleDeleteVendor}
-          className={`flex items-center hover:cursor-pointer justify-center mx-auto gap-2 px-4 py-1.5 text-white text-sm font-semibold rounded-lg transition
-            ${deleting ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-700"}`}
+          onClick={handleDelete}
+          className="text-white p-3 rounded-full bg-red-500 hover:bg-red-600 hover:cursor-pointer"
+          title="Delete Vendor"
         >
-          <MdDeleteForever className="text-lg" />
-          {deleting ? "Deleting..." : "Delete"}
+          <FaTrashAlt />
         </button>
-
-        {message && (
-          <p className="text-xs mt-1 text-center text-red-500">{message}</p>
-        )}
       </td>
     </tr>
   );

@@ -21,7 +21,7 @@ const ScrollComponent = () => {
           Explore a wide range of clothing from local vendors, all categorized for your convenience. 
           Whether you're after the latest trends, timeless classics, or exclusive pieces, 
           <span className="text-yellow-400">The Shopzo</span> connects you with the best in offline fashion. 
-          Browse, book, and pick up your favorite outfits—your wardrobe upgrade is just a click away.
+          Browse, order, and pick up your favorite outfits—your wardrobe upgrade is just a click away.
         </p>
       </div>
     </div>

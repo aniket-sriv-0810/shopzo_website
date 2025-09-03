@@ -8,94 +8,105 @@ import AdminSearchBar from "../../components/Admin/AdminSearchBar/AdminSearchBar
 import { useNavigate } from "react-router-dom";
 
 const AdminCategory = () => {
-  const [categories, setCategories] = useState([]);
-  const [filteredCategories, setFilteredCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+  const [filteredCategories, setFilteredCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  // 📡 Fetch categories
-  const fetchCategories = async () => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/admin/categories`,
-        { withCredentials: true }
-      );
+  // 📡 Fetch categories
+  const fetchCategories = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/admin/categories`,
+        { withCredentials: true }
+      );
 
-      if (res.status === 200) {
-        setCategories(res.data.data.allCategoryDetails);
-        setFilteredCategories(res.data.data.allCategoryDetails); // ✅ fixed
-      }
-    } catch (err) {
-      setError(
-        err.response?.data?.message || "Unable to fetch category data."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+      if (res.status === 200) {
+        setCategories(res.data.data.allCategoryDetails);
+        setFilteredCategories(res.data.data.allCategoryDetails);
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Unable to fetch category data."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // 🔍 Search Handler
-  const handleSearch = (query) => {
-    if (!query) {
-      setFilteredCategories(categories); // reset if empty
-      return;
-    }
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
-    const lower = query.toLowerCase();
-    const filtered = categories.filter(
-      (cat) =>
-        (cat?.title && cat.title.toLowerCase().includes(lower)) ||
-        (cat?._id && cat._id.toLowerCase().includes(lower))
-    );
-    setFilteredCategories(filtered);
-  };
+  // ❌ Delete Handler
+  const handleDeleteCategory = (deletedId) => {
+    setCategories((prev) => prev.filter((category) => category._id !== deletedId));
+    setFilteredCategories((prev) =>
+      prev.filter((category) => category._id !== deletedId)
+    );
+  };
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  // 🔍 Search Handler
+  const handleSearch = (query) => {
+    if (!query) {
+      setFilteredCategories(categories);
+      return;
+    }
 
-  return (
-    <div className="min-h-screen bg-gray-100 px-4 py-8">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-9">
-        All Listed Categories
-      </h1>
+    const lower = query.toLowerCase();
+    const filtered = categories.filter(
+      (cat) =>
+        (cat?.title && cat.title.toLowerCase().includes(lower)) ||
+        (cat?._id && cat._id.toLowerCase().includes(lower))
+    );
+    setFilteredCategories(filtered);
+  };
 
-      {loading ? (
-        <div className="flex justify-center items-center mt-10">
-          <SkeletonTable />
-        </div>
-      ) : error ? (
-        <div className="text-center text-red-600 font-medium">
-          <ErrorPopup
-            message={error}
-            onClose={() => {
-              setError("");
-              navigate("/admin"); // Optional redirect
-            }}
-          />
-        </div>
-      ) : categories.length === 0 ? (
-        <div className="text-center text-gray-600 font-medium">
-          <AdminNotAvailableLoader
-            content={"No Category Data Found"}
-            tagline={"Oops! It looks like your category data is empty"}
-          />
-        </div>
-      ) : (
-        <>
-          {/* 🔍 Search Bar */}
-          <AdminSearchBar
-            placeholder="Search categories by name or ID..."
-            onSearch={handleSearch}
-          />
+  return (
+    <div className="p-6">
+      <h2 className="text-2xl text-center font-bold mb-9">
+        All Listed Categories
+      </h2>
 
-          {/* ✅ Use filtered list */}
-          <CategoryTable categories={filteredCategories} />
-        </>
-      )}
-    </div>
-  );
+      {loading ? (
+        <div className="flex justify-center items-center mt-10">
+          <SkeletonTable />
+        </div>
+      ) : error ? (
+        <div className="text-center text-red-600 font-medium">
+          <ErrorPopup
+            message={error}
+            onClose={() => {
+              setError("");
+              navigate("/admin");
+            }}
+          />
+        </div>
+      ) : categories.length === 0 ? (
+        <div className="text-center text-gray-600 font-medium">
+          <AdminNotAvailableLoader
+            content={"No Category Data Found"}
+            tagline={"Oops! It looks like your category data is empty"}
+          />
+        </div>
+      ) : (
+        <>
+          {/* 🔍 Search Bar */}
+          <AdminSearchBar
+            placeholder="Search categories by name or ID..."
+            onSearch={handleSearch}
+          />
+
+          <CategoryTable
+            categories={filteredCategories}
+            onDelete={handleDeleteCategory}
+          />
+        </>
+      )}
+    </div>
+  );
 };
 
 export default AdminCategory;

@@ -31,7 +31,7 @@ const ReviewLoader = ({ message = "Successfully Submitted!" }) => {
         <DotLottieReact
           src="https://lottie.host/e080215c-f7c9-4975-89d8-8827b20e8374/lILbnOFwId.lottie"
           autoplay
-          className="w-66 h-40 mb-10"
+          className="w-66 h-40 mb-10 m-auto"
         />
 
         <h2 className="text-lg font-semibold text-black -mt-4">{message}</h2>
@@ -41,7 +41,7 @@ const ReviewLoader = ({ message = "Successfully Submitted!" }) => {
           className="mt-5 bg-gradient-to-t from-teal-600 to-gray-500 text-white font-medium px-5 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
           onClick={() => navigate(returnTo)}
         >
-          Back to Hotel →
+          Back to Vendor →
         </button>
       </div>
     </div>

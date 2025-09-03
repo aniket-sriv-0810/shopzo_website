@@ -30,7 +30,6 @@ import AdminVendor from "./pages/Admin/AdminVendor";
 import AdminCategory from "./pages/Admin/AdminCategory";
 import AdminProduct from "./pages/Admin/AdminProduct";
 import AdminFeedback from "./pages/Admin/AdminFeedback";
-import AdminBooking from "./pages/Admin/AdminBooking";
 import AllVendors from "./pages/Vendor/AllVendors";
 import UserAccountDelete from "./pages/User/UserAccountDelete";
 import UserAccountEdit from "./pages/User/UserAccountEdit";
@@ -66,10 +65,10 @@ import UserBookingCancel from './pages/User/UserBookingCancel';
 import ReviewLoader from "./pages/Loaders/ReviewLoader";
 import VendorBookings from "./pages/Vendor/VendorBookings/VendorBookings";
 import ProductDelivery from "./pages/Product/ProductDelivery";
-import MainLoader from "./pages/Loaders/MainLoader";
 import ForgotPassword from "./pages/Authentication/Password/ForgotPassword";
 import ResetPassword from "./pages/Authentication/Password/ResetPassword";
 import DeliveryConfirmation from "./pages/Product/DeliveryConfirmation";
+import AdminOrders from "./pages/Admin/AdminOrders";
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -102,19 +101,15 @@ function App() {
       {isLoading ? (
         // Display loading animation while isLoading is true
         <div className="loading-page flex flex-col justify-center gap-6 items-center h-screen">
-        {/*
+        
           <DotLottieReact
             src="https://lottie.host/e32980de-2d5a-4f0c-96ae-853d398fecab/qJq4lBxhtz.lottie"
             loop
             autoplay
             className="w-40 h-40"
           />
-        */}
-        <>
-          
-        <MainLoader/>
-          
-        </>
+        Please Wait Loading...
+
         </div>
       ) : (
         <Routes>
@@ -263,7 +258,7 @@ function App() {
             <Route path="vendors" element={<AdminVendor />} />
             <Route path="categories" element={<AdminCategory />} />
             <Route path="products" element={<AdminProduct />} />
-            <Route path="bookings" element={<AdminBooking />} />
+            <Route path="bookings" element={<AdminOrders />} />
             <Route path="feedbacks" element={<AdminFeedback />} />
             <Route path="add-category" element={<AddCategoryForm />} />
             <Route path="add-product" element={<AddProductForm />} />

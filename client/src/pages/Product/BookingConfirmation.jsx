@@ -75,8 +75,8 @@ const BookingConfirmation = () => {
         {/* Header */}
         <div className="bg-gradient-to-br from-green-500 via-teal-500 to-green-600 text-white py-8 px-6 text-center">
           <FaCheckCircle className="text-5xl mx-auto mb-3" />
-          <h1 className="text-3xl font-bold">Booking Confirmed</h1>
-          <p className="text-sm mt-1">Booking ID: <span className="font-semibold">{_id}</span></p>
+          <h1 className="text-3xl font-bold">Order Confirmed</h1>
+          <p className="text-sm mt-1">Order ID: <span className="font-semibold">{_id}</span></p>
         </div>
 
         {/* Main Content */}

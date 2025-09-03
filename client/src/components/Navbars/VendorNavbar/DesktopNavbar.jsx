@@ -11,7 +11,7 @@ const DesktopNavbar = () => {
     { to: `/vendor/${id}/account`, label: "Account", tooltip: "Account" },
     { to: `/vendor/${id}/account/categories-listed`, label: "Categories", tooltip: "Categories" },
     { to: `/vendor/${id}/account/products-listed`, label: "Products", tooltip: "Products" },
-    { to: `/vendor/${id}/account/bookings`, label: "Bookings", tooltip: "Bookings" },
+    { to: `/vendor/${id}/account/bookings`, label: "Orders", tooltip: "Orders" },
   ];
 
 

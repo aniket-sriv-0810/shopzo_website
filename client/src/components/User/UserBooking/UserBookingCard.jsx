@@ -34,8 +34,9 @@ const BookingCard = ({ booking, userId, onCancelSuccess }) => {
             {product?.title || "Product Title"}
           </h2>
           <p className="text-gray-600 text-sm mt-1">
-            Booked on : {new Date(createdAt).toLocaleDateString("IN")}
+            Ordered on : {new Date(createdAt).toLocaleDateString("IN")}
           </p>
+          
         </div>
         <span
           className={`mt-3 sm:mt-0 px-4 py-1.5 text-sm font-semibold rounded-full shadow-md
@@ -60,6 +61,7 @@ const BookingCard = ({ booking, userId, onCancelSuccess }) => {
             <span className="font-medium text-gray-900">Vendor Email:</span>{" "}
             {vendor?.email || "N/A"}
           </p>
+          
         </div>
         <div className="space-y-2">
           <p>

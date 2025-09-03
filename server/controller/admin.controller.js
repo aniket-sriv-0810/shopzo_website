@@ -5,6 +5,7 @@ import { Category } from "../models/category.model.js";
 import { Product } from "../models/product.model.js";
 import { Booking } from "../models/booking.model.js";
 import { Contact } from "../models/contact.model.js"; // Assuming feedback model exists
+import {Delivery} from '../models/delivery.model.js';
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 
@@ -298,4 +299,57 @@ const addCategoryToVendor = async (req, res) => {
       new ApiResponse(200, null, "Contact deleted successfully")
     );
   });
-export { adminDashboardData , adminUserData , adminVendorData , adminCategoryData , adminProductData , adminBookingData , adminFeedbackData , addCategoryToVendor , adminDeleteBooking , deleteContactById};
+  // Get All Deliveries
+// Get All Deliveries
+const adminDeliveryData = asyncHandler(async (req, res) => {
+    try {
+        const allDeliveryDetails = await Delivery.find({})
+            .populate("user", "name email phone") // Populating user details
+            .populate("vendor", "image name phone") // Vendor details
+            .populate("product", "images title") // Product details
+
+        if (!allDeliveryDetails || allDeliveryDetails.length === 0) {
+            return res.status(404).json({
+                status: 404,
+                message: "No delivery data found.",
+                details: ["Delivery data is currently unavailable."]
+            });
+        }
+
+        console.log("Fetching admin delivery data...");
+
+        return res.status(200).json(
+            new ApiResponse(200, { allDeliveryDetails }, "All Delivery data fetched successfully!")
+        );
+    } catch (error) {
+        return res.status(500).json(
+            new ApiError(500, null, "Unable to Fetch Delivery Details")
+        );
+    }
+});
+
+// Delete a Delivery
+const deleteDelivery = asyncHandler(async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedDelivery = await Delivery.findByIdAndDelete(id);
+
+        if (!deletedDelivery) {
+            return res.status(404).json({
+                status: 404,
+                message: "Delivery not found.",
+            });
+        }
+
+        return res.status(200).json({
+            status: 200,
+            message: "Delivery deleted successfully.",
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: 500,
+            message: "Failed to delete delivery.",
+        });
+    }
+});
+export { adminDashboardData , adminUserData , adminVendorData , adminCategoryData , adminProductData , adminBookingData , adminFeedbackData , addCategoryToVendor , adminDeleteBooking , deleteContactById , adminDeliveryData , deleteDelivery};

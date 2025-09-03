@@ -53,8 +53,8 @@ const getVendorReviews = asyncHandler(async (req, res) => {
     try {
       // Fetch all reviews for the vendor
       const reviews = await Review.find({ vendor: vendorId })
-        .populate("user")  // Populate user details (e.g., name)
-        .select("rating comment user")  // Only select rating, comment, and user
+        .populate("user") // Populate user details (e.g., name)
+        .select("rating comment user") // Only select rating, comment, and user
         .sort({ createdAt: -1 }); // Optional: Sort by most recent first
   
       // If no reviews found for the vendor
@@ -64,14 +64,16 @@ const getVendorReviews = asyncHandler(async (req, res) => {
         );
       }
   
-      // Map reviews to send relevant details: name, rating, and comment
-      const reviewDetails = reviews.map((review) => ({
-        name: review.user.name,  // User's name
-        email: review.user.email,  // User's email
-        image: review.user.image,  // User's img
-        rating: review.rating,  // Rating given by the user
-        comment: review.comment,  // Comment from the user
-      }));
+      // Map reviews to send relevant details, handling cases where the user is not found
+      const reviewDetails = reviews
+        .filter((review) => review.user !== null) // Filter out reviews with null users
+        .map((review) => ({
+          name: review.user.name, // User's name
+          email: review.user.email, // User's email
+          image: review.user.image, // User's img
+          rating: review.rating, // Rating given by the user
+          comment: review.comment, // Comment from the user
+        }));
   
       return res.status(200).json(
         new ApiResponse(200, { reviews: reviewDetails }, "Reviews fetched successfully.")
@@ -82,7 +84,7 @@ const getVendorReviews = asyncHandler(async (req, res) => {
         new ApiError(500, null, "Error fetching reviews for this vendor.")
       );
     }
-  });
+});
 
   const getVendorReviewStats = async (req, res) => {
     try {

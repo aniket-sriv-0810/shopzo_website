@@ -46,7 +46,7 @@ const AllCategoryCard = () => {
 
   return (
     <div className="py-7 px-4 bg-gradient-to-tr from-fuchsia-100 to-zinc-100">
-      <h2 className="text-lg font-semibold mb-4 text-gray-800">Browse Categories</h2>
+      <h2 className="text-lg font-semibold mb-4 text-center text-gray-800">Browse Categories</h2>
 
       {loading ? (
         <p className="text-center text-gray-400">Loading Categories...</p>

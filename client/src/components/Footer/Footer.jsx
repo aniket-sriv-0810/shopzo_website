@@ -18,7 +18,7 @@ const Footer = () => {
             className="w-40 sm:w-48 object-contain transition-transform duration-300 hover:scale-105 mx-auto sm:mx-0"
           />
           <p className="text-sm text-gray-400 leading-relaxed max-w-xs mx-auto sm:mx-0">
-            The Shopzo is your one-stop platform to book offline products from trusted vendors, categorized by products for a seamless shopping experience.
+            The Shopzo is your one-stop platform to purchase or  order offline products from trusted vendors, categorized by products for a seamless shopping experience.
           </p>
         </div>
 
@@ -74,7 +74,7 @@ const Footer = () => {
               },
               {
                 icon: GrInstagram,
-                url: "https://www.instagram.com/shobhiitttt_fs?igsh=MWVjdWxqbm0wYzMyMg==",
+                url: "https://www.instagram.com/theshopzo_?igsh=MWNzOXQ3Y3p6Z210Ng%3D%3D&utm_source=qr ",
                 hover: "hover:bg-pink-600",
               },
             ].map(({ icon: Icon, url, hover }, i) => (

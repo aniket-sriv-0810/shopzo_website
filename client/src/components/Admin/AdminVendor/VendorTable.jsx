@@ -1,32 +1,35 @@
-import React from "react";
-import VendorRow from "./VendorRow";
+import React from 'react';
+import VendorRow from './VendorRow';
 
-const VendorTable = ({ vendors, categories, refreshVendors, deleteVendor }) => {
+const VendorTable = ({ vendors, onDelete }) => {
   return (
-    <div className="overflow-x-auto bg-white shadow-xl rounded-xl">
-      <table className="min-w-full text-sm md:text-base border border-gray-200">
-        <thead className="bg-gradient-to-b from-zinc-700 to-slate-700 text-white">
+    <div className="overflow-x-auto bg-white shadow-md rounded">
+      <table className="min-w-full table-auto border">
+        {/* Headers */}
+        <thead className="bg-gradient-to-b from-zinc-700 to-slate-700 text-white text-sm">
           <tr>
-            <th className="px-4 py-3 border">Image</th>
-            <th className="px-4 py-3 border">Name</th>
-            <th className="px-4 py-3 border">Username</th>
-            <th className="px-4 py-3 border">Vendor ID</th>
-            <th className="px-4 py-3 border">Phone</th>
-            <th className="px-4 py-3 border">Email</th>
-            <th className="px-4 py-3 border">Address</th>
-            <th className="px-4 py-3  border">Add Category</th>
-            <th className="px-4 py-3 border">Delete</th> {/* New column */}
+            <th colSpan={3} className="px-4 py-2 border text-center">Personal Details</th>
+            <th colSpan={3} className="px-4 py-2 border text-center">Contact Info</th>
+            <th colSpan={2} className="px-4 py-2 border text-center">Actions</th>
+          </tr>
+
+          <tr className="bg-slate-800 text-white text-xs">
+            <th className="px-4 py-2 border">Image</th>
+            <th className="px-4 py-2 border">Name</th>
+            <th className="px-4 py-2 border">Username</th>
+            
+            <th className="px-4 py-2 border">Phone</th>
+            <th className="px-4 py-2 border">Email</th>
+            <th className="px-4 py-2 border">ID</th>
+            
+            <th className="px-4 py-2 border">Add Category</th>
+            <th className="px-4 py-2 border">Delete</th>
           </tr>
         </thead>
+
         <tbody>
           {vendors.map((vendor) => (
-            <VendorRow
-              key={vendor._id}
-              vendor={vendor}
-              categories={categories}
-              refreshVendors={refreshVendors}
-              deleteVendor={deleteVendor} // ✅ add this!
-            />
+            <VendorRow key={vendor._id} vendor={vendor} onDelete={onDelete} />
           ))}
         </tbody>
       </table>

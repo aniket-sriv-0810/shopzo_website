@@ -109,8 +109,8 @@ const ProductBooking = () => {
             </p>
           </div>
 
-          <p className="text-sm font-medium text-teal-600">
-            👤 Booked by:  {user?.name} ({user?.email} | {user?.phone})
+          <p className="text-sm font-medium text-gray-600">
+           Ordered by:  {user?.name} ({user?.email} | {user?.phone})
           </p>
         </div>
       </div>
@@ -208,7 +208,7 @@ const ProductBooking = () => {
             loading ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >
-          {loading ? "Booking..." : " Confirm Booking"}
+          {loading ? "Confirming..." : "Place Order"}
         </button>
 
       </form>

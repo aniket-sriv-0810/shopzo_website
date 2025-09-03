@@ -61,7 +61,7 @@ const AdminBooking = () => {
   return (
     <div className="p-6">
       <h2 className="text-2xl text-center font-bold mb-9">
-        All Bookings Received
+        All Orders Received
       </h2>
       {loading ? (
         <div className="flex justify-center items-center mt-10">
@@ -80,15 +80,15 @@ const AdminBooking = () => {
       ) : bookings.length === 0 ? (
         <div className="text-center text-gray-600 font-medium">
           <AdminNotAvailableLoader
-            content={"No Booking data Found"}
-            tagline={"Oops! It looks like your booking data is empty"}
+            content={"No Order data Found"}
+            tagline={"Oops! It looks like your order data is empty"}
           />
         </div>
       ) : (
         <>
           {/* 🔍 Search Bar */}
           <AdminSearchBar
-            placeholder="Search bookings by ID, customer name, or status..."
+            placeholder="Search orders by ID, customer name, or status..."
             onSearch={handleSearch}
           />
 
