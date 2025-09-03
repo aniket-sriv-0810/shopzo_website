@@ -21,7 +21,7 @@ const AdminHome = () => {
           <IoStatsChartSharp className="text-4xl mb-4  text-blue-700 "/>
         </span>
           <p className="text-gray-600 text-lg">
-            Manage users, vendors, bookings, and more with full control over the platform.  
+            Manage users, vendors, orders, and more with full control over the platform.  
             Keep an eye on statistics, review performance, and ensure a smooth experience  
             for your users.  
           </p>

@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { MdDeleteForever } from "react-icons/md";
-import { useUser } from "../../components/UserContext/UserContext";
+import { useUser } from "../../components/UserContext/userContext";
 
 const UserDeleteCancelledDelivery = ({ deliveryId, onDeleted }) => {
   const { user } = useUser();

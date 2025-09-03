@@ -98,7 +98,7 @@ const DeliveryConfirmation = () => {
           <p><span className="font-semibold">Phone:</span> {user.phone || "N/A"}</p>
           <p>
             <span className="font-semibold">Delivery Address:</span> <br />
-            Area: {address?.fullAddress} <br />
+            Area:{address?.buildingName} , {address?.fullAddress} <br />
             Landmark: {address?.landmark} <br />
             City: {address?.city} - {address?.pincode}
           </p>

@@ -4,7 +4,7 @@ import { isLoggedIn } from '../middleware/auth.middleware.js';
 import {upload} from "../multer.js";
 import { isAdmin } from '../middleware/admin.middleware.js';
 import { addCategoryToVendorValidation } from '../test/Vendor/vendorAddCategory.validator.js';
-import { adminBookingData, adminCategoryData, adminDashboardData, adminFeedbackData, adminProductData, adminUserData, adminVendorData , addCategoryToVendor, adminDeleteBooking, deleteContactById, adminDeliveryData, deleteDelivery} from '../controller/admin.controller.js';
+import { adminBookingData, adminCategoryData, adminDashboardData, adminFeedbackData, adminProductData, adminUserData, adminVendorData , addCategoryToVendor, adminDeleteBooking, deleteContactById, adminDeliveryData, deleteDelivery, updateUserRoleByAdmin} from '../controller/admin.controller.js';
 import { createCategory ,  editCategory, deleteCategory } from '../controller/category.controller.js';
 import {addProductController  , updateProductById , deleteProductById} from "../controller/product.controller.js";
 import { addCategoriesToVendor, deleteVendorById} from "../controller/vendor.controller.js";
@@ -115,5 +115,8 @@ router
       .route('/contact/:contactId')
       .delete(isLoggedIn , isAdmin , deleteContactById);
 
-
+// Route for admin to update user roles
+router
+     .route("/users/:userId/role")
+     .put(isLoggedIn, isAdmin, updateUserRoleByAdmin);
 export default router;

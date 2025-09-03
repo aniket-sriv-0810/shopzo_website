@@ -15,7 +15,6 @@ const VendorCancelBooking = ({ bookingId, userId, productId, onDeleted }) => {
           },
         }
       );
-      alert(data.message || "Booking deleted successfully");
       onDeleted?.();
     } catch (err) {
       alert(err.response?.data?.message || "Failed to delete booking");
@@ -27,7 +26,7 @@ const VendorCancelBooking = ({ bookingId, userId, productId, onDeleted }) => {
       onClick={handleDelete}
       className="bg-orange-500 text-white px-3 py-1 rounded hover:bg-orange-600"
     >
-      Remove Vendor Booking
+      Remove Vendor Order
     </button>
   );
 };

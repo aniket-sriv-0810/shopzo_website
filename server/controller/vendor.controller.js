@@ -209,6 +209,7 @@ const getVendorCounts = async (req, res) => {
       _id: { $in: (await Product.find({ vendor: vendorId }).distinct("category")) }
     });
     const bookingCount = await Booking.countDocuments({ vendor: vendorId });
+    const deliveryCount = await Delivery.countDocuments({ vendor: vendorId });
 
     return res.status(200).json({
       success: true,
@@ -216,6 +217,7 @@ const getVendorCounts = async (req, res) => {
         productCount,
         categoryCount,
         bookingCount,
+        deliveryCount
       },
     });
   } catch (err) {
@@ -631,7 +633,7 @@ const getVendorAllDeliveries = asyncHandler(async (req, res) => {
       path: "product",
       select: "id title price images",
     })
-    .select("sizeSelected quantity totalPrice status createdAt");
+    .select("sizeSelected quantity totalPrice status createdAt address"); // Added 'address' to the select statement
 
   if (!deliveries || deliveries.length === 0) {
     return res
@@ -666,6 +668,7 @@ const getVendorAllDeliveries = asyncHandler(async (req, res) => {
       price: delivery.product?.price || 0,
       image: delivery.product?.images?.[0] || "",
     },
+    address: delivery.address || {}, // Include the address object
   }));
 
   return res
@@ -690,7 +693,7 @@ const updateDeliveryStatusByVendor = asyncHandler(async (req, res) => {
   }
 
   // 2. Validate Status
-  const validStatuses = ["pending", "shipped", "delivered", "cancelled"];
+  const validStatuses = ["pending", "completed", "cancelled"];
   if (!status || !validStatuses.includes(status)) {
     throw new ApiError(400, "Invalid or missing delivery status");
   }

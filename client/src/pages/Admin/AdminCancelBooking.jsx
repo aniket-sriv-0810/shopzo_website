@@ -12,10 +12,9 @@ const AdminCancelBooking = ({ bookingId, onDeleted }) => {
             withCredentials : true
         }
       );
-      alert(data.message || "Booking deleted successfully");
       onDeleted?.(); // optional callback
     } catch (err) {
-      alert(err.response?.data?.message || "Failed to delete booking");
+      console.error(err.response?.data?.message || "Failed to delete booking");
     }
   };
 
@@ -24,7 +23,7 @@ const AdminCancelBooking = ({ bookingId, onDeleted }) => {
       onClick={handleDelete}
       className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
     >
-      Delete Booking
+      Delete Orders
     </button>
   );
 };

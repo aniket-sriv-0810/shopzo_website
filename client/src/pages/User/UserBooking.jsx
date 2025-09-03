@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import BookingCard from "../../components/User/UserBooking/UserBookingCard";
-import { useUser } from "../../components/UserContext/UserContext";
+import { useUser } from "../../components/UserContext/userContext";
 import SkeletonList from "../../components/LoadingSkeleton/SkeletonList";
 import NotAvailable from "../Loaders/NotAvailable";
 

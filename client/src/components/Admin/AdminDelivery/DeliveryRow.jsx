@@ -24,7 +24,8 @@ const DeliveryRow = ({ delivery, onDelete }) => {
       );
       onDelete(_id);
     } catch (error) {
-      alert(error.response?.data?.message || "Failed to delete delivery");
+      // Use a custom modal or message display instead of alert()
+      console.error(error.response?.data?.message || "Failed to delete delivery");
     }
   };
 
@@ -56,8 +57,10 @@ const DeliveryRow = ({ delivery, onDelete }) => {
       <td className="px-2 py-2">{quantity}</td>
       <td className="px-2 py-2 text-green-500 font-medium">₹{totalPrice}</td>
 
-      {/* New cells for address details */}
-      <td className="px-2 py-2 text-sm text-left">{address?.fullAddress || "N/A"}</td>
+      {/* Cells for address details */}
+      <td className="px-2 py-2 text-sm text-left">{address?.buildingName || "N/A"} </td>
+      <td className="px-2 py-2">{address?.fullAddress || "N/A"}</td>
+      <td className="px-2 py-2">{address?.landmark || "N/A"}</td>
       <td className="px-2 py-2">{address?.city || "N/A"}</td>
       <td className="px-2 py-2">{address?.pincode || "N/A"}</td>
 

@@ -4,6 +4,7 @@ import { NavLink, useParams } from "react-router-dom";
 
 const VendorStat = ({ vendorData }) => {
     const {id} = useParams();
+    const totalOrders = vendorData.deliveryCount +  vendorData.bookingCount;
   const stats = [
     
     {
@@ -22,7 +23,7 @@ const VendorStat = ({ vendorData }) => {
       },
     {
       id: "bookings",
-      count: vendorData.bookingCount,
+      count: totalOrders,
       label: "Orders Received",
       icon: <FaClipboardList className="text-pink-500 text-4xl" />,
       link: `/vendor/${id}/account/bookings`,

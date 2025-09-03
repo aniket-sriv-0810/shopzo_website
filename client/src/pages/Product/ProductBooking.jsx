@@ -76,7 +76,7 @@ const ProductBooking = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-700 via-gray-500 to-zinc-800 px-4 py-10 flex justify-center items-center">
   <div className="w-full max-w-6xl bg-white rounded-3xl shadow-xl p-6 mt-5 sm:p-10">
     <h1 className="text-xl md:text-3xl sm:text-4xl font-extrabold mb-10 text-center text-gray-800">
-      Book Your Product for In-Store Shopping
+     Place Order for In-Store Shopping
     </h1>
 
     <div className="grid lg:grid-cols-2 gap-12 items-start">

@@ -8,7 +8,7 @@ import { Contact } from "../models/contact.model.js"; // Assuming feedback model
 import {Delivery} from '../models/delivery.model.js';
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
-
+import mongoose from "mongoose";
 const adminDashboardData = asyncHandler(async (req, res) => {
   try {
     const totalUsers = await User.countDocuments();
@@ -16,6 +16,7 @@ const adminDashboardData = asyncHandler(async (req, res) => {
     const totalCategories = await Category.countDocuments();
     const totalProducts = await Product.countDocuments();
     const totalBookings = await Booking.countDocuments();
+    const totalDeliveries = await Delivery.countDocuments();
     const totalFeedbacks = await Contact.countDocuments();
 
     if (
@@ -24,6 +25,7 @@ const adminDashboardData = asyncHandler(async (req, res) => {
       totalCategories === undefined ||
       totalProducts === undefined ||
       totalBookings === undefined ||
+      totalDeliveries === undefined ||
       totalFeedbacks === undefined
     ) {
       return res.status(404).json({
@@ -42,6 +44,7 @@ const adminDashboardData = asyncHandler(async (req, res) => {
           totalCategories,
           totalProducts,
           totalBookings,
+          totalDeliveries,
           totalFeedbacks,
         },
         "Admin Dashboard Data Fetched Successfully"
@@ -352,4 +355,41 @@ const deleteDelivery = asyncHandler(async (req, res) => {
         });
     }
 });
-export { adminDashboardData , adminUserData , adminVendorData , adminCategoryData , adminProductData , adminBookingData , adminFeedbackData , addCategoryToVendor , adminDeleteBooking , deleteContactById , adminDeliveryData , deleteDelivery};
+// A middleware to restrict role changes
+const validRoles = ["user", "team", "vendor", "admin"];
+
+// Update a user's role by the admin
+const updateUserRoleByAdmin = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const { role } = req.body;
+
+  // 1. Validate userId
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    throw new ApiError(400, "Invalid user ID");
+  }
+
+  // 2. Validate role
+  if (!role || !validRoles.includes(role)) {
+    throw new ApiError(400, "Invalid or missing role status");
+  }
+
+  // 3. Fetch user and check if they exist
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
+
+  // 4. Prevent a user from changing their own role (as a safety measure)
+  if (req.user._id.toString() === userId) {
+    throw new ApiError(403, "You cannot change your own role");
+  }
+
+  // 5. Update the role
+  user.role = role;
+  await user.save({ validateBeforeSave: false }); // Bypass validation for password/email
+
+  return res.status(200).json(
+    new ApiResponse(200, user, `User role updated to '${role}' successfully`)
+  );
+});
+export { adminDashboardData , adminUserData , adminVendorData , adminCategoryData , adminProductData , adminBookingData , adminFeedbackData , addCategoryToVendor , adminDeleteBooking , deleteContactById , adminDeliveryData , deleteDelivery , updateUserRoleByAdmin};

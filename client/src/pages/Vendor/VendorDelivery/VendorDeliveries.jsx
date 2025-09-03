@@ -41,7 +41,12 @@ const VendorDeliveries = () => {
     const filtered = deliveries.filter(
       (d) =>
         d.user?.name?.toLowerCase().includes(lower) ||
-        d.deliveryId?.toLowerCase().includes(lower)
+        d.deliveryId?.toLowerCase().includes(lower) ||
+        d.address?.buildingName?.toLowerCase().includes(lower) ||
+        d.address?.fullAddress?.toLowerCase().includes(lower) ||
+        d.address?.landmark?.toLowerCase().includes(lower) ||
+        d.address?.city?.toLowerCase().includes(lower) ||
+        d.address?.pincode?.toLowerCase().includes(lower)
     );
     setFilteredDeliveries(filtered);
   };
@@ -59,7 +64,6 @@ const VendorDeliveries = () => {
   return (
     <>
       <div className="p-6">
-
         {loading ? (
           <div className="flex justify-center items-center mt-10">
             <SkeletonTable />
@@ -84,7 +88,7 @@ const VendorDeliveries = () => {
         ) : (
           <>
             <AdminSearchBar
-              placeholder="Search deliveries by customer or Delivery ID..."
+              placeholder="Search by customer, delivery ID, or address..."
               onSearch={handleSearch}
             />
             <VendorDeliveryTable

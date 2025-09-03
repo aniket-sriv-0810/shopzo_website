@@ -7,7 +7,6 @@ const VendorDeliveryStatusUpdater = ({ vendorId, deliveryId, currentStatus, onSt
 
   const handleStatusChange = async (e) => {
     const newStatus = e.target.value;
-    setStatus(newStatus);
     setLoading(true);
 
     try {
@@ -18,6 +17,7 @@ const VendorDeliveryStatusUpdater = ({ vendorId, deliveryId, currentStatus, onSt
       );
       console.log('Status updated successfully:', response.data);
       onStatusUpdate(response.data.data);
+      setStatus(newStatus);
     } catch (error) {
       console.error('Failed to update status:', error.response?.data?.message || error.message);
       // Revert status on failure
@@ -27,17 +27,23 @@ const VendorDeliveryStatusUpdater = ({ vendorId, deliveryId, currentStatus, onSt
     }
   };
 
+  // Determine the color class based on the current status
+  const statusColorClass = {
+    pending: 'bg-yellow-500 text-white',
+    completed: 'bg-green-600 text-white',
+    cancelled: 'bg-red-500 text-white',
+  }[status] || 'bg-gray-200 text-gray-800'; // Default class
+
   return (
     <select
       value={status}
       onChange={handleStatusChange}
       disabled={loading}
-      className="p-1 rounded border border-gray-300 bg-white"
+      className={`p-1 px-3 rounded-full font-medium transition-colors duration-200 border-2 border-transparent focus:outline-none ${statusColorClass} ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
     >
-      <option value="pending">Pending</option>
-      <option value="shipped">Shipped</option>
-      <option value="delivered">Delivered</option>
-      <option value="cancelled">Cancelled</option>
+      <option value="pending">pending</option>
+      <option value="completed">completed</option>
+      <option value="cancelled">cancelled</option>
     </select>
   );
 };

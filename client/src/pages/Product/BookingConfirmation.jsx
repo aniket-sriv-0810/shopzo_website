@@ -41,7 +41,7 @@ const BookingConfirmation = () => {
   if (error || !booking) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <p className="text-red-500 text-lg">{error || "Booking not found."}</p>
+        <p className="text-red-500 text-lg">{error || "Order not found."}</p>
       </div>
     );
   }

@@ -11,7 +11,7 @@ import AdminSearchBar from "../../components/Admin/AdminSearchBar/AdminSearchBar
 const AdminUser = () => {
   const { user } = useUser();
   const [userDetails, setUserDetails] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]); // 🔹 add filtered state
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -23,10 +23,9 @@ const AdminUser = () => {
         `${import.meta.env.VITE_API_URL}/api/admin/users`,
         { withCredentials: true }
       );
-
       if (response.status === 200) {
         setUserDetails(response.data.data.users);
-        setFilteredUsers(response.data.data.users); // 🔹 set both
+        setFilteredUsers(response.data.data.users);
       }
     } catch (err) {
       setError(
@@ -50,7 +49,7 @@ const AdminUser = () => {
       );
 
       setUserDetails((prev) => prev.filter((u) => u._id !== userId));
-      setFilteredUsers((prev) => prev.filter((u) => u._id !== userId)); // 🔹 keep filtered list in sync
+      setFilteredUsers((prev) => prev.filter((u) => u._id !== userId));
 
       if (isSelfDelete && user?.role !== "admin") {
         navigate("/login");
@@ -64,20 +63,24 @@ const AdminUser = () => {
     }
   };
 
-  // 🔍 Search Handler
   const handleSearch = (query) => {
     if (!query) {
-      setFilteredUsers(userDetails); // reset if empty
+      setFilteredUsers(userDetails);
       return;
     }
-
     const lower = query.toLowerCase();
     const filtered = userDetails.filter(
-      (u) =>
-        u.name.toLowerCase().includes(lower) ||
-        u._id.toLowerCase().includes(lower)
+      (u) => u.name.toLowerCase().includes(lower) || u._id.toLowerCase().includes(lower)
     );
     setFilteredUsers(filtered);
+  };
+
+  const handleRoleUpdate = (updatedUser) => {
+    const updatedUsersList = userDetails.map((u) =>
+      u._id === updatedUser._id ? updatedUser : u
+    );
+    setUserDetails(updatedUsersList);
+    setFilteredUsers(updatedUsersList);
   };
 
   useEffect(() => {
@@ -89,7 +92,6 @@ const AdminUser = () => {
       <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
         All Registered Users
       </h1>
-
       {loading ? (
         <div className="flex justify-center items-center mt-10">
           <SkeletonTable />
@@ -113,17 +115,15 @@ const AdminUser = () => {
         </div>
       ) : (
         <>
-          {/* 🔍 Search Bar */}
           <AdminSearchBar
             placeholder="Search users by name or ID..."
             onSearch={handleSearch}
           />
-
-          {/* User Table */}
           <UserTable
             users={filteredUsers}
             loggedInUser={user}
             deleteUser={deleteUser}
+            onRoleUpdate={handleRoleUpdate} // Pass the handler
           />
         </>
       )}

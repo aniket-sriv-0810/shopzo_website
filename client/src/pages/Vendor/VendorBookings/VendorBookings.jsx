@@ -73,14 +73,14 @@ const VendorBookings = () => {
         ) : filteredBookings.length === 0 ? (
           <div className="text-center text-gray-600 font-medium">
             <NotAvailable
-              content={'No Booking data Found'}
-              tagline={'Oops! It looks like your booking data is empty'}
+              content={'No Order data Found'}
+              tagline={'Oops! It looks like your orders are empty'}
             />
           </div>
         ) : (
           <>
             <AdminSearchBar
-              placeholder="Search bookings by customer or Booking ID..."
+              placeholder="Search orders by customer or order ID..."
               onSearch={handleSearch}
             />
             <VendorBookingTable

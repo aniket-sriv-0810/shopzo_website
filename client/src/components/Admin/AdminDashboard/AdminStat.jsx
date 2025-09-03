@@ -3,12 +3,13 @@ import { FaUsers, FaStore, FaTags, FaClipboardList, FaComments, FaBox } from "re
 import { NavLink } from "react-router-dom";
 
 const AdminStat = ({ adminData }) => {
+  const totalOrders = adminData.totalDeliveries + adminData.totalBookings;
   const stats = [
     { id: "users-btn", count: adminData.totalUsers, label: "Users Registered", icon: <FaUsers className="text-green-600 text-4xl" />, link: "/admin/users" },
     { id: "vendors-btn", count: adminData.totalVendors, label: "Vendors Listed", icon: <FaStore className="text-red-500 text-4xl" />, link: "/admin/vendors" },
     { id: "categories-btn", count: adminData.totalCategories, label: "Categories Available", icon: <FaTags className="text-fuchsia-500 text-4xl" />, link: "/admin/categories" },
     { id: "products-btn", count: adminData.totalProducts, label: "Products Listed", icon: <FaBox className="text-teal-500 text-4xl" />, link: "/admin/products" },
-    { id: "bookings-btn", count: adminData.totalBookings, label: "Orders Received", icon: <FaClipboardList className="text-amber-500 text-4xl" />, link: "/admin/bookings" },
+    { id: "bookings-btn", count:  totalOrders, label: "Orders Received", icon: <FaClipboardList className="text-amber-500 text-4xl" />, link: "/admin/bookings" },
     { id: "feedbacks-btn", count: adminData.totalFeedbacks, label: "Feedbacks Received", icon: <FaComments className="text-indigo-500 text-4xl" />, link: "/admin/feedbacks" },
   ];
 

@@ -16,6 +16,7 @@ const VendorDeliveryRow = ({ delivery, onDelete }) => {
     quantity,
     user,
     product,
+    address, // Destructure the address object
   } = delivery;
 
   const handleDelete = async () => {
@@ -56,6 +57,14 @@ const VendorDeliveryRow = ({ delivery, onDelete }) => {
       <td className="px-2 py-2">{sizeSelected || "N/A"}</td>
       <td className="px-2 py-2">{quantity}</td>
       <td className="px-2 py-2">₹{totalPrice}</td>
+
+      {/* Cells for address details */}
+      <td className="px-2 py-2 text-sm text-center">{address?.buildingName || "N/A"}</td>
+      <td className="px-2 py-2 text-sm text-center">{address?.fullAddress || "N/A"}</td>
+      <td className="px-2 py-2 text-sm text-center">{address?.landmark || "N/A"}</td>
+      <td className="px-2 py-2 text-sm text-center">{address?.city || "N/A"}</td>
+      <td className="px-2 py-2 text-sm text-center">{address?.pincode || "N/A"}</td>
+
 
       <td className="px-2 py-2">
         <VendorDeliveryStatusUpdater

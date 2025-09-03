@@ -11,7 +11,7 @@ const DeliveryTable = ({ deliveries, onDelete }) => {
             <th colSpan={3} className="px-4 py-2 border text-center">User Details</th>
             <th colSpan={3} className="px-4 py-2 border text-center">Vendor Details</th>
             <th colSpan={5} className="px-4 py-2 border text-center">Product Details</th>
-            <th colSpan={3} className="px-4 py-2 border text-center">Address Details</th> {/* Updated to colSpan 3 */}
+            <th colSpan={5} className="px-4 py-2 border text-center">Address Details</th> {/* Updated to colSpan 5 */}
             <th className="px-4 py-2 border">Status</th>
             <th className="px-4 py-2 border">Delivery Date</th>
             <th className="px-4 py-2 border">Delivery ID</th>
@@ -33,9 +33,12 @@ const DeliveryTable = ({ deliveries, onDelete }) => {
             <th className="px-4 py-2 border">Qty</th>
             <th className="px-4 py-2 border">Price</th>
 
-            <th className="px-4 py-2 border">Full Address</th> {/* New sub-header */}
-            <th className="px-4 py-2 border">City</th> {/* New sub-header */}
-            <th className="px-4 py-2 border">Pincode</th> {/* New sub-header */}
+            <th className="px-4 py-2 border">Building Name</th>
+            <th className="px-4 py-2 border">Location</th>
+            <th className="px-4 py-2 border">Landmark</th>
+            <th className="px-4 py-2 border">City</th>
+            <th className="px-4 py-2 border">Pincode</th>
+
 
             <th className="px-4 py-2 border">Status</th>
             <th className="px-4 py-2 border">Date</th>

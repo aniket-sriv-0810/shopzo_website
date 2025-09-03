@@ -7,7 +7,7 @@ const IsAdmin = ({ children }) => {
   const { user } = useUser();
 
   // Check if user is not logged in or not an admin
-  if (!user || user.role !== "admin") {
+  if (!user || user.role !== "admin" ) {
     return <div>
       <PageNotFound/>
     </div>  // Redirect to 404 page

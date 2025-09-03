@@ -20,11 +20,11 @@ const VendorBookingRow = ({ booking, onDelete }) => {
 
   const handleDelete = async () => {
     if (!["cancelled", "completed"].includes(paymentStatus)) {
-      alert("Only cancelled or completed bookings can be deleted.");
+      alert("Only cancelled or completed orders can be deleted.");
       return;
     }
 
-    const confirm = window.confirm("Are you sure you want to delete this booking?");
+    const confirm = window.confirm("Are you sure you want to delete this order?");
     if (!confirm) return;
 
     try {
@@ -35,7 +35,7 @@ const VendorBookingRow = ({ booking, onDelete }) => {
       onDelete(bookingId);
     } catch (error) {
       console.error("Delete failed:", error);
-      alert("Failed to delete booking.");
+      alert("Failed to delete order.");
     }
   };
 

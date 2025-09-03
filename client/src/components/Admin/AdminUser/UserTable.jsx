@@ -1,7 +1,7 @@
 import React from "react";
 import UserRow from "./UserRow";
 
-const UserTable = ({ users, loggedInUser, deleteUser  }) => {
+const UserTable = ({ users, loggedInUser, deleteUser, onRoleUpdate }) => {
   return (
     <div className="overflow-x-auto bg-white shadow-xl rounded-xl">
       <table className="min-w-full text-sm md:text-base border border-gray-200">
@@ -23,6 +23,7 @@ const UserTable = ({ users, loggedInUser, deleteUser  }) => {
               user={user}
               loggedInUser={loggedInUser}
               deleteUser={deleteUser}
+              onRoleUpdate={onRoleUpdate} // Pass the update handler
             />
           ))}
         </tbody>

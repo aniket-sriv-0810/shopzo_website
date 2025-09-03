@@ -25,7 +25,7 @@ const VendorBookingTable = ({ bookings, onDelete }) => {
             <th className="px-4 py-2 border">Price</th>
             <th className="px-4 py-2 border">Status</th>
             <th className="px-4 py-2 border">Date</th>
-            <th className="px-4 py-2 border">ID</th>
+            <th className="px-4 py-2 border">Product ID</th>
             <th className="px-4 py-2 border">Action</th> {/* NEW */}
           </tr>
         </thead>
