@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import BookingCard from "../../components/User/UserBooking/UserBookingCard";
+import DeliveryCard from "../../components/User/UserDelivery/UserDeliveryCard";
 import { useUser } from "../../components/UserContext/UserContext";
 import SkeletonList from "../../components/LoadingSkeleton/SkeletonList";
 import NotAvailable from "../Loaders/NotAvailable";
 
-const UserStoreOrders = () => {
-  const [bookings, setBookings] = useState([]);
+const UserDeliveryOrders = () => {
+  const [deliveries, setDeliveries] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useUser();
 
-  const fetchBookings = async () => {
+  const fetchDeliveries = async () => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/user/${user._id}/account/bookings`,
+        `${import.meta.env.VITE_API_URL}/api/user/${user._id}/account/deliveries`,
         { withCredentials: true }
       );
-      setBookings(res.data.data);
+      setDeliveries(res.data.data);
     } catch (err) {
-      console.error("Error fetching bookings:", err);
+      console.error("Error fetching deliveries:", err);
     } finally {
       setLoading(false);
     }
@@ -26,14 +26,14 @@ const UserStoreOrders = () => {
 
   useEffect(() => {
     if (user?._id) {
-      fetchBookings();
+      fetchDeliveries();
     }
   }, [user]);
 
-  // Function to handle successful booking cancellation or deletion
-  const handleSuccess = (bookingId) => {
-    setBookings((prevBookings) =>
-      prevBookings.filter((booking) => booking._id !== bookingId)
+  // Function to handle successful delivery cancellation or deletion
+  const handleSuccess = (deliveryId) => {
+    setDeliveries((prevDeliveries) =>
+      prevDeliveries.filter((delivery) => delivery._id !== deliveryId)
     );
   };
 
@@ -45,13 +45,13 @@ const UserStoreOrders = () => {
     );
   }
 
-  if (bookings.length === 0) {
+  if (deliveries.length === 0) {
     return (
       <div className="text-center text-lg font-semibold text-gray-700">
         <NotAvailable
-          content={"No Store Orders Found"}
+          content={"No Delivery Orders Found"}
           tagline={
-            "Oops! You haven't placed any store orders yet. Start exploring and discover your products!"
+            "Oops! You haven't placed any delivery orders yet. Time to shop and get your items delivered!"
           }
         />
       </div>
@@ -60,10 +60,10 @@ const UserStoreOrders = () => {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {bookings.map((booking) => (
-        <BookingCard
-          key={booking._id}
-          booking={booking}
+      {deliveries.map((delivery) => (
+        <DeliveryCard
+          key={delivery._id}
+          delivery={delivery}
           userId={user._id}
           onCancelSuccess={handleSuccess}
         />
@@ -72,4 +72,4 @@ const UserStoreOrders = () => {
   );
 };
 
-export default UserStoreOrders;
+export default UserDeliveryOrders;

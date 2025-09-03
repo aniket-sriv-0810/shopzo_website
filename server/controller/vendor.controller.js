@@ -4,6 +4,7 @@ import { Product } from "../models/product.model.js";
 import { Review } from "../models/review.model.js";
 import { Category } from "../models/category.model.js";
 import { Booking } from "../models/booking.model.js";
+import { Delivery } from "../models/delivery.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -601,6 +602,160 @@ const updateProductPrices = async (req, res) => {
     });
   }
 };
+// Get all delivery details for a vendor
+const getVendorAllDeliveries = asyncHandler(async (req, res) => {
+  const { id: vendorId } = req.params;
+
+  // Validate Vendor ID
+  if (!vendorId || !mongoose.Types.ObjectId.isValid(vendorId)) {
+    throw new ApiError(400, "Invalid Vendor ID");
+  }
+
+  // Ensure vendor exists
+  const vendorExists = await Vendor.findById(vendorId);
+  if (!vendorExists) {
+    throw new ApiError(404, "Vendor not found");
+  }
+
+  // Fetch all deliveries related to the vendor
+  const deliveries = await Delivery.find({ vendor: vendorId })
+    .populate({
+      path: "vendor",
+      select: "name email phone image",
+    })
+    .populate({
+      path: "user",
+      select: "id name email phone image",
+    })
+    .populate({
+      path: "product",
+      select: "id title price images",
+    })
+    .select("sizeSelected quantity totalPrice status createdAt");
+
+  if (!deliveries || deliveries.length === 0) {
+    return res
+      .status(200)
+      .json(new ApiResponse(200, [], "No deliveries found for this vendor"));
+  }
+
+  // Format the response
+  const formattedDeliveries = deliveries.map((delivery) => ({
+    deliveryId: delivery._id,
+    orderDate: delivery.createdAt,
+    paymentStatus: delivery.status,
+    totalPrice: delivery.totalPrice,
+    sizeSelected: delivery.sizeSelected,
+    quantity: delivery.quantity,
+    user: {
+      _id: delivery.user?._id,
+      name: delivery.user?.name || "N/A",
+      email: delivery.user?.email || "N/A",
+      phone: delivery.user?.phone || "N/A",
+      image: delivery.user?.image || "N/A",
+    },
+    vendor: {
+      name: delivery.vendor?.name || "N/A",
+      email: delivery.vendor?.email || "N/A",
+      phone: delivery.vendor?.phone || "N/A",
+      image: delivery.vendor?.image || "N/A",
+    },
+    product: {
+      _id: delivery.product?._id,
+      title: delivery.product?.title || "N/A",
+      price: delivery.product?.price || 0,
+      image: delivery.product?.images?.[0] || "",
+    },
+  }));
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, formattedDeliveries, "Deliveries fetched successfully")
+    );
+});
+
+// Update a delivery's status by the vendor
+const updateDeliveryStatusByVendor = asyncHandler(async (req, res) => {
+  const { deliveryId, vendorId } = req.params;
+  const { status } = req.body;
+
+  // 1. Validate IDs
+  if (!mongoose.Types.ObjectId.isValid(deliveryId)) {
+    throw new ApiError(400, "Invalid delivery ID");
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(vendorId)) {
+    throw new ApiError(400, "Invalid vendor ID");
+  }
+
+  // 2. Validate Status
+  const validStatuses = ["pending", "shipped", "delivered", "cancelled"];
+  if (!status || !validStatuses.includes(status)) {
+    throw new ApiError(400, "Invalid or missing delivery status");
+  }
+
+  // 3. Fetch delivery and verify ownership
+  const delivery = await Delivery.findById(deliveryId);
+  if (!delivery) {
+    throw new ApiError(404, "Delivery not found");
+  }
+
+  if (delivery.vendor.toString() !== vendorId) {
+    throw new ApiError(403, "Unauthorized: This delivery doesn't belong to you");
+  }
+
+  // 4. Prevent status change once delivered
+  if (delivery.status === "delivered" && status !== "delivered") {
+    throw new ApiError(400, "Status cannot be reverted after delivery");
+  }
+
+  // 5. No update if status is already the same
+  if (delivery.status === status) {
+    throw new ApiError(400, `Delivery is already marked as '${status}'`);
+  }
+
+  // 6. Update the status
+  delivery.status = status;
+  await delivery.save();
+
+  // 7. Populate for updated response
+  const updatedDelivery = await Delivery.findById(deliveryId)
+    .populate("user", "name email phone")
+    .populate("product", "title price image");
+
+  return res.status(200).json(
+    new ApiResponse(200, updatedDelivery, `Delivery status updated to '${status}' successfully`)
+  );
+});
+
+// Delete a cancelled or completed delivery by the vendor
+const vendorDeleteDelivery = asyncHandler(async (req, res) => {
+  const { deliveryId, userId, productId } = req.params;
+  const vendorId = req.user._id;
+
+  const delivery = await Delivery.findOne({
+    _id: deliveryId,
+    vendor: vendorId,
+    user: userId,
+    product: productId,
+  });
+
+  if (!delivery) {
+    throw new ApiError(404, "Delivery not found or unauthorized");
+  }
+
+  if (!["cancelled", "delivered"].includes(delivery.status)) {
+    throw new ApiError(400, "Only cancelled or delivered deliveries can be deleted by vendor");
+  }
+
+  await delivery.deleteOne();
+
+  return res.status(200).json(new ApiResponse(200, null, "Delivery deleted by vendor"));
+});
 
 
-export {getAllVendors,  vendorAccountDetails  , updateVendorById , deleteVendorById ,getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData ,addCategoriesToVendor , productOfVendorData , allProductsOfVendor  , getVendorAllBookings , updateBookingStatusByVendor , vendorDeleteBooking , updateProductPrices};
+
+export {getAllVendors,  vendorAccountDetails  , updateVendorById , deleteVendorById ,getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData ,addCategoriesToVendor , productOfVendorData , allProductsOfVendor  , getVendorAllBookings , updateBookingStatusByVendor , vendorDeleteBooking , updateProductPrices , getVendorAllDeliveries,
+  updateDeliveryStatusByVendor,
+  vendorDeleteDelivery,};

@@ -83,6 +83,12 @@ const vendorSchema = new Schema(
         ref: "User",
       },
     ],
+    delivery: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     timestamps: true,

@@ -9,7 +9,7 @@ import { toggleProductWishlistSchema } from '../test/User/userProductWishlists.v
 import { toggleVendorWishlistSchema } from '../test/User/userVendorWishlists.validator.js';
 import { changeUserPasswordSchema } from '../test/User/userPasswordChange.validator.js';
 import { createNewUser , loginUser , logOutUser , checkAuthentication, changeUserPassword, forgotPassword, resetPassword } from '../controller/userAuth.controller.js';
-import {userAccountDetails , getUserWishlists , toggleProductWishlist , editUserDetails , deleteUserAccount, getUserBookings , cancelUserBooking ,getUserVendorWishlists ,  toggleVendorWishlist, userDeleteCancelledBooking} from "../controller/user.controller.js";
+import {userAccountDetails , getUserWishlists , toggleProductWishlist , editUserDetails , deleteUserAccount, getUserBookings , cancelUserBooking ,getUserVendorWishlists ,  toggleVendorWishlist, userDeleteCancelledBooking, getUserDeliveries, cancelUserDelivery, userDeleteCancelledDelivery} from "../controller/user.controller.js";
 const router = express.Router();
 
 
@@ -103,6 +103,18 @@ router
 router
      .route('/:id/account/bookings/:bookingId')
      .delete(isLoggedIn , userDeleteCancelledBooking);
+// User Deliveries Routes
+router
+  .route("/:id/account/deliveries")
+  .get(isLoggedIn, getUserDeliveries);
+
+router
+  .route("/:userId/account/deliveries/:deliveryId/cancel")
+  .delete(isLoggedIn, cancelUserDelivery);
+
+router
+  .route("/:id/account/deliveries/:deliveryId")
+  .delete(isLoggedIn, userDeleteCancelledDelivery);
 
 
 export default router;

@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { useUser } from "./components/UserContext/userContext";
+import { useUser } from "./components/UserContext/UserContext";
 import Home from "./pages/Home";
 import { Routes, Route } from "react-router-dom";
 import IsVendor from "./components/UserContext/IsVendor";
@@ -69,6 +69,7 @@ import ForgotPassword from "./pages/Authentication/Password/ForgotPassword";
 import ResetPassword from "./pages/Authentication/Password/ResetPassword";
 import DeliveryConfirmation from "./pages/Product/DeliveryConfirmation";
 import AdminOrders from "./pages/Admin/AdminOrders";
+import UserOrders from "./pages/User/UserOrders";
 function App() {
   const { setUser } = useUser();
   const [isLoading, setIsLoading] = useState(false);
@@ -227,7 +228,7 @@ function App() {
             path="/user/:id/account/bookings"
             element={
               <PrivateRoute>
-                <UserBooking />
+                <UserOrders />
               </PrivateRoute>
             }
           />

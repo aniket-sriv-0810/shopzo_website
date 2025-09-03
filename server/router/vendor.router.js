@@ -4,7 +4,7 @@ import {isVendor} from "../middleware/vendor.middleware.js"
 import {upload} from "../multer.js";
 import {validate} from '../middleware/validator.js';
 import {validateVendor} from '../middleware/vendorValidate.js'
-import { getAllVendors,vendorAccountDetails ,   updateVendorById , getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData  , productOfVendorData, allProductsOfVendor, getVendorAllBookings, updateBookingStatusByVendor, vendorDeleteBooking, updateProductPrices } from "../controller/vendor.controller.js";
+import { getAllVendors,vendorAccountDetails ,   updateVendorById , getVendorProductsByCategoryAndTag , getVendorCounts , getVendorDashboardData , vendorCategoriesData  , productOfVendorData, allProductsOfVendor, getVendorAllBookings, updateBookingStatusByVendor, vendorDeleteBooking, updateProductPrices, getVendorAllDeliveries, updateDeliveryStatusByVendor, vendorDeleteDelivery } from "../controller/vendor.controller.js";
 import { loginVendorValidation } from '../test/Vendor/vendorLogin.validator.js';
 import { changePasswordValidation } from '../test/Vendor/vendorChangePassword.validator.js';
 import { updateBookingStatusValidation } from '../test/Vendor/vendorBookingStatusBar.js';
@@ -144,5 +144,18 @@ router
       .route("/:id/account/product/:vendorId/:productId/update-prices")
       .put( isLoggedIn  , validate(updateProductPricesValidation) ,updateProductPrices);
 
+// provides the vendor account all deliveries details Route
+router
+  .route("/:id/account/all-deliveries")
+  .get(isLoggedIn, getVendorAllDeliveries);
 
+// provides the vendor updating delivery status details Route
+router
+  .route("/:vendorId/deliveries/:deliveryId/status")
+  .put(isLoggedIn, updateDeliveryStatusByVendor);
+
+// DELETE delivery by vendor Route
+router
+  .route("/:id/account/deliveries/:deliveryId/:userId/:productId")
+  .delete(isLoggedIn, vendorDeleteDelivery);
 export default router;

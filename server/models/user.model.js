@@ -44,6 +44,12 @@ const userSchema = new Schema(
         ref: "Booking",
       },
     ],
+    delivery: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Delivery",
+      },
+    ],
     reviews: [
       {
         type: Schema.Types.ObjectId,

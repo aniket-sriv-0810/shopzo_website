@@ -2,6 +2,7 @@ import { User } from "../models/user.model.js";
 import {Vendor} from '../models/vendor.model.js';
 import {Booking} from '../models/booking.model.js';
 import { Product } from "../models/product.model.js";
+import {Delivery} from '../models/delivery.model.js';
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -519,5 +520,105 @@ const userDeleteCancelledBooking = async (req, res) => {
     return res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+// Get user's delivery details
+const getUserDeliveries = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
 
-export { userAccountDetails  , getUserWishlists , toggleProductWishlist , getUserVendorWishlists , toggleVendorWishlist ,editUserDetails , deleteUserAccount , bookProduct, getUserBookings , cancelUserBooking , userDeleteCancelledBooking};
+  try {
+    // Authorization check
+    if (req.user._id.toString() !== userId) {
+      throw new ApiError(403, "Unauthorized access.");
+    }
+
+    // Validate user existence
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new ApiError(404, "User not found.");
+    }
+
+    // Fetch user's deliveries with populated fields
+    const deliveries = await Delivery.find({ user: userId })
+      .populate({
+        path: "product",
+        select: "title discountedPrice images",
+      })
+      .populate("vendor", "name email image")
+      .sort({ createdAt: -1 });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, deliveries, "User deliveries fetched successfully."));
+  } catch (err) {
+    console.error("Error fetching user deliveries:", err);
+    throw new ApiError(500, "Failed to fetch user deliveries.");
+  }
+});
+
+// Cancel a user's delivery order
+const cancelUserDelivery = asyncHandler(async (req, res) => {
+  const { userId, deliveryId } = req.params;
+
+  // Validate input
+  if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(deliveryId)) {
+    throw new ApiError(400, "Invalid User or Delivery ID");
+  }
+
+  // Find the delivery
+  const delivery = await Delivery.findById(deliveryId);
+  if (!delivery) {
+    throw new ApiError(404, "Delivery not found");
+  }
+
+  // Make sure the delivery belongs to the user
+  if (delivery.user.toString() !== userId) {
+    throw new ApiError(403, "Unauthorized action");
+  }
+
+  // Update delivery status to 'cancelled'
+  delivery.status = "cancelled";
+  await delivery.save();
+
+  // Assuming you have 'deliveries' array on User and Product schemas, update them.
+  // This logic is based on your booking controller's schema.
+  await User.findByIdAndUpdate(userId, {
+    $pull: { deliveries: deliveryId },
+  });
+
+  await Product.findByIdAndUpdate(delivery.product, {
+    $pull: { deliveries: deliveryId },
+  });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, { deliveryId }, "Delivery cancelled successfully"));
+});
+
+// Delete a user's cancelled delivery
+const userDeleteCancelledDelivery = asyncHandler(async (req, res) => {
+  try {
+    const { deliveryId } = req.params;
+    const userId = req.user._id;
+
+    const delivery = await Delivery.findOne({
+      _id: deliveryId,
+      user: userId,
+      status: "cancelled",
+    });
+
+    if (!delivery) {
+      throw new ApiError(404, "Delivery not found or not cancelled.");
+    }
+
+    await delivery.deleteOne();
+
+    return res.status(200).json(new ApiResponse(200, null, "Cancelled delivery deleted by user."));
+  } catch (err) {
+    console.error("Error deleting cancelled delivery:", err);
+    throw new ApiError(500, "Server error: Failed to delete cancelled delivery.");
+  }
+});
+
+
+export { userAccountDetails  , getUserWishlists , toggleProductWishlist , getUserVendorWishlists , toggleVendorWishlist ,editUserDetails , deleteUserAccount , bookProduct, getUserBookings , cancelUserBooking , userDeleteCancelledBooking , getUserDeliveries,
+  cancelUserDelivery,
+  userDeleteCancelledDelivery,};
