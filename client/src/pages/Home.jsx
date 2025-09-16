@@ -109,7 +109,10 @@ const Home = () => {
     <div className='bg-gray-100'>
 
     {/* Fixed Top Banner */}
-      <div className="fixed top-0 left-0 right-0 z-50">
+      <div
+        className="top-0 left-0 right-0 w-full"
+        style={{ position: '', top: 0, left: 0, right: 0, zIndex: 2147483647 }}
+      >
         <div className="relative overflow-hidden bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-700 shadow-lg">
           <style>{`
             @keyframes marquee {
@@ -141,7 +144,7 @@ const Home = () => {
         </div>
       </div>
       {/* Spacer to avoid overlap with fixed banner */}
-      <div className="h-12 sm:h-14"></div>
+      <div className="h-0 sm:h-0"></div>
 
       <div className="-mb-2 bg-gray-100" id="navbar">
         <Navbar />
