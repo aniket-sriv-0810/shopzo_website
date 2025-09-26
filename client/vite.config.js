@@ -8,5 +8,11 @@ export default defineConfig({
   build: {
     outDir: '../server/public', // This builds React into backend/public folder
     emptyOutDir: true,          // Clears old build files before new build
+    assetsDir: 'assets',        // Ensure assets are properly organized
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+      },
+    },
   },
 });
