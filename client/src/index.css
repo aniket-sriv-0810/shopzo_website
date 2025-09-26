@@ -1,1 +1,29 @@
 @import "tailwindcss";
+
+/* Safe area support for mobile devices */
+@supports (padding: max(0px)) {
+  .safe-area-inset-bottom {
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+  
+  .pb-safe {
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+}
+
+/* Ensure consistent viewport behavior */
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+/* Prevent zoom on input focus on iOS */
+input, select, textarea {
+  font-size: 16px;
+}
+
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}

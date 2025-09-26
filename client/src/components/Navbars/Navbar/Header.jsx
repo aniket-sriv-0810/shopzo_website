@@ -86,7 +86,8 @@ const Header = () => {
               <img
                 src={WebsiteLogo}
                 alt="The Shopzo"
-                className="w-24 h-auto object-contain"
+                className="w-20 sm:w-24 h-auto object-contain max-h-12 sm:max-h-14"
+                style={{ maxWidth: '96px', maxHeight: '56px' }}
                 // data-aos="fade-down"
               />
             </NavLink>
