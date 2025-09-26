@@ -3,15 +3,21 @@ import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { useUser } from "./components/UserContext/userContext";
+import SearchPage from './pages/SearchPage';
 import Home from "./pages/Home";
 import { Routes, Route } from "react-router-dom";
 import IsVendor from "./components/UserContext/IsVendor";
+import IsIntern from "./components/UserContext/IsIntern";
 import About from "./pages/Navigation/About/About";
 import Contact from "./pages/Navigation/Contact/Contact";
 import Policies from "./pages/Navigation/Policies/Policies";
 import Login from "./pages/Authentication/Login/Login";
 import SignUp from "./pages/Authentication/SignUp/SignUp";
 import Logout from "./components/Logout/Logout";
+import InternDashboard from "./pages/Intern/InternDashboard";
+import InternAddVendor from "./pages/Intern/AddVendor";
+import InternAddProduct from "./pages/Intern/AddProduct";
+import InternVendorProducts from "./pages/Intern/VendorProducts";
 import AddCategoryForm from "./pages/Category/AddCategoryForm";
 import AddProductForm from "./pages/Product/AddProductForm";
 import EditCategory from "./pages/Category/EditCategory";
@@ -137,6 +143,9 @@ function App() {
           />
 
 
+
+          {/* Search Route */}
+          <Route path="/search" element={<SearchPage />} />
 
           {/* User Authentication Routes*/}
           <Route path="/login" element={<Login />} />
@@ -385,6 +394,23 @@ function App() {
             </PrivateRoute>
             } />
 
+          {/* Intern Routes - INTERN Side (Temporarily without auth) */}
+          <Route
+            path="/intern/dashboard"
+            element={<InternDashboard />}
+          />
+          <Route
+            path="/intern/vendors/add"
+            element={<InternAddVendor />}
+          />
+          <Route
+            path="/intern/vendors/:vendorId/products"
+            element={<InternVendorProducts />}
+          />
+          <Route
+            path="/intern/vendors/:vendorId/add-product"
+            element={<InternAddProduct />}
+          />
 
           {/* 404 Page Not Found Route */}
           <Route path="*" element={<PageNotFound />} />

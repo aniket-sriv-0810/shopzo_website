@@ -23,6 +23,7 @@ app.set('trust proxy', 1);
 // Middleware setup
 const allowedOrigins = [
   'http://localhost:5173',
+  'http://localhost:5174',
   'https://shopzo-website.onrender.com',
   'https://theshopzo.com',
   'https://www.theshopzo.com',
@@ -83,6 +84,7 @@ import adminRouter from './router/admin.router.js';
 import categoryRouter from './router/category.router.js';
 import productRouter from './router/product.router.js';
 import navigationRouter from './router/navigation.router.js';
+import internRouter from './router/intern.router.js';
 
 app.use('/api/user', userRouter);
 app.use('/api/vendor', vendorRouter);
@@ -90,6 +92,7 @@ app.use('/api/admin', adminRouter);
 app.use('/api/category', categoryRouter);
 app.use('/api/product', productRouter);
 app.use('/api/navigation', navigationRouter);
+app.use('/api/intern', internRouter);
 
 // React Router Fix - Serves index.html for unhandled routes
 app.use((req, res, next) => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaSearch } from "react-icons/fa";
+import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import ProductCard from "../../Products/ProductCard.jsx/ProductCard";
 import VendorCard from "../../Vendors/VendorCard.jsx/VendorCard";
@@ -8,24 +8,26 @@ import NotAvailable from "../../../pages/Loaders/NotAvailable";
 import Pagination from "../../Pagination/Pagination";
 
 const SearchBox = () => {
-  const [query, setQuery] = useState("");
+  const [searchParams] = useSearchParams();
   const [results, setResults] = useState({ products: [], vendors: [] });
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [currentQuery, setCurrentQuery] = useState("");
 
-  const handleSearch = async (overridePage = 1) => {
-    if (!query.trim()) return;
+  const handleSearchWithQuery = async (searchQuery, overridePage = 1) => {
+    if (!searchQuery.trim()) return;
 
     setLoading(true);
     setSearched(true);
+    setCurrentQuery(searchQuery);
 
     try {
       const res = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/navigation/search-all`,
         {
-          params: { query, page: overridePage, limit: 4 },
+          params: { query: searchQuery, page: overridePage, limit: 4 },
         }
       );
 
@@ -46,9 +48,20 @@ const SearchBox = () => {
     }
   };
 
+  // Handle initial query from URL parameters
   useEffect(() => {
-    if (searched) {
-      handleSearch(page);
+    const urlQuery = searchParams.get('q');
+    if (urlQuery && urlQuery.trim()) {
+      setSearched(true);
+      // Trigger search with the URL query
+      handleSearchWithQuery(urlQuery.trim());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (searched && currentQuery) {
+      handleSearchWithQuery(currentQuery, page);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
@@ -59,26 +72,11 @@ const SearchBox = () => {
 
   return (
     <div className="relative w-full max-w-7xl mx-auto px-4 py-10">
-      {/* Search Input */}
-      <div className="relative w-full max-w-2xl mx-auto">
-        <input
-          type="text"
-          placeholder="Search products, vendors, categories or tags..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-          className="w-full py-3.5 pl-5 pr-14 text-base sm:text-lg text-gray-800 placeholder-gray-400 bg-white/70 backdrop-blur-md border border-gray-300 rounded-3xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:border-indigo-300 transition-all duration-300"
-        />
-        <button
-          onClick={() => handleSearch()}
-          className="absolute hover:cursor-pointer top-1/2 right-4 transform -translate-y-1/2 bg-gray-700 hover:bg-indigo-700 text-white p-2 rounded-full shadow-md transition-all duration-300"
-        >
-          <FaSearch size={18} />
-        </button>
-      </div>
+      {/* Search Results Header */}
+      
 
       {/* Results Section */}
-      <div className="mt-12 space-y-12">
+      <div className="space-y-12">
         {loading && (
           <div className="flex justify-center items-center">
             <SkeletonList />

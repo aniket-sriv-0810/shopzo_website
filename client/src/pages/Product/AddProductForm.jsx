@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import InputField from "../../components/Products/AddProduct/InputField";
 import SizeCheckbox from "../../components/Products/AddProduct/SizeCheckbox";
+import SizeFormatSelector from "../../components/Products/AddProduct/SizeFormatSelector";
 import TagSelector from "../../components/Products/AddProduct/TagSelector";
 import CategoryDropdown from "../../components/Products/AddProduct/CategoryDropdown";
 import VendorDropdown from "../../components/Products/AddProduct/VendorDropdown";
@@ -15,6 +16,7 @@ const AddProductForm = () => {
     originalPrice: "",
     discountedPrice: "",
     sizes: [],
+    sizeFormat: "",
     category: "",
     tag: "",
     vendor: "",
@@ -36,6 +38,14 @@ const AddProductForm = () => {
         : [...prev.sizes, size];
       return { ...prev, sizes: updatedSizes };
     });
+  };
+
+  const handleSizeFormatChange = (format) => {
+    setFormData((prev) => ({ 
+      ...prev, 
+      sizeFormat: format,
+      sizes: [] // Reset sizes when format changes
+    }));
   };
 
   const handleImageChange = (files) => {
@@ -130,7 +140,21 @@ const AddProductForm = () => {
         <CategoryDropdown value={formData.category} onChange={handleChange} />
         <VendorDropdown value={formData.vendor} onChange={handleChange} />
         <TagSelector value={formData.tag} onChange={handleChange} />
-        <SizeCheckbox selectedSizes={formData.sizes} onChange={handleCheckboxChange} />
+        
+        <div className="col-span-1 md:col-span-2">
+          <SizeFormatSelector 
+            selectedFormat={formData.sizeFormat} 
+            onFormatChange={handleSizeFormatChange} 
+          />
+        </div>
+        
+        <div className="col-span-1 md:col-span-2">
+          <SizeCheckbox 
+            selectedSizes={formData.sizes} 
+            onChange={handleCheckboxChange} 
+            sizeFormat={formData.sizeFormat}
+          />
+        </div>
 
         <div className="col-span-1 md:col-span-2">
           <ImageUploader onChange={handleImageChange} images={formData.images} />

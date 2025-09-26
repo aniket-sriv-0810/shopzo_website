@@ -1,8 +1,7 @@
 import React , {useEffect} from 'react'
-import DesktopNavbar from './DesktopNavbar'
-import NavImg from './NavImg'
-import NavHeader from './NavHeader'
-import MobileNavbar from './MobileNavbar'
+import Header from './Header'
+import MobileLocationNav from './MobileLocationNav'
+import MobileBottomNav from './MobileBottomNav'
 import AOS from "aos";
 import "aos/dist/aos.css";
 import OfferDetail from './OfferDetail'
@@ -16,19 +15,15 @@ const Navbar = () => {
       });
     }, []);
   return (
-    <div>
-<OfferDetail/>
-      <div className=" flex justify-center items-center px-6 sm:justify-between  lg:px-8">
-        <div className="flex  items-center  xs:-ml-5 space-x-5">
-          <NavImg />
-          <NavHeader />
-        </div>
-
-        <DesktopNavbar />
-
-        <MobileNavbar />
-      </div>
-        </div>
+    <div className="w-full">
+      <OfferDetail/>
+      {/* Header with Logo, Search, Wishlist, and Profile */}
+      <Header />
+      {/* Mobile-only Location Navigation */}
+      <MobileLocationNav />
+      {/* Mobile-only Bottom Navigation */}
+      <MobileBottomNav />
+    </div>
   )
 }
 

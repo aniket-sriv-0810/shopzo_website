@@ -27,100 +27,121 @@ const MobileNavbar = () => {
 
   return (
     <>
-      {/* Hamburger Icon */}
+      {/* Mobile Menu Button */}
       <button
-        className="absolute right-4 sm:right-8 lg:hidden text-black focus:outline-none "
+        className="lg:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 transition-colors duration-200"
         onClick={toggleMenu}
         data-aos="fade-up"
+        aria-label="Toggle menu"
       >
         {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
       </button>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="absolute top-0 right-0 w-full h-max text-white z-50 bg-gradient-to-t from-zinc-800 to-gray-900 p-6 shadow-lg transition-all duration-300">
-          <button className="absolute top-4 right-7 sm:right-10 text-white  sm:py-3" onClick={toggleMenu}>
-            <FaTimes size={24} />
-          </button>
-
-          <ul className="mt-8 space-y-7 p-4 text-sm sm:text-xl flex flex-col items-center justify-center">
-            {user?.role === "admin" && (
-              <li className="opacity-80 flex items-center justify-center p-2.5 gap-2 bg-gray-800 rounded-2xl w-60 hover:text-yellow-400">
-                <MdAdminPanelSettings className="text-xl" />
-                <NavLink to="/admin" onClick={toggleMenu}>
-                  Admin Panel
-                </NavLink>
-              </li>
-            )}
-
-            {menuItems.map(({ to, label, icon }) => (
-              <li key={to} className="opacity-80 flex items-center justify-center p-2.5 gap-2.5 bg-gray-800 rounded-2xl w-60 hover:text-yellow-400">
-                {icon}
-                <NavLink to={to} onClick={toggleMenu}>
-                  {label}
-                </NavLink>
-              </li>
-            ))}
-
-            <li className="opacity-80 flex items-center justify-center p-2.5 gap-2 bg-gray-800 rounded-2xl w-60 hover:text-yellow-400">
-  {/* Determine the correct route */}
-  <NavLink to={
-    user
-      ? (user.role === "user" || user.role === "admin")
-        ? `/user/${user._id}/account`
-        : "/vendor/login"
-      : "/login"
-  }>
-    {user ? (
-      <img
-        src={user.image}
-        alt={user.name}
-        className="w-10 h-10 rounded-full hover:scale-110 transition duration-200"
-      />
-    ) : (
-      <FaUserCircle className="text-2xl text-white" />
-    )}
-  </NavLink>
-
-  <NavLink
-    to={
-      user
-        ? (user.role === "user" || user.role === "admin")
-          ? `/user/${user._id}/account`
-          : "/vendor/login"
-        : "/login"
-    }
-    onClick={toggleMenu}
-  >
-    My Profile
-  </NavLink>
-</li>
-
-
-            {user ? (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300"
+            onClick={toggleMenu}
+          />
+          
+          {/* Menu Panel */}
+          <div className="fixed top-0 right-0 h-full w-80 max-w-sm bg-white shadow-xl transform transition-transform duration-300 ease-in-out">
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">Menu</h2>
               <button
-                onClick={() => navigate("/logout")}
-                className="bg-red-500 px-4 py-2 rounded-lg w-48 hover:bg-red-600 flex justify-center items-center gap-2 sm:w-60"
+                className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors duration-200"
+                onClick={toggleMenu}
               >
-                Logout <FaPowerOff className="text-white w-5 h-5" />
+                <FaTimes size={20} />
               </button>
-            ) : (
-              <div className="flex flex-col space-y-6">
-                <button
-                  onClick={() => navigate("/login")}
-                  className="bg-green-500 px-4 py-2 rounded-lg w-40 hover:bg-green-600 flex justify-center items-center gap-2 sm:w-60"
-                >
-                  Login <RiShieldUserLine className="text-white w-5 h-5" />
-                </button>
-                <button
-                  onClick={() => navigate("/register")}
-                  className="bg-blue-500 px-4 py-2 rounded-lg w-40 hover:bg-blue-600 flex justify-center items-center gap-2 sm:w-60"
-                >
-                  Sign Up <PiUserCirclePlusBold className="text-white w-5 h-5" />
-                </button>
-              </div>
-            )}
-          </ul>
+            </div>
+
+            {/* Menu Items */}
+            <div className="flex-1 overflow-y-auto py-4">
+              <ul className="space-y-2 px-4">
+                {user?.role === "admin" && (
+                  <li>
+                    <NavLink
+                      to="/admin"
+                      onClick={toggleMenu}
+                      className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-yellow-50 hover:text-yellow-600 rounded-lg transition-colors duration-200"
+                    >
+                      <MdAdminPanelSettings className="text-xl" />
+                      Admin Panel
+                    </NavLink>
+                  </li>
+                )}
+
+                {menuItems.map(({ to, label, icon }) => (
+                  <li key={to}>
+                    <NavLink
+                      to={to}
+                      onClick={toggleMenu}
+                      className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors duration-200"
+                    >
+                      {icon}
+                      {label}
+                    </NavLink>
+                  </li>
+                ))}
+
+                {/* User Profile Section */}
+                <li className="border-t border-gray-200 pt-4 mt-4">
+                  <NavLink
+                    to={
+                      user
+                        ? (user.role === "user" || user.role === "admin")
+                          ? `/user/${user._id}/account`
+                          : "/vendor/login"
+                        : "/login"
+                    }
+                    onClick={toggleMenu}
+                    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors duration-200"
+                  >
+                    {user ? (
+                      <img
+                        src={user.image}
+                        alt={user.name}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <FaUserCircle className="text-2xl text-gray-400" />
+                    )}
+                    <span>{user ? "My Profile" : "Login"}</span>
+                  </NavLink>
+                </li>
+
+                {/* Auth Buttons for non-logged in users */}
+                {!user && (
+                  <li className="space-y-2 pt-4">
+                    <button
+                      onClick={() => {
+                        navigate("/login");
+                        toggleMenu();
+                      }}
+                      className="w-full bg-green-500 text-white px-4 py-3 rounded-lg hover:bg-green-600 flex items-center justify-center gap-2 transition-colors duration-200"
+                    >
+                      <RiShieldUserLine className="w-5 h-5" />
+                      Login
+                    </button>
+                    <button
+                      onClick={() => {
+                        navigate("/register");
+                        toggleMenu();
+                      }}
+                      className="w-full bg-blue-500 text-white px-4 py-3 rounded-lg hover:bg-blue-600 flex items-center justify-center gap-2 transition-colors duration-200"
+                    >
+                      <PiUserCirclePlusBold className="w-5 h-5" />
+                      Sign Up
+                    </button>
+                  </li>
+                )}
+              </ul>
+            </div>
+          </div>
         </div>
       )}
     </>

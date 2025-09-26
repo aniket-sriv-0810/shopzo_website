@@ -47,3 +47,4 @@ const ReviewCount = ({ id }) => {
 };
 
 export default ReviewCount;
+

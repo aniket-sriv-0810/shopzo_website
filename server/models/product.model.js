@@ -49,7 +49,20 @@ const productSchema = new Schema(
 
     sizes: {
       type: [String],
-      enum: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
+      enum: [
+        // Clothing sizes
+        "XS", "S", "M", "L", "XL", "XXL", "XXXL",
+        // Pants & Jeans sizes (waist)
+        "28", "30", "32", "34", "36", "38", "40", "42", "44", "46",
+        // Shoe sizes
+        "6", "7", "8", "9", "10", "11", "12", "13",
+        // Kids clothing (age-based)
+        "2-3Y", "4-5Y", "6-7Y", "8-9Y", "10-11Y", "12-13Y", "14-15Y",
+        // Bra sizes
+        "32A", "32B", "32C", "34A", "34B", "34C", "36A", "36B", "36C", "38A", "38B", "38C",
+        // Special sizes
+        "Free Size"
+      ],
       default: "M",
     },
 

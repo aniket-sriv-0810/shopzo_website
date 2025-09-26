@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import {  FaUser, FaBars, FaTimes,   FaCalendarCheck ,FaPowerOff } from "react-icons/fa";
+import { FaUser, FaBars, FaTimes, FaCalendarCheck, FaPowerOff } from "react-icons/fa";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { useUser } from "../../UserContext/userContext";
 import { IoHeartCircleOutline } from "react-icons/io5";
@@ -15,10 +15,10 @@ const MobileNavbar = () => {
 
 
   const menuItems = [
-    { to: `/user/${user?._id}/account`, label: "My Account", tooltip: "My Account"  , icon: <FaUser />},
-    { to: `/user/${user?._id}/account/wishlists`, label: "My Wishlists", tooltip: "Wishlists" ,icon: <FaHeart /> },
-    { to: `/user/${user?._id}/account/vendor-wishlists`, label: "My Vendors", tooltip: "My Wishlists" ,icon: <FaStore /> },
-    { to: `/user/${user?._id}/account/bookings`, label: "My Orders", tooltip: "Orders" , icon: <FaCalendarCheck /> },
+    { to: `/user/${user?._id}/account`, label: "My Account", tooltip: "My Account", icon: <FaUser /> },
+    { to: `/user/${user?._id}/account/wishlists`, label: "My Wishlists", tooltip: "Wishlists", icon: <FaHeart /> },
+    { to: `/user/${user?._id}/account/vendor-wishlists`, label: "My Vendors", tooltip: "My Wishlists", icon: <FaStore /> },
+    { to: `/user/${user?._id}/account/bookings`, label: "My Orders", tooltip: "Orders", icon: <FaCalendarCheck /> },
   ];
 
   return (
@@ -57,15 +57,15 @@ const MobileNavbar = () => {
               </li>
             ))}
 
-           {/* Button Group */}
-           
-           
-                    <button
-                                   onClick={() => navigate("/logout")}
-                                   className="bg-red-500 px-4 py-2 rounded-lg w-48 hover:bg-red-600 flex justify-center items-center gap-2 sm:w-60"
-                                 >
-                                   Logout <FaPowerOff className="text-white w-5 h-5" />
-                                 </button>
+            {/* Button Group */}
+
+
+            <button
+              onClick={() => navigate("/logout")}
+              className="bg-red-500 px-4 py-2 rounded-lg w-48 hover:bg-red-600 flex justify-center items-center gap-2 sm:w-60"
+            >
+              Logout <FaPowerOff className="text-white w-5 h-5" />
+            </button>
           </ul>
         </div>
       )}

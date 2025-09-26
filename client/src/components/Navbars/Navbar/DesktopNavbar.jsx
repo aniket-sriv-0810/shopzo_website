@@ -5,6 +5,7 @@ import { FaPowerOff } from "react-icons/fa6";
 import { RiShieldUserLine } from "react-icons/ri";
 import { PiUserCirclePlusBold } from "react-icons/pi";
 import { useUser } from "../../UserContext/userContext";
+import NavImg from "./NavImg";
 const DesktopNavbar = () => {
   const { user} = useUser();
   const navigate = useNavigate();
@@ -22,70 +23,41 @@ const DesktopNavbar = () => {
 
 
   return (
-    <ul className=" hidden capitalize lg:flex absolute right-9 gap-9 items-center" data-aos="fade-up">
-{user?.role === "admin" && (
-        <li>
-            <NavLink to="/admin/dashboard" className="hover:text-yellow-500  hover:font-semibold">
+    <div className="hidden lg:flex items-center">
+      {/* Navigation Links */}
+      <ul className="flex items-center space-x-8">
+        {user?.role === "admin" && (
+          <li>
+            <NavLink 
+              to="/admin/dashboard" 
+              className="text-gray-700 hover:text-yellow-500 hover:font-semibold transition-colors duration-200 px-3 py-2 rounded-md"
+            >
               Admin
             </NavLink>
-        </li>
-      )}
-      {navItems.map(({ to, label, tooltip }) => (
-        <li key={to} className="  hover:scale-110 hover:font-semibold">
-            <NavLink to={to} className="hover:text-black  ">
+          </li>
+        )}
+        {user?.role === "intern" && (
+          <li>
+            <NavLink 
+              to="/intern/dashboard" 
+              className="text-gray-700 hover:text-blue-500 hover:font-semibold transition-colors duration-200 px-3 py-2 rounded-md"
+            >
+              Intern
+            </NavLink>
+          </li>
+        )}
+        {navItems.map(({ to, label }) => (
+          <li key={to}>
+            <NavLink 
+              to={to} 
+              className="text-gray-700 hover:text-black hover:font-semibold transition-all duration-200 px-3 py-2 rounded-md hover:bg-gray-50"
+            >
               {label}
             </NavLink>
-        </li>
-      ))}
-
-      <li>
-  <NavLink to={
-    user
-      ? (user.role === "user" || user.role === "admin")
-        ? `/user/${user._id}/account`
-        : "/vendor/login"
-      : "/login"
-  }>
-    {user ? (
-      <img
-        src={user.image}
-        alt={user.name}
-        className="w-10 h-10 rounded-full hover:scale-110 transition duration-200"
-      />
-    ) : (
-      <FaUserCircle className="text-2xl text-black" />
-    )}
-  </NavLink>
-</li>
-
-
-      {user ? (
-        <button
-      onClick={() => navigate("/logout")}
-      className="bg-transparent px-4 py-3 rounded-lg hover:shadow-md hover:cursor-pointer hover:bg-red-600 hover:bg-opacity-60 flex items-center gap-2 group transition-all duration-100"
-    >
-      <span className="text-black group-hover:text-white">Logout</span>
-      <FaPowerOff className="text-black w-5 h-5 group-hover:text-white transition-all duration-200" />
-    </button>
-      ) : (
-        <div className="flex gap-4">
-        <button
-      onClick={() => navigate("/login")}
-      className="bg-transparent px-3 py-3 rounded-lg hover:shadow-md hover:cursor-pointer hover:bg-green-600 hover:bg-opacity-60 flex items-center gap-2 group transition-all duration-100"
-    >
-      <span className="text-black group-hover:text-white">Login</span>
-      <RiShieldUserLine className="text-black w-5 h-5 group-hover:text-white transition-all duration-200" />
-    </button>
-          <button
-      onClick={() => navigate("/register")}
-      className="bg-transparent px-3 py-3 rounded-lg hover:shadow-md hover:cursor-pointer hover:bg-blue-500 hover:bg-opacity-60 flex items-center gap-2 group transition-all duration-100"
-    >
-      <span className="text-black group-hover:text-white">Sign Up</span>
-      <PiUserCirclePlusBold className="text-black w-5 h-5 group-hover:text-white transition-all duration-200" />
-    </button>
-        </div>
-      )}
-    </ul>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 

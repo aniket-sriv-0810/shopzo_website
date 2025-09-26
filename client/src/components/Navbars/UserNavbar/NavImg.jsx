@@ -10,7 +10,8 @@ const NavImg = () => {
             <img
               src={WebsiteLogo}
               alt="The Shopzo"
-              className="w-20 ml-4 sm:w-20 lg:w-24"
+              // className="w-20 ml-4 sm:w-20 lg:w-24"
+              className="h-10 w-auto ml-4 sm:h-12 lg:h-14 object-contain"
               data-aos="fade-down"
               />
           </NavLink>

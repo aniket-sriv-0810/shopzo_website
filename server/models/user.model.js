@@ -31,11 +31,11 @@ const userSchema = new Schema(
     },
     image: {
       type: String,
-      default: "https://ik.imagekit.io/y5lkgycsj/user%20(1).png?updatedAt=1756832218727",
+      default: "https://www.gravatar.com/avatar/?d=mp&f=y",
     },
     role: {
       type: String,
-      enum: ["admin", "user", "vendor" ,"team"],
+      enum: ["admin", "user", "vendor", "team", "intern"],
       default: "user",
     },
     bookings: [

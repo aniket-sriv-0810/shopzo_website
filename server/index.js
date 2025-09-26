@@ -13,7 +13,7 @@ const connectDB = () =>{
     .then(() =>{
         console.log("Server Connection Established !");
         app.listen(PORT , () => {
-            console.log(`Backend Running at : http://localhost:${process.env.PORT}`);
+            console.log(`Backend Running at : http://localhost:${PORT}`);
         })
     })
     .catch((err) => {
