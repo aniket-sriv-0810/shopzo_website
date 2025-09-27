@@ -3,20 +3,31 @@ dotenv.config({
     path:"../.env"
 })
 import mongoose from "mongoose";
-// import {categories} from "./category.js";
-// import { products } from './products (1).js';
-// import { vendors } from './vendors (1).js';
-// Database configuration
-main()
-.then(() =>{
-    console.log("DB Success !");
-})
-.catch((err) =>{
-    console.error("DB Error !" , err);
-})
 
-async function main(){
-    await mongoose.connect(process.env.MONGODB_URI);
+// Database configuration with proper connection management
+const connectDB = async () => {
+    try {
+        // Configure mongoose connection options for better connection management
+        const connectionOptions = {
+            maxPoolSize: 3, // Smaller pool for initialization script
+            serverSelectionTimeoutMS: 5000,
+            socketTimeoutMS: 45000,
+        };
+
+        await mongoose.connect(process.env.MONGODB_URI, connectionOptions);
+        console.log("✅ DB Connection Success for initialization!");
+        return true;
+    } catch (error) {
+        console.error("❌ DB Connection Error:", error);
+        return false;
+    }
+};
+
+// Initialize database connection
+const dbConnected = await connectDB();
+if (!dbConnected) {
+    console.error("❌ Failed to connect to database. Exiting...");
+    process.exit(1);
 }
 
 import {Faq} from "../models/faq.model.js";
@@ -70,28 +81,32 @@ const faqData = [
 // import {Product} from "../models/product.model.js";
 // Storing sample dataset in database
 const initDB = async() => {
-    // await Hotel.deleteMany({});
-    // await User.deleteMany({});
-    // await Booking.deleteMany({});
-    // await Review.deleteMany({});
-    // await Category.deleteMany({});
-    // console.log("Category deleted successfully 01 !");
-    // await Vendor.deleteMany({});
-    // console.log("Vendor deleted successfully 01 !");
-    await Faq.deleteMany({});
-    console.log("Data deleted successfully 01 !");
-    // await Product.deleteMany({});
-    // console.log("Product deleted successfully 01 !");
-    // await Hotel.insertMany(sampleData);
-    // await Category.insertMany(categories);
-    // console.log("Data inserted successfully 01 !");
-    // await Vendor.insertMany(vendors);
-    // console.log("Data inserted successfully  02 !");
-    // await Product.insertMany(products);
-    // console.log("Data inserted successfully 03!");
-    await Faq.insertMany(faqData);
-    console.log("Data inserted successfully 03!");
-    // await Blog.deleteMany({});
+    try {
+        console.log("🔄 Initializing FAQ data...");
+        
+        // Check if FAQ data already exists
+        const existingFaqs = await Faq.countDocuments();
+        if (existingFaqs > 0) {
+            console.log("✅ FAQ data already exists. Skipping initialization.");
+            return;
+        }
+
+        // Insert FAQ data
+        await Faq.insertMany(faqData);
+        console.log("✅ FAQ data initialized successfully!");
+        
+    } catch (error) {
+        console.error("❌ Error initializing FAQ data:", error);
+    } finally {
+        // Always close the connection after initialization
+        try {
+            await mongoose.connection.close();
+            console.log("🗄️ Database connection closed after initialization.");
+        } catch (closeError) {
+            console.error("❌ Error closing database connection:", closeError);
+        }
+        process.exit(0);
+    }
 }
 
 initDB();

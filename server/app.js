@@ -50,7 +50,7 @@ const expressSessionOption = {
   store: MongoStore.create({
     mongoUrl: process.env.MONGODB_URI,
     collectionName: 'sessions',
-    autoRemove: 'disabled',
+    autoRemove: 'disabled'
   }),
   cookie: {
     httpOnly: true,
