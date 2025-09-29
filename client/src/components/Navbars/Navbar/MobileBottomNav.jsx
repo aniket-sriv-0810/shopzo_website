@@ -27,7 +27,7 @@ const MobileBottomNav = () => {
       exact: false
     },
     {
-      path: user ? `/user/${user._id}/account` : '/login',
+      path: user && user._id ? `/user/${user._id}/account` : '/login',
       icon: FaUser,
       label: 'Account',
       exact: false
