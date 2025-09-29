@@ -19,7 +19,12 @@ const MobileNavbar = () => {
     { to: `/user/${user._id}/account/wishlists`, label: "My Wishlists", tooltip: "Wishlists", icon: <FaHeart /> },
     { to: `/user/${user._id}/account/vendor-wishlists`, label: "My Vendors", tooltip: "My Wishlists", icon: <FaStore /> },
     { to: `/user/${user._id}/account/bookings`, label: "My Orders", tooltip: "Orders", icon: <FaCalendarCheck /> },
-  ] : [];
+  ] : [
+    { to: "/login", label: "My Account", tooltip: "Login to access account", icon: <FaUser /> },
+    { to: "/login", label: "My Wishlists", tooltip: "Login to access wishlists", icon: <FaHeart /> },
+    { to: "/login", label: "My Vendors", tooltip: "Login to access vendors", icon: <FaStore /> },
+    { to: "/login", label: "My Orders", tooltip: "Login to access orders", icon: <FaCalendarCheck /> },
+  ];
 
   return (
     <>
@@ -65,14 +70,35 @@ const MobileNavbar = () => {
             ))}
 
             {/* Button Group */}
-
-
-            <button
-              onClick={() => navigate("/logout")}
-              className="bg-red-500 px-4 py-2 rounded-lg w-48 hover:bg-red-600 flex justify-center items-center gap-2 sm:w-60"
-            >
-              Logout <FaPowerOff className="text-white w-5 h-5" />
-            </button>
+            {user?._id ? (
+              <button
+                onClick={() => navigate("/logout")}
+                className="bg-red-500 px-4 py-2 rounded-lg w-48 hover:bg-red-600 flex justify-center items-center gap-2 sm:w-60"
+              >
+                Logout <FaPowerOff className="text-white w-5 h-5" />
+              </button>
+            ) : (
+              <div className="flex flex-col gap-3 w-60">
+                <button
+                  onClick={() => {
+                    navigate("/login");
+                    toggleMenu();
+                  }}
+                  className="bg-blue-500 px-4 py-2 rounded-lg hover:bg-blue-600 flex justify-center items-center gap-2"
+                >
+                  Login <FaUser className="text-white w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => {
+                    navigate("/register");
+                    toggleMenu();
+                  }}
+                  className="bg-green-500 px-4 py-2 rounded-lg hover:bg-green-600 flex justify-center items-center gap-2"
+                >
+                  Sign Up <FaUser className="text-white w-5 h-5" />
+                </button>
+              </div>
+            )}
           </ul>
         </div>
       )}
