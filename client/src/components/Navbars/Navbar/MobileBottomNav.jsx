@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { FaHome, FaTh, FaStore, FaUser } from 'react-icons/fa';
+import { FaHome, FaTh, FaStore, FaUser, FaSignInAlt } from 'react-icons/fa';
 import { useUser } from '../../UserContext/userContext';
 
 const MobileBottomNav = () => {
@@ -28,8 +28,8 @@ const MobileBottomNav = () => {
     },
     {
       path: user && user._id ? `/user/${user._id}/account` : '/login',
-      icon: FaUser,
-      label: 'Account',
+      icon: user && user._id ? FaUser : FaSignInAlt,
+      label: user && user._id ? 'Account' : 'Login',
       exact: false
     }
   ];
