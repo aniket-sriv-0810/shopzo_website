@@ -25,17 +25,24 @@ const MobileNavbar = () => {
     <>
       {/* Hamburger Icon */}
       <button
-        className="absolute right-4 sm:right-8 lg:hidden text-white focus:outline-none "
+        className="absolute right-4 sm:right-8 lg:hidden text-white focus:outline-none touch-manipulation"
         onClick={toggleMenu}
+        onTouchStart={(e) => e.preventDefault()}
         data-aos="fade-up"
+        style={{ WebkitTapHighlightColor: 'transparent' }}
       >
         {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
       </button>
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="absolute top-0 right-0 w-full h-max text-white z-50 bg-gradient-to-t from-zinc-800 to-gray-900 p-6 shadow-lg transition-all duration-300">
-          <button className="absolute top-4 right-7 sm:right-10 text-white  sm:py-3" onClick={toggleMenu}>
+        <div className="absolute top-0 right-0 w-full h-max text-white z-50 bg-gradient-to-t from-zinc-800 to-gray-900 p-6 shadow-lg transition-all duration-300 touch-manipulation">
+          <button 
+            className="absolute top-4 right-7 sm:right-10 text-white sm:py-3 touch-manipulation" 
+            onClick={toggleMenu}
+            onTouchStart={(e) => e.preventDefault()}
+            style={{ WebkitTapHighlightColor: 'transparent' }}
+          >
             <FaTimes size={24} />
           </button>
 

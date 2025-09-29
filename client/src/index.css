@@ -22,8 +22,27 @@ input, select, textarea {
   font-size: 16px;
 }
 
+/* iOS Safari specific fixes */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Fix for iOS Safari button touch issues */
+button {
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
 @media screen and (max-width: 768px) {
   input, select, textarea {
     font-size: 16px !important;
+  }
+  
+  /* iOS Safari mobile fixes */
+  body {
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x pan-y;
   }
 }

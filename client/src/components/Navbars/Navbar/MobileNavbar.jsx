@@ -29,10 +29,12 @@ const MobileNavbar = () => {
     <>
       {/* Mobile Menu Button */}
       <button
-        className="lg:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 transition-colors duration-200"
+        className="lg:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-500 transition-colors duration-200 touch-manipulation"
         onClick={toggleMenu}
+        onTouchStart={(e) => e.preventDefault()}
         data-aos="fade-up"
         aria-label="Toggle menu"
+        style={{ WebkitTapHighlightColor: 'transparent' }}
       >
         {isMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
       </button>
@@ -42,18 +44,22 @@ const MobileNavbar = () => {
         <div className="fixed inset-0 z-50 lg:hidden">
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300"
+            className="fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 touch-manipulation"
             onClick={toggleMenu}
+            onTouchStart={(e) => e.preventDefault()}
+            style={{ WebkitTapHighlightColor: 'transparent' }}
           />
           
           {/* Menu Panel */}
-          <div className="fixed top-0 right-0 h-full w-80 max-w-sm bg-white shadow-xl transform transition-transform duration-300 ease-in-out">
+          <div className="fixed top-0 right-0 h-full w-80 max-w-sm bg-white shadow-xl transform transition-transform duration-300 ease-in-out touch-manipulation">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
               <h2 className="text-lg font-semibold text-gray-900">Menu</h2>
               <button
-                className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors duration-200"
+                className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors duration-200 touch-manipulation"
                 onClick={toggleMenu}
+                onTouchStart={(e) => e.preventDefault()}
+                style={{ WebkitTapHighlightColor: 'transparent' }}
               >
                 <FaTimes size={20} />
               </button>
