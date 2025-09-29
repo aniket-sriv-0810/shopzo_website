@@ -92,7 +92,7 @@ const MobileNavbar = () => {
                 <li className="border-t border-gray-200 pt-4 mt-4">
                   <NavLink
                     to={
-                      user
+                      user && user._id
                         ? (user.role === "user" || user.role === "admin")
                           ? `/user/${user._id}/account`
                           : "/vendor/login"

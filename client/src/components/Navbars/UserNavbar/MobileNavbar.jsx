@@ -14,12 +14,12 @@ const MobileNavbar = () => {
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
 
-  const menuItems = [
-    { to: `/user/${user?._id}/account`, label: "My Account", tooltip: "My Account", icon: <FaUser /> },
-    { to: `/user/${user?._id}/account/wishlists`, label: "My Wishlists", tooltip: "Wishlists", icon: <FaHeart /> },
-    { to: `/user/${user?._id}/account/vendor-wishlists`, label: "My Vendors", tooltip: "My Wishlists", icon: <FaStore /> },
-    { to: `/user/${user?._id}/account/bookings`, label: "My Orders", tooltip: "Orders", icon: <FaCalendarCheck /> },
-  ];
+  const menuItems = user?._id ? [
+    { to: `/user/${user._id}/account`, label: "My Account", tooltip: "My Account", icon: <FaUser /> },
+    { to: `/user/${user._id}/account/wishlists`, label: "My Wishlists", tooltip: "Wishlists", icon: <FaHeart /> },
+    { to: `/user/${user._id}/account/vendor-wishlists`, label: "My Vendors", tooltip: "My Wishlists", icon: <FaStore /> },
+    { to: `/user/${user._id}/account/bookings`, label: "My Orders", tooltip: "Orders", icon: <FaCalendarCheck /> },
+  ] : [];
 
   return (
     <>

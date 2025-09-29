@@ -57,6 +57,42 @@ const DesktopNavbar = () => {
           </li>
         ))}
       </ul>
+      
+      {/* User Profile Section */}
+        {user && user._id ? (
+          <NavLink
+            to={
+              (user.role === "user" || user.role === "admin")
+                ? `/user/${user._id}/account`
+                : "/vendor/login"
+            }
+            className="flex items-center gap-2 px-4 py-2 text-white hover:bg-white/10 rounded-lg transition-colors duration-200"
+          >
+            <img
+              src={user.image}
+              alt={user.name}
+              className="w-8 h-8 rounded-full object-cover"
+            />
+            <span className="hidden lg:block">{user.name}</span>
+          </NavLink>
+        ) : (
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate("/login")}
+              className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center gap-2 transition-colors duration-200"
+            >
+              <RiShieldUserLine className="w-5 h-5" />
+              Login
+            </button>
+            <button
+              onClick={() => navigate("/register")}
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center gap-2 transition-colors duration-200"
+            >
+              <PiUserCirclePlusBold className="w-5 h-5" />
+              Sign Up
+            </button>
+          </div>
+        )}
     </div>
   );
 };

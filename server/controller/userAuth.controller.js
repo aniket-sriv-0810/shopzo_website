@@ -117,14 +117,14 @@ const loginUser = asyncHandler(async (req, res) => {
           });
         }
   
-        // Step 4: Log in the user using req.login
-        req.login(user, { session: true }, (err) => {
+        // Step 4: Log in the user using req.login with correct format
+        req.login({ id: user._id, type: "user" }, { session: true }, (err) => {
           if (err) {
             return res.status(500).json(
               new ApiError(500, [err.message], "Login failed!")
             );
           }
-  
+
           console.log("✅ Login successful:", user.email);
           return res.status(200).json(
             new ApiResponse(200, { user }, "Successfully logged in the User!")

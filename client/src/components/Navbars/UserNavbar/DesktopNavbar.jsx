@@ -7,12 +7,12 @@ const DesktopNavbar = () => {
   const navigate = useNavigate();
 
 
-  const navItems = [
-    { to: `/user/${user?._id}/account`, label: "Account", tooltip: "Account" },
-    { to: `/user/${user?._id}/account/wishlists`, label: "Wishlists", tooltip: "Wishlists" },
-    { to: `/user/${user?._id}/account/vendor-wishlists`, label: "Vendors", tooltip: "Wishlists" },
-    { to: `/user/${user?._id}/account/bookings`, label: "Orders", tooltip: "Orders" },
-  ];
+  const navItems = user?._id ? [
+    { to: `/user/${user._id}/account`, label: "Account", tooltip: "Account" },
+    { to: `/user/${user._id}/account/wishlists`, label: "Wishlists", tooltip: "Wishlists" },
+    { to: `/user/${user._id}/account/vendor-wishlists`, label: "Vendors", tooltip: "Wishlists" },
+    { to: `/user/${user._id}/account/bookings`, label: "Orders", tooltip: "Orders" },
+  ] : [];
 
 
 
