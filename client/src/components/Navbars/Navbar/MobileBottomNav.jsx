@@ -6,6 +6,15 @@ import { useUser } from '../../UserContext/userContext';
 const MobileBottomNav = () => {
   const location = useLocation();
   const { user } = useUser();
+  
+  // Force re-render by adding a key based on user state
+  const userKey = user ? `user-${user._id}` : 'no-user';
+  
+  // Test the conditional logic explicitly
+  const isUserLoggedIn = !!(user && user._id);
+  const accountPath = isUserLoggedIn ? `/user/${user._id}/account` : '/login';
+  const AccountIcon = isUserLoggedIn ? FaUser : FaSignInAlt;
+  const accountLabel = isUserLoggedIn ? 'Account' : 'Login';
 
   const navItems = [
     {
@@ -27,9 +36,9 @@ const MobileBottomNav = () => {
       exact: false
     },
     {
-      path: user && user._id ? `/user/${user._id}/account` : '/login',
-      icon: user && user._id ? FaUser : FaSignInAlt,
-      label: user && user._id ? 'Account' : 'Login',
+      path: accountPath,
+      icon: AccountIcon,
+      label: accountLabel,
       exact: false
     }
   ];
@@ -42,7 +51,7 @@ const MobileBottomNav = () => {
   };
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 safe-area-inset-bottom">
+    <div key={userKey} className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 safe-area-inset-bottom">
       <div className="flex items-center justify-around py-2 pb-safe">
         {navItems.map((item, index) => {
           const Icon = item.icon;
