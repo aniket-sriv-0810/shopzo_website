@@ -1,14 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { FaHome, FaTh, FaStore, FaUser, FaSignInAlt } from 'react-icons/fa';
 import { useUser } from '../../UserContext/userContext';
 
 const MobileBottomNav = () => {
   const location = useLocation();
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
+  const [forceUpdate, setForceUpdate] = useState(0);
   
-  // Force re-render by adding a key based on user state
-  const userKey = user ? `user-${user._id}` : 'no-user';
+  // Force re-render when user state changes
+  useEffect(() => {
+    setForceUpdate(prev => prev + 1);
+  }, [user]);
+  
+  // Don't render while loading
+  if (isLoading) {
+    return null;
+  }
   
   // Test the conditional logic explicitly
   const isUserLoggedIn = !!(user && user._id);
@@ -51,7 +59,10 @@ const MobileBottomNav = () => {
   };
 
   return (
-    <div key={userKey} className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 safe-area-inset-bottom">
+    <div 
+      key={`mobile-nav-${forceUpdate}-${user?._id || 'no-user'}`} 
+      className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 safe-area-inset-bottom"
+    >
       <div className="flex items-center justify-around py-2 pb-safe">
         {navItems.map((item, index) => {
           const Icon = item.icon;
@@ -59,7 +70,7 @@ const MobileBottomNav = () => {
           
           return (
             <NavLink
-              key={index}
+              key={`${index}-${item.path}-${forceUpdate}`}
               to={item.path}
               className={`flex flex-col items-center justify-center py-2 px-3 min-w-0 flex-1 transition-colors duration-200 ${
                 active 

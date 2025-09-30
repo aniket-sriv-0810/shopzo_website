@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaUser, FaBars, FaTimes, FaCalendarCheck, FaPowerOff } from "react-icons/fa";
 import { MdAdminPanelSettings } from "react-icons/md";
@@ -8,11 +8,29 @@ import { FaHeart, FaStore } from "react-icons/fa6";
 
 const MobileNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
   const navigate = useNavigate();
+  const [forceUpdate, setForceUpdate] = useState(0);
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
+  // Force re-render when user state changes
+  useEffect(() => {
+    setForceUpdate(prev => prev + 1);
+  }, [user]);
+
+  // Don't render while loading
+  if (isLoading) {
+    return (
+      <button
+        className="absolute right-4 sm:right-8 lg:hidden text-white focus:outline-none touch-manipulation"
+        disabled
+        style={{ WebkitTapHighlightColor: 'transparent' }}
+      >
+        <FaBars size={24} />
+      </button>
+    );
+  }
 
   const menuItems = user?._id ? [
     { to: `/user/${user._id}/account`, label: "My Account", tooltip: "My Account", icon: <FaUser /> },
@@ -41,7 +59,10 @@ const MobileNavbar = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="absolute top-0 right-0 w-full h-max text-white z-50 bg-gradient-to-t from-zinc-800 to-gray-900 p-6 shadow-lg transition-all duration-300 touch-manipulation">
+        <div 
+          key={`user-mobile-menu-${forceUpdate}-${user?._id || 'no-user'}`}
+          className="absolute top-0 right-0 w-full h-max text-white z-50 bg-gradient-to-t from-zinc-800 to-gray-900 p-6 shadow-lg transition-all duration-300 touch-manipulation"
+        >
           <button 
             className="absolute top-4 right-7 sm:right-10 text-white sm:py-3 touch-manipulation" 
             onClick={toggleMenu}
@@ -60,8 +81,8 @@ const MobileNavbar = () => {
                 </NavLink>
               </li>
             )}
-            {menuItems.map(({ to, label, icon }) => (
-              <li key={to} className="opacity-80 flex items-center justify-center p-2.5 gap-2.5 bg-gray-800 rounded-2xl w-60 hover:text-yellow-400">
+            {menuItems.map(({ to, label, icon }, index) => (
+              <li key={`${to}-${index}-${forceUpdate}`} className="opacity-80 flex items-center justify-center p-2.5 gap-2.5 bg-gray-800 rounded-2xl w-60 hover:text-yellow-400">
                 {icon}
                 <NavLink to={to} onClick={toggleMenu}>
                   {label}
@@ -72,7 +93,10 @@ const MobileNavbar = () => {
             {/* Button Group */}
             {user?._id ? (
               <button
-                onClick={() => navigate("/logout")}
+                onClick={() => {
+                  navigate("/logout");
+                  toggleMenu();
+                }}
                 className="bg-red-500 px-4 py-2 rounded-lg w-48 hover:bg-red-600 flex justify-center items-center gap-2 sm:w-60"
               >
                 Logout <FaPowerOff className="text-white w-5 h-5" />

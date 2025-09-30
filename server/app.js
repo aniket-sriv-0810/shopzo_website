@@ -47,6 +47,7 @@ const expressSessionOption = {
   secret: process.env.EXPRESS_SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
+  name: 'shopzo.sid', // Custom session name
   store: MongoStore.create({
     mongoUrl: process.env.MONGODB_URI,
     collectionName: 'sessions',
@@ -55,8 +56,8 @@ const expressSessionOption = {
   cookie: {
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week expiry time
-    secure: isProduction, // Use secure cookies in production (HTTPS), allow HTTP for localhost
-    sameSite: isProduction ? 'none' : 'lax', // 'none' required for cross-origin in production
+    secure: false, // Always false for localhost development
+    sameSite: 'lax', // Use 'lax' for same-origin requests in development
   },
 };
 
