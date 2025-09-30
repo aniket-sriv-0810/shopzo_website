@@ -55,8 +55,8 @@ const expressSessionOption = {
   cookie: {
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week expiry time
-    secure: false, // Allow cookies over HTTP for localhost testing
-    sameSite: 'lax',
+    secure: isProduction, // Use secure cookies in production (HTTPS), allow HTTP for localhost
+    sameSite: isProduction ? 'none' : 'lax', // 'none' required for cross-origin in production
   },
 };
 
