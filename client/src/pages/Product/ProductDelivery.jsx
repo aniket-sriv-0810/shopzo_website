@@ -6,6 +6,7 @@ import Navbar from "../../components/Navbars/Navbar/Navbar";
 import SkeletonForm from "../../components/LoadingSkeleton/SkeletonForm";
 import { BsCashCoin } from "react-icons/bs";
 import { FaTruck } from "react-icons/fa";
+import { authAxios } from "../../utils/auth";
 
 const ProductDelivery = () => {
   const { id } = useParams(); // product ID
@@ -108,15 +109,14 @@ const ProductDelivery = () => {
         },
       };
 
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/product/${id}/delivery`,
+      const res = await authAxios.post(
+        `/api/product/${id}/delivery`,
         {
           product: id,
           sizeSelected,
           quantity,
           address,
-        },
-        { withCredentials: true }
+        }
       );
 
       const deliveryId = res.data?.data?._id;

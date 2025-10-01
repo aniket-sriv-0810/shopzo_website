@@ -2,17 +2,14 @@ import React from 'react';
 import { FaTrashAlt } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { TbTagPlus } from 'react-icons/tb';
-import axios from 'axios';
+import { authAxios } from "../../../utils/auth";
 
 const VendorRow = ({ vendor, onDelete }) => {
   const { name, username, _id, email, phone, image } = vendor;
 
   const handleDelete = async () => {
     try {
-      const res = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/admin/vendor/${_id}/account/delete`,
-        { withCredentials: true }
-      );
+      const res = await authAxios.delete(`/api/admin/vendor/${vendor._id}/delete`);
       onDelete(_id); // Callback to update parent state
     } catch (error) {
       alert(error.response?.data?.message || "Failed to delete vendor");

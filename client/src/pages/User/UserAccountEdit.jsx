@@ -6,6 +6,7 @@ import UserProfileImage from "../../components/User/UserAccountEdit/UserProfileI
 import UserAccountForm from "../../components/User/UserAccountEdit/UserAccountForm";
 import SkeletonForm from "../../components/LoadingSkeleton/SkeletonForm";
 import  validateEditForm  from "../../components/User/UserAccountEdit/editValidator";
+import { authAxios } from "../../utils/auth";
 const UserAccountEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -28,10 +29,7 @@ const UserAccountEdit = () => {
     const fetchUserDetails = async () => {
       setLoading(true);
       try {
-        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/${id}/account`, {
-          withCredentials: true,
-        });
-
+        const response = await authAxios.get(`/api/user/${id}/account`);
         const userInfo = data.data.userInfo;
         setUserData({
           name: userInfo.name || "",
@@ -82,11 +80,7 @@ const UserAccountEdit = () => {
     if (image) formData.append("image", image);
   
     try {
-      await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/user/${id}/account/edit`,
-        formData,
-        { withCredentials: true }
-      );
+      await authAxios.put(`/api/user/${id}/account`, formData);
       navigate(`/user/${id}/account`);
     } catch (err) {
       const message = err?.response?.data?.message;

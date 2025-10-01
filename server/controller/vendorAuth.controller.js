@@ -5,6 +5,7 @@ import {uploadOnCloudinary} from "../utils/cloudinary.js";
 import {ApiError} from "../utils/ApiError.js";
 import {ApiResponse} from "../utils/ApiResponse.js";
 import passport from "passport";
+import { generateToken } from "../middleware/jwt.middleware.js";
 const addNewVendor = asyncHandler(async (req, res) => {
   try {
     const {
@@ -187,19 +188,23 @@ const loginVendor = asyncHandler(async (req, res) => {
           });
         }
   
-        // Step 4: Log in the vendor using req.login
-        req.login(vendor, { session: true }, (err) => {
-          if (err) {
-            return res.status(500).json(
-              new ApiError(500, [err.message], "Login failed!")
-            );
-          }
-  
-          console.log("✅ Vendor login successful:", vendor.username);
-          return res.status(200).json(
-            new ApiResponse(200, { vendor }, "Successfully logged in the Vendor!")
-          );
+        // Step 4: Generate JWT token for cookieless authentication
+        const token = generateToken({
+          id: vendor._id,
+          type: "vendor",
+          username: vendor.username
         });
+
+        console.log("✅ Vendor login successful:", vendor.username);
+        console.log("✅ JWT token generated for vendor:", vendor._id);
+        
+        return res.status(200).json(
+          new ApiResponse(200, { 
+            vendor,
+            token,
+            tokenType: "Bearer"
+          }, "Successfully logged in the Vendor!")
+        );
       })(req, res); // invoke the passport middleware
   
     } catch (error) {
@@ -210,42 +215,18 @@ const loginVendor = asyncHandler(async (req, res) => {
     }
   });
   
-  // ✅ Logout Controller for Both User & Vendor
+  // ✅ Logout Controller for Both User & Vendor (JWT-based)
 const logOutAccount = asyncHandler(async (req, res) => {
     try {
-      // Logout via Passport
-      req.logout((err) => {
-        if (err) {
-          console.error("❌ Error during logout:", err);
-          return res.status(400).json(
-            new ApiError(400, [err.message], "Failed to log out!")
-          );
-        }
-  
-        // Destroy Session
-        req.session.destroy((err) => {
-          if (err) {
-            console.error("❌ Session destruction failed:", err);
-            return res.status(500).json(
-              new ApiError(500, [err.message], "Failed to destroy session!")
-            );
-          }
-  
-          // Clear Cookie
-          res.clearCookie("shopzo.sid", {
-            path: "/",
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // Use HTTPS in prod
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-          });
-  
-          console.log("✅ Logout successful for user/vendor");
-          return res
-            .status(200)
-            .json(new ApiResponse(200, null, "Logged out successfully from account!"));
-        });
-      });
-  
+      // For JWT-based authentication, logout is handled client-side
+      // The client should remove the token from storage
+      // Server-side logout would require token blacklisting (optional enhancement)
+      
+      console.log("✅ Logout request received for user/vendor");
+      return res
+        .status(200)
+        .json(new ApiResponse(200, null, "Logged out successfully! Please remove token from client storage."));
+        
     } catch (error) {
       console.error("❌ Logout error:", error);
       return res.status(500).json(
@@ -254,13 +235,13 @@ const logOutAccount = asyncHandler(async (req, res) => {
     }
   });
   
-// Check if Vendor is Authenticated (Login check)
+// Check if Vendor is Authenticated (JWT-based)
 const checkVendorAuthentication = asyncHandler(async (req, res) => {
     try {
-      if (req.isAuthenticated()) {
-        console.log("✅ Vendor is authenticated:", req.user);
+      if (req.isAuthenticated && req.isAuthenticated()) {
+        console.log("✅ Vendor is authenticated:", req.vendor);
         return res.status(200).json(
-          new ApiResponse(200, { isAuthenticated: true, vendor: req.user }, "Vendor is authenticated.")
+          new ApiResponse(200, { isAuthenticated: true, vendor: req.vendor }, "Vendor is authenticated.")
         );
       } else {
         console.log("❌ Vendor is not authenticated.");

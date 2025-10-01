@@ -4,6 +4,7 @@ import BookingCard from "../../components/User/UserBooking/UserBookingCard";
 import { useUser } from "../../components/UserContext/userContext";
 import SkeletonList from "../../components/LoadingSkeleton/SkeletonList";
 import NotAvailable from "../Loaders/NotAvailable";
+import { authAxios } from "../../utils/auth";
 
 const UserStoreOrders = () => {
   const [bookings, setBookings] = useState([]);
@@ -12,10 +13,7 @@ const UserStoreOrders = () => {
 
   const fetchBookings = async () => {
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/user/${user._id}/account/bookings`,
-        { withCredentials: true }
-      );
+      const res = await authAxios.get(`/api/user/${id}/booking`);
       setBookings(res.data.data);
     } catch (err) {
       console.error("Error fetching bookings:", err);

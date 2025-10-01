@@ -1,22 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
+import { auth, tokenManager, userManager } from "../../utils/auth";
 
 // Create context
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        return JSON.parse(storedUser);
-      } catch (error) {
-        console.error("Error parsing stored user:", error);
-        localStorage.removeItem("user");
-        return null;
-      }
-    }
-    return null;
+    return userManager.getUser();
   });
 
   const [isLoading, setIsLoading] = useState(true);
@@ -24,18 +14,11 @@ export const UserProvider = ({ children }) => {
   const fetchAuthStatus = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/user/auth`,
-        { withCredentials: true }
-      );
+      const authResult = await auth.checkAuth();
 
-      console.log("🔍 Auth response:", response.data);
-
-      if (response.data.isAuthenticated && response.data.user) {
-        const userData = response.data.user;
+      if (authResult.isAuthenticated && authResult.user) {
+        const userData = authResult.user;
         console.log("🔍 User data from server:", userData);
-        console.log("🔍 User ID type:", typeof userData._id);
-        console.log("🔍 User ID value:", userData._id);
         
         // Ensure _id is a string for consistent comparison
         const processedUser = {
@@ -46,17 +29,34 @@ export const UserProvider = ({ children }) => {
         console.log("🔍 Processed user data:", processedUser);
         
         setUser(processedUser);
-        localStorage.setItem("user", JSON.stringify(processedUser));
+        userManager.setUser(processedUser);
       } else {
         setUser(null);
-        localStorage.removeItem("user");
+        userManager.removeUser();
+        tokenManager.removeToken();
       }
     } catch (error) {
       console.error("Auth check failed:", error);
       setUser(null);
-      localStorage.removeItem("user");
+      userManager.removeUser();
+      tokenManager.removeToken();
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await auth.logout();
+      setUser(null);
+      return { success: true };
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Even if logout fails, clear local state
+      setUser(null);
+      userManager.removeUser();
+      tokenManager.removeToken();
+      return { success: false, error };
     }
   };
 
@@ -68,14 +68,14 @@ export const UserProvider = ({ children }) => {
   // Update localStorage when user changes
   useEffect(() => {
     if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
+      userManager.setUser(user);
     } else {
-      localStorage.removeItem("user");
+      userManager.removeUser();
     }
   }, [user]);
 
   return (
-    <UserContext.Provider value={{ user, setUser, isLoading, fetchAuthStatus }}>
+    <UserContext.Provider value={{ user, setUser, isLoading, fetchAuthStatus, logout }}>
       {children}
     </UserContext.Provider>
   );

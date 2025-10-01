@@ -8,6 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useUser } from '../../../components/UserContext/userContext';
 import VendorNavbar from '../../../components/Navbars/VendorNavbar/VendorNavbar';
 import AdminSearchBar from "../../../components/Admin/AdminSearchBar/AdminSearchBar";
+import { authAxios } from "../../../utils/auth";
 
 const VendorBookings = () => {
   const { user } = useUser();
@@ -21,10 +22,7 @@ const VendorBookings = () => {
   const fetchBookings = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/vendor/${vendorId}/account/all-bookings`,
-        { withCredentials: true }
-      );
+      const res = await authAxios.get(`/api/vendor/${id}/bookings`);
       setBookings(res.data.data);
       setFilteredBookings(res.data.data);
     } catch (err) {

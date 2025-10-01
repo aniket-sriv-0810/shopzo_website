@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import InputField from "./InputField";
 import { useUser } from "../../../components/UserContext/userContext";
 import { FaUser } from "react-icons/fa";
 import { BsShieldLockFill } from "react-icons/bs";
 import  validateLoginForm  from "./validateForm";
+import { auth } from "../../../utils/auth";
 
 const VendorLoginForm = () => {
   const navigate = useNavigate();
@@ -33,33 +33,29 @@ const VendorLoginForm = () => {
 
     try {
       setIsLoading(true);
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/vendor/login`,
-        loginVendor,
-        { withCredentials: true }
-      );
+      const result = await auth.login(loginVendor, 'vendor');
 
-      if (response.status === 200) {
-        const vendorData = response.data.data.vendor;
+      if (result.success) {
+        const vendorData = result.user;
         setUser(vendorData);
-        localStorage.setItem("vendor", JSON.stringify(vendorData));
         window.open(`/vendor/${vendorData._id}/account`, "_blank");
         setLoginVendor({ username: "", password: "" });
+      } else {
+        if (result.details && Array.isArray(result.details)) {
+          const fieldErrors = {};
+          result.details.forEach((msg) => {
+            if (msg.toLowerCase().includes("username")) fieldErrors.username = msg;
+            else if (msg.toLowerCase().includes("password")) fieldErrors.password = msg;
+            else fieldErrors.general = msg;
+          });
+          setFormErrors((prev) => ({ ...prev, ...fieldErrors }));
+        } else {
+          setServerError(result.message || "Login failed. Try again later.");
+        }
       }
     } catch (error) {
-      const details = error.response?.data?.details;
-
-      if (Array.isArray(details)) {
-        const fieldErrors = {};
-        details.forEach((msg) => {
-          if (msg.toLowerCase().includes("username")) fieldErrors.username = msg;
-          else if (msg.toLowerCase().includes("password")) fieldErrors.password = msg;
-          else fieldErrors.general = msg;
-        });
-        setFormErrors((prev) => ({ ...prev, ...fieldErrors }));
-      } else {
-        setServerError(error.response?.data?.message || "Login failed. Try again later.");
-      }
+      console.error("Vendor login error:", error);
+      setServerError("Login failed. Try again later.");
     } finally {
       setIsLoading(false);
     }

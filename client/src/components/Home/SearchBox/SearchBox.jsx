@@ -6,6 +6,7 @@ import VendorCard from "../../Vendors/VendorCard.jsx/VendorCard";
 import SkeletonList from "../../LoadingSkeleton/SkeletonList";
 import NotAvailable from "../../../pages/Loaders/NotAvailable";
 import Pagination from "../../Pagination/Pagination";
+import { authAxios } from "../../../utils/auth";
 
 const SearchBox = () => {
   const [searchParams] = useSearchParams();
@@ -24,12 +25,9 @@ const SearchBox = () => {
     setCurrentQuery(searchQuery);
 
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/navigation/search-all`,
-        {
-          params: { query: searchQuery, page: overridePage, limit: 4 },
-        }
-      );
+      const res = await authAxios.get("/api/navigation/search-all", {
+        params: { query: searchQuery, page: overridePage, limit: 4 }
+      });
 
       const {
         vendors,

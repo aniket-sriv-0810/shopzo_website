@@ -1,17 +1,12 @@
 // components/AdminDeleteBooking.jsx
 import React from "react";
-import axios from "axios";
+import { authAxios } from "../../utils/auth";
 
 const AdminCancelBooking = ({ bookingId, onDeleted }) => {
 
   const handleDelete = async () => {
     try {
-      const { data } = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/admin/bookings/${bookingId}`,
-        {
-            withCredentials : true
-        }
-      );
+      const response = await authAxios.delete(`/api/admin/booking/${bookingId}/cancel`);
       onDeleted?.(); // optional callback
     } catch (err) {
       console.error(err.response?.data?.message || "Failed to delete booking");

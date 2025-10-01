@@ -1,5 +1,5 @@
 import express from 'express' ;
-import { isLoggedIn } from '../middleware/auth.middleware.js';
+import { authenticateUser, optionalAuth } from '../middleware/jwt.middleware.js';
 import {upload} from "../multer.js";
 import {validate} from '../middleware/validator.js';
 import {userSchemaValidation} from '../test/User/user.validator.js' ;
@@ -26,6 +26,14 @@ router
      .route('/login')
      .post(validate(loginUserValidation) , loginUser);
 
+// Test endpoint to verify routing
+router
+     .route('/test-login')
+     .post((req, res) => {
+       console.log("🧪 Test login endpoint hit:", req.body);
+       res.json({ message: "Test endpoint working", body: req.body });
+     });
+
 
 // Logout of the registered user Route
 router
@@ -36,85 +44,85 @@ router
 // Check for the user authentication Route
 router
      .route('/auth')
-     .get(checkAuthentication)
+     .get(optionalAuth, checkAuthentication)
 
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
 // provide the user Account details Route
 router
      .route('/:id/account')
-     .get(isLoggedIn , userAccountDetails);
+     .get(authenticateUser , userAccountDetails);
 
 
 // provide the user product Wishlists details Route
 router
      .route('/:id/account/wishlists')
-     .get(isLoggedIn , getUserWishlists);
+     .get(authenticateUser , getUserWishlists);
 
 
 // provide  the toggling user products Wishlists Route
 router
      .route('/:id/account/wishlist')
-     .post(isLoggedIn ,validate(toggleProductWishlistSchema) ,  toggleProductWishlist);
+     .post(authenticateUser ,validate(toggleProductWishlistSchema) ,  toggleProductWishlist);
 
 
 // provide the user vendor Wishlists details Route
 router
   .route("/:id/account/vendor-wishlists")
-  .get(isLoggedIn, getUserVendorWishlists);
+  .get(authenticateUser, getUserVendorWishlists);
 
 
 // provide  the toggling user vendor Wishlists Route
 router
   .route("/:id/account/vendor-wishlist")
-  .post(isLoggedIn, validate(toggleVendorWishlistSchema) , toggleVendorWishlist);
+  .post(authenticateUser, validate(toggleVendorWishlistSchema) , toggleVendorWishlist);
 
 
 // provide the user Bookings details Route
 router
      .route('/:id/account/bookings')
-     .get(isLoggedIn  ,getUserBookings);
+     .get(authenticateUser  ,getUserBookings);
 
 
 // Cancel the user bookings Route
 router
       .route('/:userId/account/bookings/:bookingId/cancel')
-      .delete( isLoggedIn, cancelUserBooking);
+      .delete( authenticateUser, cancelUserBooking);
 
 
 // Change the user Account Details Route
 router
      .route('/:id/account/edit')
-     .put(isLoggedIn , upload.single("image"), validate(userEditValidationSchema) , editUserDetails);
+     .put(authenticateUser , upload.single("image"), validate(userEditValidationSchema) , editUserDetails);
 
 
 // Change the user password Details Route
 router
      .route('/:id/account/change-password')
-     .put(isLoggedIn , validate(changeUserPasswordSchema)  , changeUserPassword);
+     .put(authenticateUser , validate(changeUserPasswordSchema)  , changeUserPassword);
 
 
 // Delete the user Account Route
 router
      .route('/:id/account/delete')
-     .delete(isLoggedIn , deleteUserAccount);
+     .delete(authenticateUser , deleteUserAccount);
 
 // delete  the user's cancelled bookings Route
 router
      .route('/:id/account/bookings/:bookingId')
-     .delete(isLoggedIn , userDeleteCancelledBooking);
+     .delete(authenticateUser , userDeleteCancelledBooking);
 // User Deliveries Routes
 router
   .route("/:id/account/deliveries")
-  .get(isLoggedIn, getUserDeliveries);
+  .get(authenticateUser, getUserDeliveries);
 
 router
   .route("/:userId/account/deliveries/:deliveryId/cancel")
-  .delete(isLoggedIn, cancelUserDelivery);
+  .delete(authenticateUser, cancelUserDelivery);
 
 router
   .route("/:id/account/deliveries/:deliveryId")
-  .delete(isLoggedIn, userDeleteCancelledDelivery);
+  .delete(authenticateUser, userDeleteCancelledDelivery);
 
 
 export default router;

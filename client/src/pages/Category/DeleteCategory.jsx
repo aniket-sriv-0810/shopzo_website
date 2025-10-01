@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { authAxios } from "../../utils/auth";
 import { useNavigate, useParams } from "react-router-dom";
 import SkeletonCard from "../../components/LoadingSkeleton/SkeletonCard";
 import ErrorPopup from "../../components/Popups/ErrorPopUp";
@@ -13,13 +13,7 @@ const DeleteCategory = () => {
   useEffect(() => {
     const handleDelete = async () => {
       try {
-        await axios.delete(
-          `${import.meta.env.VITE_API_URL}/api/admin/category/${id}/delete`,
-          {
-            withCredentials: true,
-          }
-        );
-
+        const response = await authAxios.delete(`/api/admin/category/${id}/delete`);
         // ✅ Redirect after successful delete
         navigate("/admin/categories");
       } catch (err) {

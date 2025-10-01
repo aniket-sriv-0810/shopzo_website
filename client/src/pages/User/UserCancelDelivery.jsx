@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { authAxios } from "../../utils/auth";
 
 const UserCancelDelivery = ({ deliveryId, userId, onCancelSuccess }) => {
   const [loading, setLoading] = useState(false);
@@ -10,11 +10,7 @@ const UserCancelDelivery = ({ deliveryId, userId, onCancelSuccess }) => {
     setError("");
 
     try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/user/${userId}/account/deliveries/${deliveryId}/cancel`,
-        { withCredentials: true }
-      );
-
+      const response = await authAxios.put(`/api/user/${userId}/delivery/${deliveryId}/cancel`);
       if (response.status === 200) {
         onCancelSuccess(deliveryId);
       }

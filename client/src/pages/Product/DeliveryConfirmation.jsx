@@ -6,6 +6,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import SkeletonForm from "../../components/LoadingSkeleton/SkeletonForm";
 import Navbar from "../../components/Navbars/Navbar/Navbar";
 import { useUser } from "../../components/UserContext/userContext";
+import { authAxios } from "../../utils/auth";
 
 const DeliveryConfirmation = () => {
   const { deliveryId } = useParams(); // ✅ deliveryId from route
@@ -17,7 +18,7 @@ const DeliveryConfirmation = () => {
   useEffect(() => {
     const fetchDelivery = async () => {
       try {
-        const { data } = await axios.get(
+        const { data } = await authAxios.get(
           `${import.meta.env.VITE_API_URL}/api/product/delivery/${deliveryId}/confirmation`,
           { withCredentials: true }
         );

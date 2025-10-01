@@ -3,6 +3,7 @@ import { FaRegHeart, FaHeart } from "react-icons/fa";
 import axios from "axios";
 import { useUser } from "../UserContext/userContext";
 import { useNavigate } from "react-router-dom";
+import { authAxios } from "../../utils/auth";
 
 const LikeBtn = ({ productId }) => {
     const { user } = useUser();
@@ -47,13 +48,18 @@ const LikeBtn = ({ productId }) => {
         setIsLiked(prev => !prev);
 
         try {
-            await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/user/${user._id}/account/wishlist`,
-                { productId },
-                { withCredentials: true }
-            );
+            const response = await authAxios.post(`/api/product/${productId}/like`);
+            try {
+                await authAxios.post(
+                    `/api/user/${user._id}/account/wishlist`,
+                    { productId }
+                );
+            } catch (error) {
+                console.error("Error toggling wishlist:", error);
+                setIsLiked(prev => !prev); // Revert on failure
+            }
         } catch (error) {
-            console.error("Error toggling wishlist:", error);
+            console.error("Error toggling like:", error);
             setIsLiked(prev => !prev); // Revert on failure
         }
     };

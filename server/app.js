@@ -4,21 +4,15 @@ dotenv.config({
 });
 import express from 'express';
 import cors from 'cors';
-import cookieParser from 'cookie-parser';
-import session from 'express-session';
-import MongoStore from 'connect-mongo';
-import passport from './middleware/passport.middleware.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import passport from './middleware/passport.middleware.js';
+import session from 'express-session';
 
 const app = express();
-const isProduction = process.env.NODE_ENV === 'production';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Set trust proxy before session middleware
-app.set('trust proxy', 1);
 
 // Middleware setup
 // Allow configuring additional origins via env (comma-separated)
@@ -35,7 +29,7 @@ const allowedOrigins = [
   ...extraOrigins,
 ];
 
-const corsSessionOption = {
+const corsOptions = {
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -55,48 +49,27 @@ const corsSessionOption = {
     'Access-Control-Request-Headers'
   ],
   exposedHeaders: [
-    'Set-Cookie',
+    'Authorization',
     'Access-Control-Allow-Credentials'
   ],
   optionsSuccessStatus: 200,
-  // iOS Safari and WebView specific settings
   preflightContinue: false,
   maxAge: 86400, // 24 hours preflight cache
 };
 
-const cookieDomain = process.env.SESSION_COOKIE_DOMAIN || undefined;
-
-const expressSessionOption = {
-  secret: process.env.EXPRESS_SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  name: 'shopzo.sid', // Custom session name
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI,
-    collectionName: 'sessions',
-    autoRemove: 'disabled'
-  }),
-  cookie: {
-    httpOnly: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week expiry time
-    // iOS-compatible configuration for production
-    secure: isProduction, // false for development (HTTP), true for production (HTTPS)
-    sameSite: isProduction ? 'none' : 'lax', // 'none' for cross-origin in production, 'lax' for development
-    // Additional iOS compatibility settings
-    ...(isProduction && {
-      // Ensure cookies work in iOS Safari and WebView
-      partitioned: false, // Disable partitioned cookies for better iOS compatibility
-    }),
-    // Optionally scope cookie to a parent domain when frontend/api are on subdomains
-    ...(cookieDomain ? { domain: cookieDomain } : {}),
-  },
-};
-
-app.use(cors(corsSessionOption));
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(session(expressSessionOption));
+
+// Session configuration for passport
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // Set to true in production with HTTPS
+}));
+
+// Initialize passport
 app.use(passport.initialize());
 app.use(passport.session());
 

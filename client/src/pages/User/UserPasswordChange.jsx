@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../../components/UserContext/userContext';
+import { authAxios } from "../../utils/auth";
 
 const UserPasswordChange = () => {
   const [oldPassword, setOldPassword] = useState('');
@@ -28,12 +29,7 @@ const UserPasswordChange = () => {
     setLoading(true);
 
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/user/${user._id}/account/change-password`,
-        { oldPassword, newPassword },
-        { withCredentials: true }
-      );
-
+      const response = await authAxios.put(`/api/user/${id}/password`, passwordData);
       setSuccess(response.data.message);
       setOldPassword('');
       setNewPassword('');

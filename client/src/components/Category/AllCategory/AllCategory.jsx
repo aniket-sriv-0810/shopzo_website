@@ -6,6 +6,7 @@ import ToggleGender from "../../ToggleGender/ToggleGender";
 import SkeletonList from "../../LoadingSkeleton/SkeletonList";
 import Pagination from "../../Pagination/Pagination";
 import NotAvailable from "../../../pages/Loaders/NotAvailable";
+import { authAxios } from "../../../utils/auth";
 const AllCategories = () => {
   const [categories, setCategories] = useState([]);
   const [selectedGender, setSelectedGender] = useState("male");
@@ -18,10 +19,8 @@ const AllCategories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/category`, {
-          withCredentials: true,
-        });
-        const fetched = res.data?.data?.categories;
+        const response = await authAxios.get(`/api/category`);
+        const fetched = response.data?.data?.categories;
         if (fetched?.length > 0) {
           setCategories(fetched);
         } else {

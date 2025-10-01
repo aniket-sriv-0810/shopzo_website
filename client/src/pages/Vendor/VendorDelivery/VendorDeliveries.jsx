@@ -7,6 +7,7 @@ import ErrorPopup from '../../../components/Popups/ErrorPopUp';
 import { useNavigate, useParams } from 'react-router-dom';
 import VendorNavbar from '../../../components/Navbars/VendorNavbar/VendorNavbar';
 import AdminSearchBar from "../../../components/Admin/AdminSearchBar/AdminSearchBar";
+import { authAxios } from "../../../utils/auth";
 
 const VendorDeliveries = () => {
   const [deliveries, setDeliveries] = useState([]);
@@ -19,8 +20,7 @@ const VendorDeliveries = () => {
   const fetchDeliveries = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/vendor/${vendorId}/account/all-deliveries`,
+      const res = await authAxios.get(`/api/vendor/${vendorId}/account/all-deliveries`,
         { withCredentials: true }
       );
       setDeliveries(res.data.data);

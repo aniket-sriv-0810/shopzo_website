@@ -4,6 +4,7 @@ import axios from 'axios';
 import { FaPlus, FaEdit, FaTrash, FaEye, FaStore, FaBoxOpen, FaTags } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/white-website-logo.png';
+import { authAxios } from "../../utils/auth";
 
 // Mock user for testing without authentication
 const mockUser = {
@@ -53,10 +54,7 @@ const InternDashboard = () => {
       ];
       
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/intern/vendors`,
-          { withCredentials: true }
-        );
+        const response = await authAxios.get("/api/intern/dashboard");
         setVendors(response.data.data);
       } catch (apiError) {
         console.log('API not available, using mock data');

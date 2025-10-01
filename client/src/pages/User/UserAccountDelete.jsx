@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { useUser } from "../../components/UserContext/userContext";
+import { authAxios } from "../../utils/auth";
 
 const UserAccountDelete = () => {
   const navigate = useNavigate();
@@ -13,10 +14,7 @@ const UserAccountDelete = () => {
   useEffect(() => {
     const deleteUser = async () => {
       try {
-        const response = await axios.delete(
-          `${import.meta.env.VITE_API_URL}/api/user/${id}/account/delete`,
-          { withCredentials: true }
-        );
+        const response = await authAxios.delete(`/api/user/${id}/account`);
 
         if (response.status === 200) {
           // Clear session/local storage

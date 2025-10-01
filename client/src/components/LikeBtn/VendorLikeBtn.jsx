@@ -3,6 +3,7 @@ import { FaRegHeart, FaHeart } from "react-icons/fa";
 import axios from "axios";
 import { useUser } from "../UserContext/userContext";
 import { useNavigate } from "react-router-dom";
+import { authAxios } from "../../utils/auth";
 
 const VendorLikeBtn = ({ vendorId }) => {
     const { user } = useUser();
@@ -47,11 +48,7 @@ const VendorLikeBtn = ({ vendorId }) => {
         setIsLiked(prev => !prev);
 
         try {
-            await axios.post(
-                `${import.meta.env.VITE_API_URL}/api/user/${user._id}/account/vendor-wishlist`,
-                { vendorId },
-                { withCredentials: true }
-            );
+            await authAxios.post(`/api/user/${user._id}/account/wishlist`, { vendorId });
         } catch (error) {
             console.error("Error toggling vendor wishlist:", error);
             setIsLiked(prev => !prev); // Revert on error

@@ -1,20 +1,13 @@
 // components/VendorDeleteBooking.jsx
 import React from "react";
-import axios from "axios";
+import { authAxios } from "../../utils/auth";
 
 const VendorCancelBooking = ({ bookingId, userId, productId, onDeleted }) => {
   const token = localStorage.getItem("token");
 
   const handleDelete = async () => {
     try {
-      const { data } = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/vendor/bookings/${bookingId}/${userId}/${productId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await authAxios.put(`/api/vendor/${vendorId}/booking/${bookingId}/cancel`);
       onDeleted?.();
     } catch (err) {
       alert(err.response?.data?.message || "Failed to delete booking");

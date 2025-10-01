@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import InputField from "./InputField";
 import { validateForm } from "./validateForm";
 import { FaUser, FaEnvelope, FaPhoneAlt, FaLock } from "react-icons/fa";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "../../../components/UserContext/userContext";
+import { authAxios } from "../../../utils/auth";
 
 const Signup = () => {
   const { setUser } = useUser();
@@ -40,10 +40,9 @@ const Signup = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/user/register`,
-        formData,
-        { withCredentials: true }
+      const res = await authAxios.post(
+        `/api/user/register`,
+        formData
       );
       setUser(res.data.data.user);
       navigate("/auth/successfully");

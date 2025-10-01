@@ -8,6 +8,7 @@ import Navbar from "../../components/Navbars/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
 import SortProducts from "../../components/SortProducts/SortProducts";
 import Pagination from "../../components/Pagination/Pagination";
+import { authAxios } from "../../utils/auth";
 
 const ShowCategory = () => {
   const { id, tag } = useParams();
@@ -27,10 +28,7 @@ const ShowCategory = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const { data } = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/category/${id}/${tag}/products`,
-          { withCredentials: true }
-        );
+        const { data } = await authAxios.get(`/api/category/${id}/${tag}/products`);
         setCategory(data.data.category);
         setAllProducts(data.data.products);
         setCurrentPage(1); // Reset page on category/tag change

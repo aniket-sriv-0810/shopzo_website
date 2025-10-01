@@ -7,6 +7,7 @@ import SkeletonTable from "../../components/LoadingSkeleton/SkeletonTable";
 import AdminNotAvailableLoader from "../Loaders/AdminNotAvailableLoader";
 import ErrorPopup from "../../components/Popups/ErrorPopUp";
 import AdminSearchBar from "../../components/Admin/AdminSearchBar/AdminSearchBar";
+import { authAxios } from "../../utils/auth";
 
 const AdminUser = () => {
   const { user } = useUser();
@@ -19,10 +20,7 @@ const AdminUser = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/admin/users`,
-        { withCredentials: true }
-      );
+      const response = await authAxios.get('/api/admin/users');
       if (response.status === 200) {
         setUserDetails(response.data.data.users);
         setFilteredUsers(response.data.data.users);
@@ -43,10 +41,7 @@ const AdminUser = () => {
       const currentUserId = user?._id;
       const isSelfDelete = userId === currentUserId;
 
-      await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/user/${userId}/account/delete`,
-        { withCredentials: true }
-      );
+      await authAxios.delete(`/api/user/${userId}/account/delete`);
 
       setUserDetails((prev) => prev.filter((u) => u._id !== userId));
       setFilteredUsers((prev) => prev.filter((u) => u._id !== userId));

@@ -1,5 +1,5 @@
 import express from 'express' ;
-import { isLoggedIn } from '../middleware/auth.middleware.js';
+import { authenticateVendor, optionalAuth } from '../middleware/jwt.middleware.js';
 import {isVendor} from "../middleware/vendor.middleware.js"
 import {upload} from "../multer.js";
 import {validate} from '../middleware/validator.js';
@@ -31,12 +31,12 @@ router
 // checking for the authentication of the vendor route
 router
      .route('/check-auth')
-     .get(checkVendorAuthentication)
+     .get(optionalAuth, checkVendorAuthentication)
 
 //changing the password feature for vendor Route
 router
      .route('/:id/account/change-password')
-     .put(  isLoggedIn , validate(changePasswordValidation) , changePassword)
+     .put(  authenticateVendor , validate(changePasswordValidation) , changePassword)
 
 // provides all vendor details Route
 router
@@ -46,116 +46,115 @@ router
 // provides the  vendor account details Route
 router
      .route("/:id/account")
-     .get(isLoggedIn  , vendorAccountDetails)
+     .get(authenticateVendor  , vendorAccountDetails)
 
-
-// provides the  vendor account bookings details Route
+// provides the  vendor account details Route
 router
      .route("/:id/account/bookings")
-     .get(isLoggedIn  , vendorAccountDetails)
+     .get(authenticateVendor  , vendorAccountDetails)
 
 
-// provides the  vendor account categories details Route
+// provides the  vendor categories data Route
 router
      .route("/:id/account/categories-listed")
-     .get(isLoggedIn  , vendorCategoriesData)
+     .get(authenticateVendor  , vendorCategoriesData)
 
 
-//  provides the  vendor account products details Route
+// provides the  vendor products data Route
 router
      .route("/:id/account/products-listed")
-     .get(isLoggedIn  , allProductsOfVendor)
+     .get(authenticateVendor  , allProductsOfVendor)
 
-// provides the  vendor account all bookings details Route
+// provides the  vendor all bookings data Route
 router
      .route("/:id/account/all-bookings")
-     .get(isLoggedIn  , getVendorAllBookings )
+     .get(authenticateVendor  , getVendorAllBookings )
 
 
-//provides the  vendor updating booking status  details Route
+// provides the  vendor booking status update Route
 router
      .route("/:vendorId/bookings/:bookingId/status")
-     .put(isLoggedIn ,  validate(updateBookingStatusValidation) ,updateBookingStatusByVendor);
+     .put(authenticateVendor ,  validate(updateBookingStatusValidation) ,updateBookingStatusByVendor);
 
-// CLIENT SIDE - provides the  vendor categories details Route
+// provides the  vendor categories data Route
 router
      .route("/:id/details/categories-listed")
      .get( vendorCategoriesData)
 
 
-// CLIENT SIDE - provides the  vendor show page details Route
+// provides the  vendor account details Route
 router
      .route("/:id")
      .get(vendorAccountDetails)
 
 
-// Check for the  vendor account all particular products having the particular vendor/category/tag Route
+// provides the  vendor products data Route
 router
      .route("/:id/account/:categoryId/:tag/all-products")
-     .get(isLoggedIn  , productOfVendorData)
+     .get(authenticateVendor  , productOfVendorData)
 
 
-//CLIENT-side -  Fetch all products by vendor + category + tag Route
+// provides the  vendor products data Route
 router
       .route("/:vendorId/products")
       .get( getVendorProductsByCategoryAndTag);
 
-// provides vendors dashboard Counts  Route
+// provides the  vendor counts data Route
 router
       .route("/:vendorId/account/dashboard")
-      .get( isLoggedIn  ,getVendorCounts);
+      .get( authenticateVendor  ,getVendorCounts);
 
 
-//  provides vendors full dashboard data  Route
+// provides the  vendor dashboard data Route
 router
       .route("/:vendorId/account /dashboard-data")
-      .get( isLoggedIn  , getVendorDashboardData);
+      .get( authenticateVendor  , getVendorDashboardData);
 
 
-//  Check for the posting review on  vendor  Route
+// provides the  vendor review add Route
 router
      .route("/:id/review")
-     .post(isLoggedIn , validate(reviewSchemaValidation) , addReviewToVendor)
+     .post(authenticateVendor , validate(reviewSchemaValidation) , addReviewToVendor)
 
-//  Check for the  vendor all reviews data Route
+// provides the  vendor all reviews Route
 router
      .route("/:id/all-reviews")
      .get(  getVendorReviews)
 
-//  Check for the  vendor all reviews data Route
+// provides the  vendor review stats Route
 router
      .route("/:id/review-stats")
      .get(  getVendorReviewStats)
 
-//  Check for the  vendor  Edit Account Route
+// provides the  vendor edit Route
 router
      .route("/:id/account/edit")
-     .put( isLoggedIn,upload.single("image") ,updateVendorById);
+     .put( authenticateVendor,upload.single("image") ,updateVendorById);
 
 
-// DELETE booking by vendor Route
+// provides the  vendor booking delete Route
 router
       .route("/:id/account/bookings/:bookingId/:userId/:productId")
-      .delete(isLoggedIn ,vendorDeleteBooking);
+      .delete(authenticateVendor ,vendorDeleteBooking);
 
 
-// PUT  route to update product prices Route
+// provides the  vendor product price update Route
 router
       .route("/:id/account/product/:vendorId/:productId/update-prices")
-      .put( isLoggedIn  , validate(updateProductPricesValidation) ,updateProductPrices);
+      .put( authenticateVendor  , validate(updateProductPricesValidation) ,updateProductPrices);
 
-// provides the vendor account all deliveries details Route
+// provides the  vendor all deliveries Route
 router
   .route("/:id/account/all-deliveries")
-  .get(isLoggedIn, getVendorAllDeliveries);
+  .get(authenticateVendor, getVendorAllDeliveries);
 
-// provides the vendor updating delivery status details Route
+// provides the  vendor delivery status update Route
 router
   .route("/:vendorId/deliveries/:deliveryId/status")
-  .put(isLoggedIn, updateDeliveryStatusByVendor);
+  .put(authenticateVendor, updateDeliveryStatusByVendor);
 
-// DELETE delivery by vendor Route
+// provides the  vendor delivery delete Route
 router
   .route("/:id/account/deliveries/:deliveryId/:userId/:productId")
-  .delete(isLoggedIn, vendorDeleteDelivery);
+  .delete(authenticateVendor, vendorDeleteDelivery);
 export default router;

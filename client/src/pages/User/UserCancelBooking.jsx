@@ -1,18 +1,13 @@
 // components/UserDeleteCancelledBooking.jsx
 import React from "react";
-import axios from "axios";
+import { authAxios } from "../../utils/auth";
 import { MdDeleteForever } from "react-icons/md";
 import { useUser } from "../../components/UserContext/userContext";
 const UserCancelBooking = ({ bookingId, onDeleted }) => {
 const {user} = useUser();
   const handleDelete = async () => {
     try {
-      const { data } = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/user/${user._id}/account/bookings/${bookingId}`,
-        {
-            withCredentials : true
-        }
-      );
+      await authAxios.delete(`/api/user/${user._id}/account/bookings/${bookingId}`);
      
       onDeleted?.();
     } catch (err) {

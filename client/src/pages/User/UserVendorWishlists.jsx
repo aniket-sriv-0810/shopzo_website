@@ -5,6 +5,7 @@ import VendorCard from "../../components/Vendors/VendorCard.jsx/VendorCard";
 import UserNavbar from "../../components/Navbars/UserNavbar/UserNavbar";
 import SkeletonList from '../../components/LoadingSkeleton/SkeletonList';
 import NotAvailable from "../Loaders/NotAvailable";
+import { authAxios } from "../../utils/auth";
 
 const UserVendorWishlists = () => {
   const { id } = useParams();
@@ -21,11 +22,7 @@ const UserVendorWishlists = () => {
 
     const fetchVendorWishlist = async () => {
       try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/user/${id}/account/vendor-wishlists`,
-          { withCredentials: true }
-        );
-
+        const response = await authAxios.get(`/api/user/${id}/vendor-wishlists`);
         const vendorList = res?.data?.data?.vendorWishlists || [];
 console.log(vendorList);
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ImageUploader from "../../components/Products/AddProduct/ImageUploader"; // Adjust the path as needed
+import { authAxios } from "../../utils/auth";
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -93,10 +94,7 @@ const EditProduct = () => {
       newImages.forEach((img) => sendData.append("images", img));
       sendData.append("imagesToKeep", JSON.stringify(imagesToKeep));
 
-      await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/product/${id}/edit`, sendData, {
-        withCredentials: true,
-      });
-
+      const response = await authAxios.put(`/api/product/${id}`, formData);
       navigate("/admin");
     } catch (error) {
       console.error("Error updating product:", error);

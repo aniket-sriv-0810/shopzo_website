@@ -9,6 +9,7 @@ import ShowVendorCategory from "../../components/Vendors/VendorShow/ShowVendorCa
 import Review from "../../components/Review/Review";
 import AllReviews from "../../components/Review/AllReviews";
 import ReviewCount from '../../components/Review/ReviewCount'
+import { authAxios } from "../../utils/auth";
 const ShowVendor = () => {
   const { id } = useParams();
   const [vendor, setVendor] = useState(null);
@@ -16,14 +17,9 @@ const ShowVendor = () => {
   const [error, setError] = useState("");
   const fetchVendorDetails = async () => {
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/vendor/${id}`,
-        {
-          withCredentials: true,
-        }
-      );
-      console.log("vendor => " ,res.data.data.vendorInfo.reviews);
-      setVendor(res.data.data.vendorInfo);
+      const response = await authAxios.get(`/api/vendor/${id}`);
+      console.log("vendor => " ,response.data.data.vendorInfo.reviews);
+      setVendor(response.data.data.vendorInfo);
     } catch (err) {
       console.error("❌ Error fetching vendor:", err);
       setError(err.response?.data?.message || "Failed to fetch vendor.");

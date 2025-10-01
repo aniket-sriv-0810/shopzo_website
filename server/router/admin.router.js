@@ -1,6 +1,6 @@
 import express from 'express';
 import { validate } from '../middleware/validator.js';
-import { isLoggedIn } from '../middleware/auth.middleware.js';
+import { authenticateUser } from '../middleware/jwt.middleware.js';
 import {upload} from "../multer.js";
 import { isAdmin } from '../middleware/admin.middleware.js';
 import { addCategoryToVendorValidation } from '../test/Vendor/vendorAddCategory.validator.js';
@@ -20,103 +20,103 @@ const router = express.Router();
 
 router
      .route("/dashboard")
-     .get(isLoggedIn , isAdmin, adminDashboardData)
+     .get(authenticateUser , isAdmin, adminDashboardData)
 
 router
      .route("/users")
-     .get(  isLoggedIn ,isAdmin , adminUserData)
+     .get(  authenticateUser ,isAdmin , adminUserData)
 
 router
      .route("/vendors")
-     .get(isLoggedIn , isAdmin , adminVendorData)
+     .get(authenticateUser , isAdmin , adminVendorData)
 
 router
      .route("/categories")
-     .get(isLoggedIn , isAdmin , adminCategoryData)
+     .get(authenticateUser , isAdmin , adminCategoryData)
 
 router
      .route("/products")
-     .get(isLoggedIn , isAdmin , adminProductData)
+     .get(authenticateUser , isAdmin , adminProductData)
 
 router
      .route("/bookings")
-     .get(isLoggedIn , isAdmin ,  adminBookingData)
+     .get(authenticateUser , isAdmin ,  adminBookingData)
 
 router
      .route("/deliveries")
-    .get(isLoggedIn, isAdmin, adminDeliveryData);
+    .get(authenticateUser, isAdmin, adminDeliveryData);
 
 router
      .route("/deliveries/:id")
-    .delete(isLoggedIn, isAdmin, deleteDelivery);
+    .delete(authenticateUser, isAdmin, deleteDelivery);
 
 router
      .route("/feedbacks")
-     .get(isLoggedIn , isAdmin , adminFeedbackData)
+     .get(authenticateUser , isAdmin , adminFeedbackData)
 
-//  Adding categories Route
+// Add category route
 router
      .route("/add-category")
-     .post(isLoggedIn , isAdmin , upload.single('image') , validate(categorySchemaValidation) , createCategory)
+     .post(authenticateUser , isAdmin , upload.single('image') , validate(categorySchemaValidation) , createCategory)
 
-//  Adding  categories to vendors Route
+// Add categories to vendor route
 router
      .route("/vendor/:vendorId/add-categories")
-     .post(isLoggedIn , isAdmin , addCategoriesToVendor)
+     .post(authenticateUser , isAdmin , addCategoriesToVendor)
 
-// Editing categories Route
+// Edit category route
 router
      .route("/category/:id/edit")
-     .put(isLoggedIn , isAdmin , upload.single('image') , validate(updateCategorySchemaValidation) , editCategory)
+     .put(authenticateUser , isAdmin , upload.single('image') , validate(updateCategorySchemaValidation) , editCategory)
 
-//  the Deleting categories Route
+// Delete category route
 router
      .route("/category/:id/delete")
-     .delete(isLoggedIn ,  isAdmin , deleteCategory)
+     .delete(authenticateUser ,  isAdmin , deleteCategory)
 
-// Adding  product Route
+// Add product route
 router
      .route("/add-product")
-     .post(isLoggedIn , isAdmin , upload.array("images" , 7) ,
+     .post(authenticateUser , isAdmin , upload.array("images" , 7) ,
          validate(productSchemaValidation) , addProductController)
 
-// particular product Edit Route
+// Edit product route
 router
      .route("/product/:id/edit")
-     .put(isLoggedIn , isAdmin , upload.array("images", 7)  , updateProductById )
+     .put(authenticateUser , isAdmin , upload.array("images", 7)  , updateProductById )
 
-//check for the particular product Delete Route
+// Delete product route
 router
      .route("/product/:id/delete")
-     .delete(isLoggedIn , isAdmin , deleteProductById)
+     .delete(authenticateUser , isAdmin , deleteProductById)
 
-// Adding Vendor Route
+// Add vendor route
 router
      .route("/add-vendor")
-     .post(isLoggedIn , isAdmin , upload.single("image") ,  validate(vendorSchemaValidation) , addNewVendor)
+     .post(authenticateUser , isAdmin , upload.single("image") ,  validate(vendorSchemaValidation) , addNewVendor)
 
-// Admin adds a category to a specific vendor
+// Add category to vendor route
 router
       .route("/add-category-to-vendor/:vendorId")
-      .post(isLoggedIn ,isAdmin, validate(addCategoryToVendorValidation) ,addCategoryToVendor);
+      .post(authenticateUser ,isAdmin, validate(addCategoryToVendorValidation) ,addCategoryToVendor);
 
-// Deleting a  vendor Account Route
+// Delete vendor route
 router
      .route("/vendor/:id/account/delete")
-     .delete(isLoggedIn, isAdmin , deleteVendorById);
+     .delete(authenticateUser, isAdmin , deleteVendorById);
 
-// Deleting a  booking details Route
+// Delete booking route
 router
      .route("/bookings/:bookingId")
-     .delete(isLoggedIn, isAdmin , adminDeleteBooking);
+     .delete(authenticateUser, isAdmin , adminDeleteBooking);
 
-// DELETE /api/admin/contact/:contactId
+// Delete contact route
 router
       .route('/contact/:contactId')
-      .delete(isLoggedIn , isAdmin , deleteContactById);
+      .delete(authenticateUser , isAdmin , deleteContactById);
 
-// Route for admin to update user roles
+// Update user role route
 router
      .route("/users/:userId/role")
-     .put(isLoggedIn, isAdmin, updateUserRoleByAdmin);
+     .put(authenticateUser, isAdmin, updateUserRoleByAdmin);
 export default router;

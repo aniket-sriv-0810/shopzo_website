@@ -7,6 +7,7 @@ import { MdDownload } from "react-icons/md";
 import { useUser } from "../../components/UserContext/userContext";
 import SkeletonForm from "../../components/LoadingSkeleton/SkeletonForm";
 import Navbar from "../../components/Navbars/Navbar/Navbar";
+import { authAxios } from "../../utils/auth";
 const BookingConfirmation = () => {
   const { bookingId } = useParams();
   const [booking, setBooking] = useState(null);
@@ -16,7 +17,7 @@ const BookingConfirmation = () => {
   useEffect(() => {
     const fetchBooking = async () => {
       try {
-        const { data } = await axios.get(
+        const { data } = await authAxios.get(
           `${import.meta.env.VITE_API_URL}/api/navigation/${bookingId}/confirmation`,
           { withCredentials: true }
         );

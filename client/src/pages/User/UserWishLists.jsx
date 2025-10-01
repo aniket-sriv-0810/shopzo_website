@@ -5,6 +5,7 @@ import ProductCard from '../../components/Products/ProductCard.jsx/ProductCard';
 import UserNavbar from "../../components/Navbars/UserNavbar/UserNavbar";
 import SkeletonList from '../../components/LoadingSkeleton/SkeletonList'
 import NotAvailable from "../Loaders/NotAvailable";
+import { authAxios } from "../../utils/auth";
 const UserWishlists = () => {
   const { id } = useParams();
   const [wishlists, setWishlists] = useState([]);
@@ -21,10 +22,7 @@ const UserWishlists = () => {
 
     const fetchWishlist = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/user/${id}/account/wishlists`, {
-          withCredentials: true,
-        });
-
+        const response = await authAxios.get(`/api/user/${id}/wishlists`);
         const products = res?.data?.data?.wishlists || [];
         setWishlists(products);
       } catch (err) {

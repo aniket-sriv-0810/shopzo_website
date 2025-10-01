@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import { authAxios } from "../../utils/auth";
 import { useNavigate } from "react-router-dom";
 
 const DeleteProduct = ({ productId }) => {
@@ -7,9 +7,7 @@ const DeleteProduct = ({ productId }) => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/product/${productId}/delete`, {
-        withCredentials: true,
-      });
+      const response = await authAxios.delete(`/api/product/${productId}`);
       navigate("/"); // Redirect after successful delete
     } catch (error) {
       console.error("Error deleting product:", error);

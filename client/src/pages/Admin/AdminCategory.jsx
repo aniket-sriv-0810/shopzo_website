@@ -6,6 +6,7 @@ import AdminNotAvailableLoader from "../Loaders/AdminNotAvailableLoader";
 import ErrorPopup from "../../components/Popups/ErrorPopUp";
 import AdminSearchBar from "../../components/Admin/AdminSearchBar/AdminSearchBar";
 import { useNavigate } from "react-router-dom";
+import { authAxios } from "../../utils/auth";
 
 const AdminCategory = () => {
   const [categories, setCategories] = useState([]);
@@ -17,11 +18,7 @@ const AdminCategory = () => {
   const fetchCategories = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/admin/categories`,
-        { withCredentials: true }
-      );
-
+      const res = await authAxios.get('/api/admin/categories');
       if (res.status === 200) {
         setCategories(res.data.data.allCategoryDetails);
         setFilteredCategories(res.data.data.allCategoryDetails);

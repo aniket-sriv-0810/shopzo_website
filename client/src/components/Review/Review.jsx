@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useUser } from "../UserContext/userContext";
 import axios from "axios";
 import ErrorPopup from "../Popups/ErrorPopUp";
+import { authAxios } from "../../utils/auth";
 
 const Review = () => {
   const navigate = useNavigate();
@@ -27,17 +28,12 @@ const Review = () => {
     setError("");
 
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/vendor/${id}/review`,
-        {
-          user: user._id,
-          vendor:id,
-          rating: review.rating,
-          comment: review.comment,
-        },
-        { withCredentials: true }
-      );
-
+      const response = await authAxios.post(`/api/vendor/${id}/review`, {
+        user: user._id,
+        vendor: id,
+        rating: review.rating,
+        comment: review.comment,
+      });
       if (response.status === 201) {
         setReview({ rating: "5", comment: "" });
         navigate("/review/done", { state: { returnTo: `/vendor/${id}/details` } });

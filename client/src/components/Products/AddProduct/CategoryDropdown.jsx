@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { authAxios } from "../../../utils/auth";
 
 const CategoryDropdown = ({ value, onChange }) => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/api/category`, { withCredentials: true })
-      .then((res) => {
-        console.log(res.data);
-        setCategories(res.data.data.categories || []);
-      })
-      .catch(() => setCategories([]));
+    const fetchCategories = async () => {
+      try {
+        const response = await authAxios.get(`/api/category`);
+        setCategories(response.data.data.categories || []);
+      } catch (error) {
+        setCategories([]);
+      }
+    };
+    fetchCategories();
   }, []);
 
   return (

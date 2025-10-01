@@ -6,6 +6,7 @@ import AdminNotAvailableLoader from "../Loaders/AdminNotAvailableLoader";
 import ErrorPopup from "../../components/Popups/ErrorPopUp";
 import { useNavigate } from "react-router-dom";
 import AdminSearchBar from "../../components/Admin/AdminSearchBar/AdminSearchBar";
+import { authAxios } from "../../utils/auth";
 
 const AdminBooking = () => {
   const [bookings, setBookings] = useState([]);
@@ -17,10 +18,7 @@ const AdminBooking = () => {
   const fetchBookings = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/admin/bookings`,
-        { withCredentials: true }
-      );
+      const res = await authAxios.get('/api/admin/bookings');
       setBookings(res.data.data.allBookingDetails);
       setFilteredBookings(res.data.data.allBookingDetails); // ✅ keep copy
     } catch (err) {

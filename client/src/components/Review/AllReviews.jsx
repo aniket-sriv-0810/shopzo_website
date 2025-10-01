@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import ReviewCard from './ReviewCard';
 import Pagination from '../Pagination/Pagination'; // Adjust the path to your pagination component
+import { authAxios } from "../../utils/auth";
 
 const AllReviews = ({ vendorId }) => {
   const [reviews, setReviews] = useState([]);
@@ -14,10 +15,7 @@ const AllReviews = ({ vendorId }) => {
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/vendor/${vendorId}/all-reviews`,
-          { withCredentials: true }
-        );
+        const response = await authAxios.get(`/api/vendor/${vendorId}/reviews`);
         setReviews(response.data.data.reviews || []);
       } catch (error) {
         console.error("Error fetching reviews:", error);

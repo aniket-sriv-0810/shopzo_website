@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import InputField from "./InputField";
 import { useUser } from "../../../components/UserContext/userContext";
 import { FaEnvelope } from "react-icons/fa";
 import { BsShieldLockFill } from "react-icons/bs";
 import { validateLoginForm } from "./validateForm";
+import { auth } from "../../../utils/auth";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -33,35 +33,29 @@ const LoginForm = () => {
 
     try {
       setIsLoading(true);
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/user/login`,
-        loginUser,
-        { withCredentials: true }
-      );
+      const result = await auth.login(loginUser, 'user');
 
-      if (response.status === 200) {
-        const userData = response.data.data.user;
+      if (result.success) {
+        const userData = result.user;
         setUser(userData);
-        localStorage.setItem("user", JSON.stringify(userData));
         navigate("/auth/successfully");
+      } else {
+        if (result.details && Array.isArray(result.details)) {
+          const fieldErrors = {};
+          result.details.forEach((msg) => {
+            if (msg.toLowerCase().includes("email")) fieldErrors.email = msg;
+            else if (msg.toLowerCase().includes("password"))
+              fieldErrors.password = msg;
+            else fieldErrors.general = msg;
+          });
+          setFormErrors((prev) => ({ ...prev, ...fieldErrors }));
+        } else {
+          setServerError(result.message || "Login failed. Try again later.");
+        }
       }
     } catch (error) {
-      const details = error.response?.data?.details;
-
-      if (Array.isArray(details)) {
-        const fieldErrors = {};
-        details.forEach((msg) => {
-          if (msg.toLowerCase().includes("email")) fieldErrors.email = msg;
-          else if (msg.toLowerCase().includes("password"))
-            fieldErrors.password = msg;
-          else fieldErrors.general = msg;
-        });
-        setFormErrors((prev) => ({ ...prev, ...fieldErrors }));
-      } else {
-        setServerError(
-          error.response?.data?.message || "Login failed. Try again later."
-        );
-      }
+      console.error("Login error:", error);
+      setServerError("Login failed. Try again later.");
     } finally {
       setIsLoading(false);
     }

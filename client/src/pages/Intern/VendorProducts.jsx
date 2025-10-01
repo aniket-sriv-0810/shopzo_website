@@ -4,6 +4,7 @@ import axios from 'axios';
 import { FaArrowLeft, FaPlus, FaEdit, FaTrash, FaBoxOpen, FaDollarSign, FaStore, FaTags } from 'react-icons/fa';
 import logo from '../../assets/white-website-logo.png';
 import { useUser } from '../../components/UserContext/userContext';
+import { authAxios } from "../../utils/auth";
 
 const VendorProducts = () => {
   const navigate = useNavigate();
@@ -22,10 +23,7 @@ const VendorProducts = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/intern/vendors/${vendorId}/products`,
-        { withCredentials: true }
-      );
+      const response = await authAxios.get(`/api/vendor/${vendorId}/products`);
       setProducts(response.data.data);
     } catch (err) {
       setError('Failed to fetch products');

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import VendorProductTable from "../../../components/Vendors/VendorProducts/VendorProductTable";
 import SkeletonTable from "../../../components/LoadingSkeleton/SkeletonTable";
 import VendorNavbar from '../../../components/Navbars/VendorNavbar/VendorNavbar';
-import axios from "axios";
+import { authAxios } from "../../../utils/auth";
 import AdminSearchBar from "../../../components/Admin/AdminSearchBar/AdminSearchBar";
 
 const VendorProducts = () => {
@@ -15,10 +15,7 @@ const VendorProducts = () => {
 
   const fetchVendorProducts = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/vendor/${id}/account/products-listed`, {
-        withCredentials: true,
-      });
-
+      const res = await authAxios.get("/api/vendor/products");
       if (res.data?.status === "success") {
         setProducts(res.data.products);
         setFilteredProducts(res.data.products);

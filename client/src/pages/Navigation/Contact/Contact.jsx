@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../../components/UserContext/userContext';
-import axios from 'axios';
+import { authAxios } from '../../../utils/auth';
 import Navbar from '../../../components/Navbars/Navbar/Navbar';
 import Footer from '../../../components/Footer/Footer';
 import ContactHeader from '../../../components/Navigation/Contact/ContactHeader';
@@ -28,7 +28,7 @@ const Contact = () => {
       const dataSent = { user: user._id, message: contact.message };
       console.log("Data sent:", dataSent);
 
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/navigation/contact`, dataSent, { withCredentials: true });
+      const response = await authAxios.post(`/api/navigation/contact`, dataSent);
 
       if (response.status === 200) {
         setContact({ message: "" });

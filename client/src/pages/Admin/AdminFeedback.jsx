@@ -5,6 +5,7 @@ import SkeletonTable from '../../components/LoadingSkeleton/SkeletonTable';
 import AdminNotAvailableLoader from "../Loaders/AdminNotAvailableLoader";
 import ErrorPopup from "../../components/Popups/ErrorPopUp";
 import { useNavigate } from "react-router-dom";
+import { authAxios } from "../../utils/auth";
 
 const AdminFeedback = () => {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -15,7 +16,7 @@ const AdminFeedback = () => {
   const fetchFeedbackData = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/feedbacks`, { withCredentials: true });
+      const res = await authAxios.get('/api/admin/feedbacks');
       setFeedbacks(res.data.data.allFeedbackDetails);
     } catch (err) {
       setError(err.response?.data?.message || "Unable to fetch feedbacks.");

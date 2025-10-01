@@ -7,6 +7,7 @@ import { FaTags } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import SkeletonForm from "../../components/LoadingSkeleton/SkeletonForm";
 import { BsCashCoin } from "react-icons/bs";
+import { authAxios } from "../../utils/auth";
 const ProductBooking = () => {
   const { id } = useParams(); // product ID
   const { user } = useUser();
@@ -41,11 +42,7 @@ const ProductBooking = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/product/${id}/booking`,
-        { sizeSelected, quantity },
-        { withCredentials: true }
-      );
+      const res = await authAxios.post(`/api/product/${id}/booking`, { sizeSelected, quantity });
       const bookingId = res.data?.booking?._id || res.data?.data?.booking?._id;
 
       if (bookingId) {
@@ -58,7 +55,6 @@ const ProductBooking = () => {
       setBookingStatus(err.response?.data?.error || "Booking failed.");
     } finally {
       setLoading(false);
-      setTimeout(() => setBookingStatus(""), );
     }
   };
 

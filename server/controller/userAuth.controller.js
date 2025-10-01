@@ -6,6 +6,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import crypto from "crypto";
 import { sendEmail } from "../utils/sendEmail.js";
 import passport from "passport";
+import { generateToken } from "../middleware/jwt.middleware.js";
 // Register a New User
 const createNewUser = asyncHandler(async (req, res) => {
   try {
@@ -83,7 +84,9 @@ const loginUser = asyncHandler(async (req, res) => {
   
       // Step 1: Check if fields are present
       if (!email || !password) {
+        console.log("❌ Missing email or password");
         return res.status(400).json({
+          success: false,
           status: 400,
           message: "Validation Error",
           details: ["Email and Password are required!"],
@@ -91,9 +94,14 @@ const loginUser = asyncHandler(async (req, res) => {
       }
   
       // Step 2: Check if user exists
+      console.log("🔍 Looking for user with email:", email.toLowerCase());
       const existingUser = await User.findOne({ email: email.toLowerCase() });
+      console.log("🔍 User found:", !!existingUser);
+      
       if (!existingUser) {
+        console.log("❌ User not found in database");
         return res.status(401).json({
+          success: false,
           status: 401,
           message: "Invalid Credentials!",
           details: ["Email not found!"],
@@ -101,52 +109,53 @@ const loginUser = asyncHandler(async (req, res) => {
       }
   
       // Step 3: Authenticate using passport
+      console.log("🔍 Starting passport authentication for:", email);
       passport.authenticate("user-local", (err, user, info) => {
+        console.log("🔍 Passport callback - err:", err, "user:", !!user, "info:", info);
+        
         if (err) {
           console.error("❌ Passport authentication error:", err);
           return res.status(500).json({
+            success: false,
             status: 500,
             message: "Authentication Error",
             details: [err.message || "Internal server error during authentication"],
           });
         }
-  
+
         if (!user) {
           console.log("❌ Authentication failed:", info?.message || "Invalid credentials");
           return res.status(401).json({
+            success: false,
             status: 401,
             message: "Invalid Credentials!",
             details: [info?.message || "Invalid email or password!"],
           });
         }
-  
-        // Step 4: Login the user with proper session handling
-        req.login({ id: user._id, type: "user" }, { session: true }, (loginErr) => {
-          if (loginErr) {
-            console.error("❌ Login error:", loginErr);
-            return res.status(500).json({
-              status: 500,
-              message: "Login Error",
-              details: ["Failed to establish user session"],
-            });
-          }
-  
-          console.log("✅ Login successful:", user.email);
-          console.log("✅ Session established for user:", user._id);
-          
-          // Set iOS-compatible response headers
-          if (process.env.NODE_ENV === "production") {
-            res.header('Access-Control-Allow-Credentials', 'true');
-            res.header('Vary', 'Origin');
-          }
-          
-          return res.status(200).json({
-            status: 200,
-            message: "Login successful!",
-            data: { user },
-          });
+
+        console.log("🔍 User authenticated successfully:", user.email);
+        
+        // Step 4: Generate JWT token for cookieless authentication
+        const token = generateToken({
+          id: user._id,
+          type: "user",
+          email: user.email
         });
-      })(req, res); // Call the middleware with req/res
+
+        console.log("✅ Login successful:", user.email);
+        console.log("✅ JWT token generated for user:", user._id);
+        
+        return res.status(200).json({
+          success: true,
+          status: 200,
+          message: "Login successful!",
+          data: { 
+            user,
+            token,
+            tokenType: "Bearer"
+          },
+        });
+      })(req, res, () => {}); // Add empty next function
   
     } catch (error) {
       console.error("❌ Login error:", error);
@@ -156,57 +165,30 @@ const loginUser = asyncHandler(async (req, res) => {
     }
   });
 
-  // Logout User Controller Code
+  // Logout User Controller Code (JWT-based)
 const logOutUser = asyncHandler(async (req, res) => {
     try {
-      // Passport logout
-      req.logout((err) => {
-        if (err) {
-          console.error("❌ Error during logout:", err);
-          return res.status(400).json(
-            new ApiError(400, [err.message], "Failed to log out!")
-          );
-        }
-  
-        // Destroy session
-        req.session.destroy((err) => {
-          if (err) {
-            console.error("❌ Session destruction failed:", err);
-            return res.status(500).json(
-              new ApiError(500, [err.message], "Failed to destroy session!")
-            );
-          }
-  
-          // Clear session cookie with iOS-compatible settings
-          res.clearCookie("shopzo.sid", {
-            path: "/",
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production", // true in production
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-            // iOS Safari compatibility
-            ...(process.env.NODE_ENV === "production" && {
-              partitioned: false,
-            }),
-          });
-  
-          console.log("✅ Logout successful");
-          return res
-            .status(200)
-            .json(new ApiResponse(200, null, "Logged out successfully!"));
-        });
-      });
+      // For JWT-based authentication, logout is handled client-side
+      // The client should remove the token from storage
+      // Server-side logout would require token blacklisting (optional enhancement)
+      
+      console.log("✅ Logout request received");
+      return res
+        .status(200)
+        .json(new ApiResponse(200, null, "Logged out successfully! Please remove token from client storage."));
+        
     } catch (error) {
       console.error("❌ Logout error:", error);
-      return res
-        .status(500)
-        .json(new ApiError(500, [error.message], "Logout failed!"));
+      return res.status(500).json(
+        new ApiError(500, [error.message], "Failed to log out!")
+      );
     }
   });
 
-  // Check if User is Authenticated (Login check)
+  // Check if User is Authenticated (JWT-based)
 const checkAuthentication = asyncHandler(async (req, res) => {
     try {
-      if (req.isAuthenticated()) {
+      if (req.isAuthenticated && req.isAuthenticated()) {
         console.log("✅ User is authenticated:", req.user);
         return res
           .status(200)

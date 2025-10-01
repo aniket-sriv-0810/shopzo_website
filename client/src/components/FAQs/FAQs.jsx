@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { FaChevronDown, FaChevronUp, FaQuestionCircle } from "react-icons/fa";
 import { IoMdHelpCircleOutline } from "react-icons/io"; // Fancy question icon
 import { MdOutlineQuestionAnswer } from "react-icons/md"; // Answer icon
+import { authAxios } from "../../utils/auth";
 
 const FAQs = () => {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -14,9 +15,7 @@ const FAQs = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/navigation/faqs`, {
-        withCredentials: true,
-      });
+      const response = await authAxios.get("/api/navigation/faqs");
       if (response.status === 200) {
         setFaqs(response.data.data.faq);
       }

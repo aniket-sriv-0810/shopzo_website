@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { MdOutlineStar } from "react-icons/md";
+import { authAxios } from "../../utils/auth";
 
 const ReviewCount = ({ id }) => {
   const [reviewCount, setReviewCount] = useState(0);
@@ -10,10 +11,7 @@ const ReviewCount = ({ id }) => {
   useEffect(() => {
     const fetchReviewStats = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/vendor/${id}/review-stats`, {
-          withCredentials: true,
-        });
-
+        const response = await authAxios.get(`/api/vendor/${id}/review-count`);
         if (response.status === 200) {
           setReviewCount(response.data.data.totalReviews);
           setAvgRating(response.data.data.avgRating);

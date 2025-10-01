@@ -1,5 +1,5 @@
 import express from 'express';
-import { isLoggedIn } from '../middleware/auth.middleware.js';
+import { authenticateUser } from '../middleware/jwt.middleware.js';
 import { isIntern } from '../middleware/intern.middleware.js';
 import { upload } from '../multer.js';
 import { validate } from '../middleware/validator.js';
@@ -26,14 +26,14 @@ router
 // Create new vendor
 router
   .route('/vendors')
-  .post(isLoggedIn, isIntern, upload.single('image'), createVendorByIntern);
+  .post(authenticateUser, isIntern, upload.single('image'), createVendorByIntern);
 
-// Get all categories (read-only, no auth required)
+// Get all categories
 router
   .route('/categories')
   .get(getAllCategories);
 
-// Get vendor's products (read-only, no auth required)
+// Get vendor products
 router
   .route('/vendors/:vendorId/products')
   .get(getVendorProducts);
@@ -41,21 +41,21 @@ router
 // Add product to vendor
 router
   .route('/vendors/:vendorId/products')
-  .post(isLoggedIn, isIntern, upload.array('images', 7), addProductToVendor);
+  .post(authenticateUser, isIntern, upload.array('images', 7), addProductToVendor);
 
-// Delete a vendor's specific product
+// Delete vendor product
 router
   .route('/vendors/:vendorId/products/:productId')
-  .delete(isLoggedIn, isIntern, deleteVendorProductByIntern);
+  .delete(authenticateUser, isIntern, deleteVendorProductByIntern);
 
-// Update vendor details
+// Update vendor
 router
   .route('/vendors/:vendorId')
-  .put(isLoggedIn, isIntern, upload.single('image'), updateVendorByIntern);
+  .put(authenticateUser, isIntern, upload.single('image'), updateVendorByIntern);
 
 // Delete vendor
 router
   .route('/vendors/:vendorId')
-  .delete(isLoggedIn, isIntern, deleteVendorByIntern);
+  .delete(authenticateUser, isIntern, deleteVendorByIntern);
 
 export default router;

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../UserContext/userContext";
+import { auth } from "../../utils/auth";
 import SkeletonForm from '../LoadingSkeleton/SkeletonForm'
 const Logout = () => {
   const { setUser } = useUser();
@@ -10,21 +10,19 @@ const Logout = () => {
   useEffect(() => {
     const logoutUser = async () => {
       try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/api/user/logout`,
-          {},
-          { withCredentials: true }
-        );
+        const result = await auth.logout();
 
-        if (response.status === 200) {
+        if (result.success) {
           setUser(null);
-          localStorage.removeItem("user");
           navigate("/"); // Redirect to homepage or login page
         } else {
-          console.error("Logout failed with unexpected status:", response.status);
+          console.error("Logout failed");
         }
       } catch (error) {
-        console.error("❌ Failed to logout:", error?.response?.data?.message || error.message);
+        console.error("❌ Failed to logout:", error.message);
+        // Even if logout fails, clear local state
+        setUser(null);
+        navigate("/");
       }
     };
 

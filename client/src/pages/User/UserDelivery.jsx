@@ -4,6 +4,7 @@ import DeliveryCard from "../../components/User/UserDelivery/UserDeliveryCard";
 import { useUser } from "../../components/UserContext/userContext";
 import SkeletonList from "../../components/LoadingSkeleton/SkeletonList";
 import NotAvailable from "../Loaders/NotAvailable";
+import { authAxios } from "../../utils/auth";
 
 const UserDeliveryOrders = () => {
   const [deliveries, setDeliveries] = useState([]);
@@ -12,10 +13,7 @@ const UserDeliveryOrders = () => {
 
   const fetchDeliveries = async () => {
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/user/${user._id}/account/deliveries`,
-        { withCredentials: true }
-      );
+      const res = await authAxios.get(`/api/user/${id}/delivery`);
       setDeliveries(res.data.data);
     } catch (err) {
       console.error("Error fetching deliveries:", err);

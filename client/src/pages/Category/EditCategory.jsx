@@ -3,6 +3,7 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import SkeletonForm from "../../components/LoadingSkeleton/SkeletonForm";
 import ErrorPopup from "../../components/Popups/ErrorPopUp";
+import { authAxios } from "../../utils/auth";
 const EditCategory = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -21,8 +22,8 @@ const [error, setError] = useState(null);
     const fetchCategory = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/category/${id}`);
-        const { title, description, image } = res.data?.data?.category || {};
+        const response = await authAxios.get(`/api/admin/category/${id}`);
+        const { title, description, image } = response.data?.data?.category || {};
         setFormData({ title, description, image });
         setPreviewImage(image);
       } catch (err) {
@@ -67,10 +68,7 @@ const [error, setError] = useState(null);
       }
       
 
-      const res = await axios.put(`${import.meta.env.VITE_API_URL}/api/admin/category/${id}/edit`, updatedData, 
-        {
-        withCredentials: true, // if using cookies/auth
-      });
+      const res = await authAxios.put(`/api/admin/category/${id}/edit`, updatedData);
 
       navigate("/admin/categories"); // adjust path as needed
     } catch (err) {

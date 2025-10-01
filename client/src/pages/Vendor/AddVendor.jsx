@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { authAxios } from "../../utils/auth";
 
 const AddVendor = () => {
   const [formData, setFormData] = useState({
@@ -61,12 +62,11 @@ const AddVendor = () => {
     });
 
     try {
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/admin/add-vendor`,
-        payload,
-        { withCredentials: true }
-      );
-
+      const response = await authAxios.post("/api/intern/vendor/add", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       setMessage("Vendor added successfully!");
       setFormData({
         name: "",

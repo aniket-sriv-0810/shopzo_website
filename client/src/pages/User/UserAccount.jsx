@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useUser } from "../../components/UserContext/userContext";
-import axios from "axios";
+import { authAxios } from "../../utils/auth";
 import Navbar from "../../components/Navbars/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
+import BookingCard from "../../components/User/UserBooking/UserBookingCard";
+import ProductCard from "../../components/Products/ProductCard.jsx/ProductCard";
+import VendorCard from "../../components/Vendors/VendorCard.jsx/VendorCard";
+import SkeletonList from "../../components/LoadingSkeleton/SkeletonList";
+import NotAvailable from "../Loaders/NotAvailable";
 import { 
   FaUser, 
   FaEnvelope, 
@@ -15,7 +20,10 @@ import {
   FaSignOutAlt,
   FaSpinner,
   FaExclamationTriangle,
-  FaCheckCircle
+  FaCheckCircle,
+  FaShoppingBag,
+  FaHeart,
+  FaStore
 } from "react-icons/fa";
 
 const UserAccount = () => {
@@ -26,6 +34,15 @@ const UserAccount = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [activeTab, setActiveTab] = useState("orders");
+  
+  // State for additional sections
+  const [bookings, setBookings] = useState([]);
+  const [wishlists, setWishlists] = useState([]);
+  const [vendorWishlists, setVendorWishlists] = useState([]);
+  const [bookingsLoading, setBookingsLoading] = useState(false);
+  const [wishlistsLoading, setWishlistsLoading] = useState(false);
+  const [vendorWishlistsLoading, setVendorWishlistsLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -45,9 +62,8 @@ const UserAccount = () => {
 
       try {
         setLoading(true);
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/user/${id}/account`,
-          { withCredentials: true }
+        const response = await authAxios.get(
+          `/api/user/${id}/account`
         );
 
         if (response.status === 200) {
@@ -74,6 +90,85 @@ const UserAccount = () => {
       fetchUserDetails();
     }
   }, [id, contextUser, contextLoading, navigate]);
+
+  // Fetch bookings
+  const fetchBookings = async () => {
+    if (!contextUser?._id) return;
+    
+    setBookingsLoading(true);
+    try {
+      const response = await authAxios.get(`/api/user/${contextUser._id}/account/bookings`);
+      setBookings(response.data.data || []);
+    } catch (err) {
+      console.error("Error fetching bookings:", err);
+    } finally {
+      setBookingsLoading(false);
+    }
+  };
+
+  // Fetch wishlists
+  const fetchWishlists = async () => {
+    if (!contextUser?._id) return;
+    
+    setWishlistsLoading(true);
+    try {
+      const response = await authAxios.get(`/api/user/${contextUser._id}/account/wishlists`);
+      setWishlists(response.data.data?.wishlists || []);
+    } catch (err) {
+      console.error("Error fetching wishlists:", err);
+    } finally {
+      setWishlistsLoading(false);
+    }
+  };
+
+  // Fetch vendor wishlists
+  const fetchVendorWishlists = async () => {
+    if (!contextUser?._id) return;
+    
+    setVendorWishlistsLoading(true);
+    try {
+      const response = await authAxios.get(`/api/user/${contextUser._id}/account/vendor-wishlists`);
+      setVendorWishlists(response.data.data?.vendorWishlists || []);
+    } catch (err) {
+      console.error("Error fetching vendor wishlists:", err);
+    } finally {
+      setVendorWishlistsLoading(false);
+    }
+  };
+
+  // Load data based on active tab
+  useEffect(() => {
+    if (!contextUser?._id) return;
+    
+    switch (activeTab) {
+      case "orders":
+        if (bookings.length === 0) fetchBookings();
+        break;
+      case "wishlist":
+        if (wishlists.length === 0) fetchWishlists();
+        break;
+      case "vendor-wishlist":
+        if (vendorWishlists.length === 0) fetchVendorWishlists();
+        break;
+      default:
+        break;
+    }
+  }, [activeTab, contextUser]);
+
+  // Handle tab change with debug logging
+  const handleTabChange = (tabName) => {
+    console.log("Tab clicked:", tabName);
+    console.log("Current activeTab:", activeTab);
+    setActiveTab(tabName);
+    console.log("New activeTab set to:", tabName);
+  };
+
+  // Function to handle successful booking cancellation or deletion
+  const handleBookingSuccess = (bookingId) => {
+    setBookings((prevBookings) =>
+      prevBookings.filter((booking) => booking._id !== bookingId)
+    );
+  };
 
   const handleLogout = async () => {
     try {
@@ -178,10 +273,10 @@ const UserAccount = () => {
           </div>
 
           {/* Main Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Account Details */}
-            <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Account Information - Always Visible */}
+            <div className="lg:col-span-4">
+              <div className="bg-white rounded-lg shadow-md p-6 mb-8">
                 <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
                   <FaUser className="text-blue-500" />
                   Account Information
@@ -265,10 +360,57 @@ const UserAccount = () => {
               </div>
             </div>
 
-            {/* Actions Sidebar */}
-            <div className="space-y-6">
-              {/* Quick Actions */}
+            {/* Navigation Tabs */}
+            <div className="lg:col-span-1">
               <div className="bg-white rounded-lg shadow-md p-6">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                  Account Sections
+                </h3>
+                
+                <div className="space-y-2">
+                  <button
+                    onClick={() => handleTabChange("orders")}
+                    style={{ pointerEvents: 'auto', cursor: 'pointer' }}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      activeTab === "orders"
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    }`}
+                  >
+                    <FaShoppingBag />
+                    Order History
+                  </button>
+
+                  <button
+                    onClick={() => handleTabChange("wishlist")}
+                    style={{ pointerEvents: 'auto', cursor: 'pointer' }}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      activeTab === "wishlist"
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    }`}
+                  >
+                    <FaHeart />
+                    Product Wishlist
+                  </button>
+
+                  <button
+                    onClick={() => handleTabChange("vendor-wishlist")}
+                    style={{ pointerEvents: 'auto', cursor: 'pointer' }}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      activeTab === "vendor-wishlist"
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+                    }`}
+                  >
+                    <FaStore />
+                    Vendor Wishlist
+                  </button>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="bg-white rounded-lg shadow-md p-6 mt-6">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">
                   Quick Actions
                 </h3>
@@ -309,7 +451,7 @@ const UserAccount = () => {
               </div>
 
               {/* Account Security */}
-              <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="bg-white rounded-lg shadow-md p-6 mt-6">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">
                   Account Security
                 </h3>
@@ -327,6 +469,98 @@ const UserAccount = () => {
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Content Area */}
+            <div className="lg:col-span-3">
+              {activeTab === "orders" && (
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                    <FaShoppingBag className="text-blue-500" />
+                    Order History
+                  </h2>
+                  
+                  {bookingsLoading ? (
+                    <div className="flex justify-center items-center py-8">
+                      <SkeletonList />
+                    </div>
+                  ) : bookings.length === 0 ? (
+                    <div className="text-center py-8">
+                      <NotAvailable
+                        content={"No Orders Found"}
+                        tagline={"Oops! You haven't placed any orders yet. Start exploring and discover amazing products!"}
+                      />
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {bookings.map((booking) => (
+                        <BookingCard
+                          key={booking._id}
+                          booking={booking}
+                          userId={contextUser._id}
+                          onCancelSuccess={handleBookingSuccess}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeTab === "wishlist" && (
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                    <FaHeart className="text-blue-500" />
+                    Product Wishlist
+                  </h2>
+                  
+                  {wishlistsLoading ? (
+                    <div className="flex justify-center items-center py-8">
+                      <SkeletonList />
+                    </div>
+                  ) : wishlists.length === 0 ? (
+                    <div className="text-center py-8">
+                      <NotAvailable
+                        content={"No Products in Wishlist"}
+                        tagline={"Oops! Your wishlist is empty. Why not explore our amazing collection and add something special?"}
+                      />
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {wishlists.map((product) => (
+                        <ProductCard key={product._id} product={product} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {activeTab === "vendor-wishlist" && (
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
+                    <FaStore className="text-blue-500" />
+                    Vendor Wishlist
+                  </h2>
+                  
+                  {vendorWishlistsLoading ? (
+                    <div className="flex justify-center items-center py-8">
+                      <SkeletonList />
+                    </div>
+                  ) : vendorWishlists.length === 0 ? (
+                    <div className="text-center py-8">
+                      <NotAvailable
+                        content={"No Vendors in Wishlist"}
+                        tagline={"Oops! Your vendor wishlist is empty. Discover amazing vendors and add them to your favorites!"}
+                      />
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {vendorWishlists.map((vendor) => (
+                        <VendorCard key={vendor._id} vendor={vendor} />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

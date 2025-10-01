@@ -1,5 +1,5 @@
 import express from 'express' ;
-import { isLoggedIn } from '../middleware/auth.middleware.js';
+import { authenticateUser } from '../middleware/jwt.middleware.js';
 import {  getProductById } from "../controller/product.controller.js";
 import {  getAllBookings , deleteBooking} from '../controller/booking.controller.js';
 import { bookProduct } from '../controller/user.controller.js';
@@ -18,24 +18,23 @@ router
 //providing booking of a particular product
 router
      .route("/:productId/booking")
-     .post( isLoggedIn  , validate(bookProductSchema) , bookProduct)
+     .post( authenticateUser  , validate(bookProductSchema) , bookProduct)
 
 //provide all bookings associated with the particular product route
 router
      .route("/:id/bookings")
-     .get( isLoggedIn , getAllBookings)
+     .get( authenticateUser , getAllBookings)
 
 // delete a booking of a particular product
 router
      .route("/:id/booking")
-     .delete( isLoggedIn , deleteBooking)
+     .delete( authenticateUser , deleteBooking)
 
+// Create delivery for a product
+router.post("/:productId/delivery", authenticateUser, createDelivery);
 
-// Place delivery order
-router.post("/:productId/delivery", isLoggedIn, createDelivery);
-
-// Get confirmation
-router.get("/delivery/:id/confirmation", isLoggedIn, getDeliveryConfirmation);
+// Get delivery confirmation
+router.get("/delivery/:id/confirmation", authenticateUser, getDeliveryConfirmation);
 
 
 

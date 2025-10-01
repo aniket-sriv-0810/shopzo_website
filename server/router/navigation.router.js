@@ -1,6 +1,6 @@
 
 import express from "express";
-import {isLoggedIn} from '../middleware/auth.middleware.js'
+import {authenticateUser} from '../middleware/jwt.middleware.js'
 import {validate} from '../middleware/validator.js';
 import { contactSchemaValidation } from "../test/User/userContact.validator.js";
 import { faqData , createContactMessage , searchAll} from "../controller/navigation.controller.js";
@@ -13,7 +13,7 @@ const router = express.Router();
 // sending feedback route
 router
      .route('/contact')
-     .post(isLoggedIn , validate(contactSchemaValidation) , createContactMessage)
+     .post(authenticateUser , validate(contactSchemaValidation) , createContactMessage)
 
 //fetching all the faqs route
 router
@@ -23,7 +23,7 @@ router
 //provide the booking confirmation route
 router
      .route('/:bookingId/confirmation')
-     .get(isLoggedIn , getBookingConfirmation)
+     .get(authenticateUser , getBookingConfirmation)
 
 // searching for products & vendors route
 router

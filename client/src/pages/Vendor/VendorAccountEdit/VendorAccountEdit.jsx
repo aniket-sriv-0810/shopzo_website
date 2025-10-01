@@ -5,6 +5,7 @@ import VendorEditForm from "../../../components/Vendors/VendorAccountEdit/Vendor
 import VendorImageUpload from "../../../components/Vendors/VendorAccountEdit/VendorImageUpload";
 import editValidator from "../../../components/Vendors/VendorAccountEdit/editValidator";
 import SkeletonForm from "../../../components/LoadingSkeleton/SkeletonForm";
+import { authAxios } from "../../../utils/auth";
 
 const VendorAccountEdit = () => {
   const { id } = useParams();
@@ -25,9 +26,7 @@ const VendorAccountEdit = () => {
   useEffect(() => {
     const fetchVendor = async () => {
       try {
-        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/vendor/${id}/account`, {
-          withCredentials: true,
-        });
+        const response = await authAxios.get(`/api/vendor/${id}/account`);
         const v = data.data.vendorInfo;
         setVendorData({ ...v, address: { ...v.address } });
         setOrgImage(v.image);
@@ -85,11 +84,7 @@ const VendorAccountEdit = () => {
     if (image) formData.append("image", image);
 
     try {
-      await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/vendor/${id}/account/edit`,
-        formData,
-        { withCredentials: true }
-      );
+      await authAxios.put(`/api/vendor/${id}/account`, formData);
       navigate(`/vendor/${id}/account`);
     } catch (err) {
       const message = err?.response?.data?.message || "Failed to update.";

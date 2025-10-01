@@ -8,6 +8,7 @@ import VendorActions from "../../../components/Vendors/VendorAccount/VendorActio
 import SkeletonForm from "../../../components/LoadingSkeleton/SkeletonForm";
 import ErrorPopup from "../../../components/Popups/ErrorPopUp";
 import ReviewCount from "../../../components/Review/ReviewCount";
+import { authAxios } from "../../../utils/auth";
 
 const VendorAccount = () => {
   const [vendor, setVendor] = useState(null);
@@ -19,10 +20,7 @@ const VendorAccount = () => {
   const fetchVendorDetails = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/vendor/${id}/account`,
-        { withCredentials: true }
-      );
+      const { data } = await authAxios.get(`/api/vendor/${id}/account`);
       setVendor(data.data.vendorInfo);
     } catch (err) {
       setError("Error fetching vendor details.");

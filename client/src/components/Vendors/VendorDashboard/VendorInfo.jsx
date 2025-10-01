@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import {  useParams } from "react-router-dom";
 import { FaEnvelope, FaUser, FaIdBadge, FaPhoneAlt, FaUserAlt } from "react-icons/fa";
 import { useUser } from "../../UserContext/userContext";
+import { authAxios } from "../../../utils/auth";
 const VendorInfo = () => {
  const [vendor, setVendor] = useState(null);
    const [loading, setLoading] = useState(true);
@@ -12,10 +13,7 @@ const VendorInfo = () => {
   const fetchVendorDetails = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/vendor/${id}/account`,
-        { withCredentials: true }
-      );
+      const { data } = await authAxios.get(`/api/vendor/${id}/account`);
       setVendor(data.data.vendorInfo);
     } catch (err) {
       setError("Error fetching vendor details.");

@@ -6,6 +6,7 @@ import AdminNotAvailableLoader from "../Loaders/AdminNotAvailableLoader";
 import ErrorPopup from "../../components/Popups/ErrorPopUp";
 import { useNavigate } from "react-router-dom";
 import AdminSearchBar from "../../components/Admin/AdminSearchBar/AdminSearchBar";
+import { authAxios } from "../../utils/auth";
 
 const AdminVendor = () => {
   const [vendors, setVendors] = useState([]);
@@ -17,10 +18,7 @@ const AdminVendor = () => {
   const fetchVendors = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/admin/vendors`,
-        { withCredentials: true }
-      );
+      const res = await authAxios.get('/api/admin/vendors');
       setVendors(response.data.data.allVendorDetails);
       setFilteredVendors(response.data.data.allVendorDetails); // ✅ keep a copy for search
     } catch (err) {

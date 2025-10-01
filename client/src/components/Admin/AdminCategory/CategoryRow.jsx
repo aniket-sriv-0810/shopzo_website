@@ -1,7 +1,7 @@
 import React from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { authAxios } from "../../../utils/auth";
 
 const CategoryRow = ({ category, onDelete }) => {
   const { _id, title, image } = category;
@@ -9,10 +9,7 @@ const CategoryRow = ({ category, onDelete }) => {
 
   const handleDelete = async () => {
     try {
-      const res = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/admin/category/${_id}/delete`,
-        { withCredentials: true }
-      );
+      const response = await authAxios.delete(`/api/admin/category/${_id}/delete`);
       onDelete(_id); // Callback to update parent state
     } catch (error) {
       alert(error.response?.data?.message || "Failed to delete category");

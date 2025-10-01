@@ -1,6 +1,6 @@
 // components/User/UserBooking/CancelBooking.jsx
 import React, { useState } from "react";
-import axios from "axios";
+import { authAxios } from "../../utils/auth";
 
 const CancelBooking = ({ bookingId, userId, onCancelSuccess }) => {
   const [loading, setLoading] = useState(false);
@@ -11,12 +11,7 @@ const CancelBooking = ({ bookingId, userId, onCancelSuccess }) => {
     setError("");
 
     try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/user/${userId}/account/bookings/${bookingId}/cancel`,
-        { withCredentials: true }
-        
-      );
-
+      const response = await authAxios.put(`/api/user/${userId}/account/bookings/${bookingId}/cancel`);
       if (response.status === 200) {
         // Notify the parent component about the successful cancellation
         onCancelSuccess(bookingId);

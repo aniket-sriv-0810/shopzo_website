@@ -1,5 +1,5 @@
 import React from "react";
-import axios from "axios";
+import { authAxios } from "../../utils/auth";
 import { MdDeleteForever } from "react-icons/md";
 import { useUser } from "../../components/UserContext/userContext";
 
@@ -8,10 +8,7 @@ const UserDeleteCancelledDelivery = ({ deliveryId, onDeleted }) => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(
-        `${import.meta.env.VITE_API_URL}/api/user/${user._id}/account/deliveries/${deliveryId}`,
-        { withCredentials: true }
-      );
+      await authAxios.delete(`/api/user/${user._id}/account/deliveries/${deliveryId}`);
       onDeleted?.();
     } catch (err) {
       console.log("error => ", err);
