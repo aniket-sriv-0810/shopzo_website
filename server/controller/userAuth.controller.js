@@ -134,6 +134,12 @@ const loginUser = asyncHandler(async (req, res) => {
           console.log("✅ Login successful:", user.email);
           console.log("✅ Session established for user:", user._id);
           
+          // Set iOS-compatible response headers
+          if (process.env.NODE_ENV === "production") {
+            res.header('Access-Control-Allow-Credentials', 'true');
+            res.header('Vary', 'Origin');
+          }
+          
           return res.status(200).json({
             status: 200,
             message: "Login successful!",
@@ -171,12 +177,16 @@ const logOutUser = asyncHandler(async (req, res) => {
             );
           }
   
-          // Clear session cookie
+          // Clear session cookie with iOS-compatible settings
           res.clearCookie("shopzo.sid", {
             path: "/",
             httpOnly: true,
             secure: process.env.NODE_ENV === "production", // true in production
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            // iOS Safari compatibility
+            ...(process.env.NODE_ENV === "production" && {
+              partitioned: false,
+            }),
           });
   
           console.log("✅ Logout successful");

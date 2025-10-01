@@ -43,10 +43,25 @@ const corsSessionOption = {
       callback(new Error(`CORS policy: No access from origin ${origin}`), false);
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: [
+    'Content-Type', 
+    'Authorization', 
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'Access-Control-Request-Method',
+    'Access-Control-Request-Headers'
+  ],
+  exposedHeaders: [
+    'Set-Cookie',
+    'Access-Control-Allow-Credentials'
+  ],
   optionsSuccessStatus: 200,
+  // iOS Safari and WebView specific settings
+  preflightContinue: false,
+  maxAge: 86400, // 24 hours preflight cache
 };
 
 const cookieDomain = process.env.SESSION_COOKIE_DOMAIN || undefined;
@@ -64,9 +79,14 @@ const expressSessionOption = {
   cookie: {
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week expiry time
-    // Dynamic configuration for development vs production
+    // iOS-compatible configuration for production
     secure: isProduction, // false for development (HTTP), true for production (HTTPS)
     sameSite: isProduction ? 'none' : 'lax', // 'none' for cross-origin in production, 'lax' for development
+    // Additional iOS compatibility settings
+    ...(isProduction && {
+      // Ensure cookies work in iOS Safari and WebView
+      partitioned: false, // Disable partitioned cookies for better iOS compatibility
+    }),
     // Optionally scope cookie to a parent domain when frontend/api are on subdomains
     ...(cookieDomain ? { domain: cookieDomain } : {}),
   },
