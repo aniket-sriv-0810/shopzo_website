@@ -62,7 +62,7 @@ const DesktopNavbar = () => {
         {user && user._id ? (
           <NavLink
             to={
-              (user.role === "user" || user.role === "admin")
+              (user.role === "user" || user.role === "admin" || user.role === "intern")
                 ? `/user/${user._id}/account`
                 : "/vendor/login"
             }

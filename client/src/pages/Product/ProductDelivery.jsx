@@ -129,7 +129,7 @@ const ProductDelivery = () => {
       setBookingStatus(err.response?.data?.error || "Booking failed.");
     } finally {
       setLoading(false);
-      setTimeout(() => setBookingStatus(""), 3000);
+      setTimeout(() => setBookingStatus(""), );
     }
   };
 

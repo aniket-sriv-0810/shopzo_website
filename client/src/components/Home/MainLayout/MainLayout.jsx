@@ -30,7 +30,7 @@ const MainLayout = () => {
       setCurrentIndex((prev) =>
         prev === slideshowImages.length - 1 ? 0 : prev + 1
       );
-    }, 3000);
+    },3000 );
     return () => clearInterval(interval);
   }, []);
  useEffect(() => {
