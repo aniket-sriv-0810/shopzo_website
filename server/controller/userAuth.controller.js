@@ -162,11 +162,11 @@ const logOutUser = asyncHandler(async (req, res) => {
           }
   
           // Clear session cookie
-          res.clearCookie("connect.sid", {
+          res.clearCookie("shopzo.sid", {
             path: "/",
             httpOnly: true,
             secure: process.env.NODE_ENV === "production", // true in production
-            sameSite: "lax",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
           });
   
           console.log("✅ Logout successful");

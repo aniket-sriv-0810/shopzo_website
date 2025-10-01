@@ -43,6 +43,8 @@ const corsSessionOption = {
   optionsSuccessStatus: 200,
 };
 
+const cookieDomain = process.env.SESSION_COOKIE_DOMAIN || undefined;
+
 const expressSessionOption = {
   secret: process.env.EXPRESS_SESSION_SECRET,
   resave: false,
@@ -56,8 +58,11 @@ const expressSessionOption = {
   cookie: {
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week expiry time
-    secure: false, // Always false for localhost development
-    sameSite: 'lax', // Use 'lax' for same-origin requests in development
+    // In production behind HTTPS and potentially cross-site (mobile/web), cookies must be Secure and SameSite=None
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+    // Optionally scope cookie to a parent domain when frontend/api are on subdomains
+    ...(cookieDomain ? { domain: cookieDomain } : {}),
   },
 };
 

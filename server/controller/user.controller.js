@@ -329,7 +329,12 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
             );
           }
 
-          res.clearCookie("connect.sid");
+          res.clearCookie("shopzo.sid", {
+            path: "/",
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+          });
           return res.status(200).json(
             new ApiResponse(200, null, "User deleted and logged out successfully!")
           );

@@ -232,11 +232,11 @@ const logOutAccount = asyncHandler(async (req, res) => {
           }
   
           // Clear Cookie
-          res.clearCookie("connect.sid", {
+          res.clearCookie("shopzo.sid", {
             path: "/",
             httpOnly: true,
             secure: process.env.NODE_ENV === "production", // Use HTTPS in prod
-            sameSite: "lax",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
           });
   
           console.log("✅ Logout successful for user/vendor");
