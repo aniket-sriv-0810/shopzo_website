@@ -29,9 +29,24 @@ export const UserProvider = ({ children }) => {
         { withCredentials: true }
       );
 
+      console.log("🔍 Auth response:", response.data);
+
       if (response.data.isAuthenticated && response.data.user) {
-        setUser(response.data.user);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        const userData = response.data.user;
+        console.log("🔍 User data from server:", userData);
+        console.log("🔍 User ID type:", typeof userData._id);
+        console.log("🔍 User ID value:", userData._id);
+        
+        // Ensure _id is a string for consistent comparison
+        const processedUser = {
+          ...userData,
+          _id: userData._id.toString()
+        };
+        
+        console.log("🔍 Processed user data:", processedUser);
+        
+        setUser(processedUser);
+        localStorage.setItem("user", JSON.stringify(processedUser));
       } else {
         setUser(null);
         localStorage.removeItem("user");

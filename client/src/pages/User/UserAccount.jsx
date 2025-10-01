@@ -17,16 +17,26 @@ const UserAccount = () => {
   const navigate = useNavigate();
   const { user, isLoading: userLoading } = useUser();
 
+  // Debug logging
+  console.log("🔍 UserAccount Debug:");
+  console.log("URL param id:", id);
+  console.log("Context user:", user);
+  console.log("Context user ID:", user?._id);
+  console.log("User loading:", userLoading);
+
   const fetchUserDetails = async () => {
     setLoading(true);
+    console.log("🔍 Fetching user details for ID:", id);
     try {
       const { data } = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/user/${id}/account`,
         { withCredentials: true }
       );
+      console.log("✅ User details fetched:", data);
       setShowUser(data.data.userInfo);
     } catch (err) {
-      console.error("Error fetching user details:", err);
+      console.error("❌ Error fetching user details:", err);
+      console.error("❌ Error response:", err.response?.data);
       setError("Error fetching user details.");
     } finally {
       setLoading(false);
