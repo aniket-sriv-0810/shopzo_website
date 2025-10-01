@@ -21,12 +21,18 @@ const __dirname = path.dirname(__filename);
 app.set('trust proxy', 1);
 
 // Middleware setup
+// Allow configuring additional origins via env (comma-separated)
+const extraOrigins = (process.env.CORS_ALLOWED_ORIGINS || '')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean);
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   'https://shopzo-website.onrender.com',
   'https://theshopzo.com',
   'https://www.theshopzo.com',
+  ...extraOrigins,
 ];
 
 const corsSessionOption = {
