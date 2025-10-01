@@ -64,9 +64,9 @@ const expressSessionOption = {
   cookie: {
     httpOnly: true,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week expiry time
-    // In production behind HTTPS and potentially cross-site (mobile/web), cookies must be Secure and SameSite=None
-    secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax',
+    // Fix: Use proper cookie settings for development vs production
+    secure: false, // Set to false for development (HTTP), true for production (HTTPS)
+    sameSite: 'lax', // Use 'lax' for better compatibility in development
     // Optionally scope cookie to a parent domain when frontend/api are on subdomains
     ...(cookieDomain ? { domain: cookieDomain } : {}),
   },

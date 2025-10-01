@@ -100,35 +100,45 @@ const loginUser = asyncHandler(async (req, res) => {
         });
       }
   
-      // Step 3: Authenticate using passport-local strategy
+      // Step 3: Authenticate using passport
       passport.authenticate("user-local", (err, user, info) => {
         if (err) {
-          console.error("❌ Error during passport authentication:", err);
-          return res.status(500).json(
-            new ApiError(500, [err.message], "Unexpected server error occurred!")
-          );
-        }
-  
-        if (!user) {
-          return res.status(401).json({
-            status: 401,
-            message: "Invalid Credentials!",
-            details: [info?.message || "Authentication failed."],
+          console.error("❌ Passport authentication error:", err);
+          return res.status(500).json({
+            status: 500,
+            message: "Authentication Error",
+            details: [err.message || "Internal server error during authentication"],
           });
         }
   
-        // Step 4: Log in the user using req.login with correct format
-        req.login({ id: user._id, type: "user" }, { session: true }, (err) => {
-          if (err) {
-            return res.status(500).json(
-              new ApiError(500, [err.message], "Login failed!")
-            );
+        if (!user) {
+          console.log("❌ Authentication failed:", info?.message || "Invalid credentials");
+          return res.status(401).json({
+            status: 401,
+            message: "Invalid Credentials!",
+            details: [info?.message || "Invalid email or password!"],
+          });
+        }
+  
+        // Step 4: Login the user with proper session handling
+        req.login({ id: user._id, type: "user" }, { session: true }, (loginErr) => {
+          if (loginErr) {
+            console.error("❌ Login error:", loginErr);
+            return res.status(500).json({
+              status: 500,
+              message: "Login Error",
+              details: ["Failed to establish user session"],
+            });
           }
-
+  
           console.log("✅ Login successful:", user.email);
-          return res.status(200).json(
-            new ApiResponse(200, { user }, "Successfully logged in the User!")
-          );
+          console.log("✅ Session established for user:", user._id);
+          
+          return res.status(200).json({
+            status: 200,
+            message: "Login successful!",
+            data: { user },
+          });
         });
       })(req, res); // Call the middleware with req/res
   
