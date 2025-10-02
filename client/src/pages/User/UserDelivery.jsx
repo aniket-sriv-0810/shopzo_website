@@ -13,7 +13,7 @@ const UserDeliveryOrders = () => {
 
   const fetchDeliveries = async () => {
     try {
-      const res = await authAxios.get(`/api/user/${id}/delivery`);
+      const res = await authAxios.get(`/api/user/${user._id}/delivery`);
       setDeliveries(res.data.data);
     } catch (err) {
       console.error("Error fetching deliveries:", err);

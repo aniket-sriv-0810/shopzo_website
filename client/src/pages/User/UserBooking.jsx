@@ -13,7 +13,7 @@ const UserStoreOrders = () => {
 
   const fetchBookings = async () => {
     try {
-      const res = await authAxios.get(`/api/user/${id}/booking`);
+      const res = await authAxios.get(`/api/user/${user._id}/account/bookings`);
       setBookings(res.data.data);
     } catch (err) {
       console.error("Error fetching bookings:", err);

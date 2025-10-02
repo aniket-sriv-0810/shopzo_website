@@ -22,11 +22,11 @@ const UserVendorWishlists = () => {
 
     const fetchVendorWishlist = async () => {
       try {
-        const response = await authAxios.get(`/api/user/${id}/vendor-wishlists`);
-        const vendorList = res?.data?.data?.vendorWishlists || [];
+        const response = await authAxios.get(`/api/user/${id}/account/vendor-wishlists`);
+        const vendorList = response?.data?.data?.vendorWishlists || [];
 console.log(vendorList);
 
-        setVendors(res?.data?.data?.vendorWishlists || []);
+        setVendors(response?.data?.data?.vendorWishlists || []);
       } catch (err) {
         setError("Failed to fetch vendor wishlists");
       } finally {

@@ -20,9 +20,8 @@ const LikeBtn = ({ productId }) => {
             }
 
             try {
-                const res = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/api/user/${user._id}/account/wishlists`,
-                    { withCredentials: true }
+                const res = await authAxios.get(
+                    `/api/user/${user._id}/account/wishlists`
                 );
 
                 const wishlist = res.data?.data?.wishlists || [];

@@ -11,7 +11,7 @@ const ReviewCount = ({ id }) => {
   useEffect(() => {
     const fetchReviewStats = async () => {
       try {
-        const response = await authAxios.get(`/api/vendor/${id}/review-count`);
+        const response = await authAxios.get(`/api/vendor/${id}/review-stats`);
         if (response.status === 200) {
           setReviewCount(response.data.data.totalReviews);
           setAvgRating(response.data.data.avgRating);

@@ -20,9 +20,8 @@ const VendorLikeBtn = ({ vendorId }) => {
             }
 
             try {
-                const res = await axios.get(
-                    `${import.meta.env.VITE_API_URL}/api/user/${user._id}/account/vendor-wishlists`,
-                    { withCredentials: true }
+                const res = await authAxios.get(
+                    `/api/user/${user._id}/account/vendor-wishlists`
                 );
 
                 const vendorWishlist = res.data?.data?.vendors || [];

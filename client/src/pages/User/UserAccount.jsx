@@ -4,11 +4,6 @@ import { useUser } from "../../components/UserContext/userContext";
 import { authAxios } from "../../utils/auth";
 import Navbar from "../../components/Navbars/Navbar/Navbar";
 import Footer from "../../components/Footer/Footer";
-import BookingCard from "../../components/User/UserBooking/UserBookingCard";
-import ProductCard from "../../components/Products/ProductCard.jsx/ProductCard";
-import VendorCard from "../../components/Vendors/VendorCard.jsx/VendorCard";
-import SkeletonList from "../../components/LoadingSkeleton/SkeletonList";
-import NotAvailable from "../Loaders/NotAvailable";
 import { 
   FaUser, 
   FaEnvelope, 
@@ -34,15 +29,6 @@ const UserAccount = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [activeTab, setActiveTab] = useState("orders");
-  
-  // State for additional sections
-  const [bookings, setBookings] = useState([]);
-  const [wishlists, setWishlists] = useState([]);
-  const [vendorWishlists, setVendorWishlists] = useState([]);
-  const [bookingsLoading, setBookingsLoading] = useState(false);
-  const [wishlistsLoading, setWishlistsLoading] = useState(false);
-  const [vendorWishlistsLoading, setVendorWishlistsLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -91,84 +77,12 @@ const UserAccount = () => {
     }
   }, [id, contextUser, contextLoading, navigate]);
 
-  // Fetch bookings
-  const fetchBookings = async () => {
-    if (!contextUser?._id) return;
-    
-    setBookingsLoading(true);
-    try {
-      const response = await authAxios.get(`/api/user/${contextUser._id}/account/bookings`);
-      setBookings(response.data.data || []);
-    } catch (err) {
-      console.error("Error fetching bookings:", err);
-    } finally {
-      setBookingsLoading(false);
-    }
-  };
-
-  // Fetch wishlists
-  const fetchWishlists = async () => {
-    if (!contextUser?._id) return;
-    
-    setWishlistsLoading(true);
-    try {
-      const response = await authAxios.get(`/api/user/${contextUser._id}/account/wishlists`);
-      setWishlists(response.data.data?.wishlists || []);
-    } catch (err) {
-      console.error("Error fetching wishlists:", err);
-    } finally {
-      setWishlistsLoading(false);
-    }
-  };
-
-  // Fetch vendor wishlists
-  const fetchVendorWishlists = async () => {
-    if (!contextUser?._id) return;
-    
-    setVendorWishlistsLoading(true);
-    try {
-      const response = await authAxios.get(`/api/user/${contextUser._id}/account/vendor-wishlists`);
-      setVendorWishlists(response.data.data?.vendorWishlists || []);
-    } catch (err) {
-      console.error("Error fetching vendor wishlists:", err);
-    } finally {
-      setVendorWishlistsLoading(false);
-    }
-  };
-
   // Load data based on active tab
   useEffect(() => {
     if (!contextUser?._id) return;
     
-    switch (activeTab) {
-      case "orders":
-        if (bookings.length === 0) fetchBookings();
-        break;
-      case "wishlist":
-        if (wishlists.length === 0) fetchWishlists();
-        break;
-      case "vendor-wishlist":
-        if (vendorWishlists.length === 0) fetchVendorWishlists();
-        break;
-      default:
-        break;
-    }
-  }, [activeTab, contextUser]);
-
-  // Handle tab change with debug logging
-  const handleTabChange = (tabName) => {
-    console.log("Tab clicked:", tabName);
-    console.log("Current activeTab:", activeTab);
-    setActiveTab(tabName);
-    console.log("New activeTab set to:", tabName);
-  };
-
-  // Function to handle successful booking cancellation or deletion
-  const handleBookingSuccess = (bookingId) => {
-    setBookings((prevBookings) =>
-      prevBookings.filter((booking) => booking._id !== bookingId)
-    );
-  };
+    // No need to fetch data here since we're navigating to separate pages
+  }, [contextUser]);
 
   const handleLogout = async () => {
     try {
@@ -181,15 +95,15 @@ const UserAccount = () => {
   };
 
   const handleEditProfile = () => {
-    navigate(`/user/${id}/edit`);
+    navigate(`/user/${id}/account/edit`);
   };
 
   const handleChangePassword = () => {
-    navigate(`/user/${id}/change-password`);
+    navigate(`/user/${id}/account/change-password`);
   };
 
   const handleDeleteAccount = () => {
-    navigate(`/user/${id}/delete`);
+    navigate(`/user/${id}/account/delete`);
   };
 
   if (contextLoading || loading) {
@@ -361,207 +275,108 @@ const UserAccount = () => {
             </div>
 
             {/* Navigation Tabs */}
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                  Account Sections
-                </h3>
-                
-                <div className="space-y-2">
-                  <button
-                    onClick={() => handleTabChange("orders")}
-                    style={{ pointerEvents: 'auto', cursor: 'pointer' }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                      activeTab === "orders"
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    <FaShoppingBag />
-                    Order History
-                  </button>
-
-                  <button
-                    onClick={() => handleTabChange("wishlist")}
-                    style={{ pointerEvents: 'auto', cursor: 'pointer' }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                      activeTab === "wishlist"
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    <FaHeart />
-                    Product Wishlist
-                  </button>
-
-                  <button
-                    onClick={() => handleTabChange("vendor-wishlist")}
-                    style={{ pointerEvents: 'auto', cursor: 'pointer' }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                      activeTab === "vendor-wishlist"
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-                    }`}
-                  >
-                    <FaStore />
-                    Vendor Wishlist
-                  </button>
-                </div>
-              </div>
-
-              {/* Quick Actions */}
-              <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                  Quick Actions
-                </h3>
-                
-                <div className="space-y-3">
-                  <button
-                    onClick={handleEditProfile}
-                    className="w-full flex items-center gap-3 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-105"
-                  >
-                    <FaEdit />
-                    Edit Profile
-                  </button>
-
-                  <button
-                    onClick={handleChangePassword}
-                    className="w-full flex items-center gap-3 px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-105"
-                  >
-                    <FaKey />
-                    Change Password
-                  </button>
-
-                  <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-4 py-3 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-105"
-                  >
-                    <FaSignOutAlt />
-                    Logout
-                  </button>
-
-                  <button
-                    onClick={handleDeleteAccount}
-                    className="w-full flex items-center gap-3 px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-105"
-                  >
-                    <FaTrashAlt />
-                    Delete Account
-                  </button>
-                </div>
-              </div>
-
-              {/* Account Security */}
-              <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                  Account Security
-                </h3>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                    <span className="text-sm text-green-700">Email Verified</span>
-                    <FaCheckCircle className="text-green-500" />
-                  </div>
+            <div className="lg:col-span-4">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Account Sections */}
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    Account Sections
+                  </h3>
                   
-                  <div className="p-3 bg-gray-50 rounded-lg">
-                    <p className="text-xs text-gray-600">
-                      <strong>Security Tip:</strong> Regularly update your password and keep your account information current.
-                    </p>
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => navigate(`/user/${contextUser._id}/account/bookings`)}
+                      style={{ pointerEvents: 'auto', cursor: 'pointer' }}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 bg-gray-100 hover:bg-gray-200 text-gray-700 hover:bg-blue-50 hover:text-blue-700"
+                    >
+                      <FaShoppingBag />
+                      Order History
+                    </button>
+
+                    <button
+                      onClick={() => navigate(`/user/${contextUser._id}/account/wishlists`)}
+                      style={{ pointerEvents: 'auto', cursor: 'pointer' }}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 bg-gray-100 hover:bg-gray-200 text-gray-700 hover:bg-blue-50 hover:text-blue-700"
+                    >
+                      <FaHeart />
+                      Product Wishlist
+                    </button>
+
+                    <button
+                      onClick={() => navigate(`/user/${contextUser._id}/account/vendor-wishlists`)}
+                      style={{ pointerEvents: 'auto', cursor: 'pointer' }}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 bg-gray-100 hover:bg-gray-200 text-gray-700 hover:bg-blue-50 hover:text-blue-700"
+                    >
+                      <FaStore />
+                      Vendor Wishlist
+                    </button>
+                  </div>
+                </div>
+
+                {/* Quick Actions */}
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    Quick Actions
+                  </h3>
+                  
+                  <div className="space-y-3">
+                    <button
+                      onClick={handleEditProfile}
+                      className="w-full flex items-center gap-3 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-105"
+                    >
+                      <FaEdit />
+                      Edit Profile
+                    </button>
+
+                    <button
+                      onClick={handleChangePassword}
+                      className="w-full flex items-center gap-3 px-4 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-105"
+                    >
+                      <FaKey />
+                      Change Password
+                    </button>
+
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-3 px-4 py-3 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-105"
+                    >
+                      <FaSignOutAlt />
+                      Logout
+                    </button>
+
+                    <button
+                      onClick={handleDeleteAccount}
+                      className="w-full flex items-center gap-3 px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-105"
+                    >
+                      <FaTrashAlt />
+                      Delete Account
+                    </button>
+                  </div>
+                </div>
+
+                {/* Account Security */}
+                <div className="bg-white rounded-lg shadow-md p-6">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    Account Security
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                      <span className="text-sm text-green-700">Email Verified</span>
+                      <FaCheckCircle className="text-green-500" />
+                    </div>
+                    
+                    <div className="p-3 bg-gray-50 rounded-lg">
+                      <p className="text-xs text-gray-600">
+                        <strong>Security Tip:</strong> Regularly update your password and keep your account information current.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Content Area */}
-            <div className="lg:col-span-3">
-              {activeTab === "orders" && (
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-                    <FaShoppingBag className="text-blue-500" />
-                    Order History
-                  </h2>
-                  
-                  {bookingsLoading ? (
-                    <div className="flex justify-center items-center py-8">
-                      <SkeletonList />
-                    </div>
-                  ) : bookings.length === 0 ? (
-                    <div className="text-center py-8">
-                      <NotAvailable
-                        content={"No Orders Found"}
-                        tagline={"Oops! You haven't placed any orders yet. Start exploring and discover amazing products!"}
-                      />
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {bookings.map((booking) => (
-                        <BookingCard
-                          key={booking._id}
-                          booking={booking}
-                          userId={contextUser._id}
-                          onCancelSuccess={handleBookingSuccess}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {activeTab === "wishlist" && (
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-                    <FaHeart className="text-blue-500" />
-                    Product Wishlist
-                  </h2>
-                  
-                  {wishlistsLoading ? (
-                    <div className="flex justify-center items-center py-8">
-                      <SkeletonList />
-                    </div>
-                  ) : wishlists.length === 0 ? (
-                    <div className="text-center py-8">
-                      <NotAvailable
-                        content={"No Products in Wishlist"}
-                        tagline={"Oops! Your wishlist is empty. Why not explore our amazing collection and add something special?"}
-                      />
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {wishlists.map((product) => (
-                        <ProductCard key={product._id} product={product} />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {activeTab === "vendor-wishlist" && (
-                <div className="bg-white rounded-lg shadow-md p-6">
-                  <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-                    <FaStore className="text-blue-500" />
-                    Vendor Wishlist
-                  </h2>
-                  
-                  {vendorWishlistsLoading ? (
-                    <div className="flex justify-center items-center py-8">
-                      <SkeletonList />
-                    </div>
-                  ) : vendorWishlists.length === 0 ? (
-                    <div className="text-center py-8">
-                      <NotAvailable
-                        content={"No Vendors in Wishlist"}
-                        tagline={"Oops! Your vendor wishlist is empty. Discover amazing vendors and add them to your favorites!"}
-                      />
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {vendorWishlists.map((vendor) => (
-                        <VendorCard key={vendor._id} vendor={vendor} />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+            {/* Content Area - Removed tab content since we now navigate to separate pages */}
           </div>
         </div>
       </div>

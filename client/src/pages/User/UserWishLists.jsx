@@ -22,8 +22,8 @@ const UserWishlists = () => {
 
     const fetchWishlist = async () => {
       try {
-        const response = await authAxios.get(`/api/user/${id}/wishlists`);
-        const products = res?.data?.data?.wishlists || [];
+        const response = await authAxios.get(`/api/user/${id}/account/wishlists`);
+        const products = response?.data?.data?.wishlists || [];
         setWishlists(products);
       } catch (err) {
         setError("Failed to fetch wishlists");
