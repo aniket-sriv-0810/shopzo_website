@@ -30,7 +30,7 @@ const UserAccountEdit = () => {
       setLoading(true);
       try {
         const response = await authAxios.get(`/api/user/${id}/account`);
-        const userInfo = data.data.userInfo;
+        const userInfo = response.data.data.userInfo;
         setUserData({
           name: userInfo.name || "",
           phone: userInfo.phone || "",
@@ -80,7 +80,7 @@ const UserAccountEdit = () => {
     if (image) formData.append("image", image);
   
     try {
-      await authAxios.put(`/api/user/${id}/account`, formData);
+      await authAxios.put(`/api/user/${id}/account/edit`, formData);
       navigate(`/user/${id}/account`);
     } catch (err) {
       const message = err?.response?.data?.message;

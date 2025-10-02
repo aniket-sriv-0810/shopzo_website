@@ -27,7 +27,7 @@ const VendorAccountEdit = () => {
     const fetchVendor = async () => {
       try {
         const response = await authAxios.get(`/api/vendor/${id}/account`);
-        const v = data.data.vendorInfo;
+        const v = response.data.data.vendorInfo;
         setVendorData({ ...v, address: { ...v.address } });
         setOrgImage(v.image);
       } catch (err) {
@@ -84,7 +84,7 @@ const VendorAccountEdit = () => {
     if (image) formData.append("image", image);
 
     try {
-      await authAxios.put(`/api/vendor/${id}/account`, formData);
+      await authAxios.put(`/api/vendor/${id}/account/edit`, formData);
       navigate(`/vendor/${id}/account`);
     } catch (err) {
       const message = err?.response?.data?.message || "Failed to update.";
@@ -120,5 +120,6 @@ const VendorAccountEdit = () => {
     </div>
   );
 };
+
 
 export default VendorAccountEdit;
