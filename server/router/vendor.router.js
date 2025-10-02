@@ -126,10 +126,30 @@ router
      .route("/:id/review-stats")
      .get(  getVendorReviewStats)
 
+// Middleware to parse FormData nested objects
+const parseFormData = (req, res, next) => {
+  if (req.body) {
+    // Parse address fields from FormData format
+    const address = {};
+    Object.keys(req.body).forEach(key => {
+      if (key.startsWith('address[') && key.endsWith(']')) {
+        const addressKey = key.slice(8, -1); // Remove 'address[' and ']'
+        address[addressKey] = req.body[key];
+        delete req.body[key];
+      }
+    });
+    
+    if (Object.keys(address).length > 0) {
+      req.body.address = address;
+    }
+  }
+  next();
+};
+
 // provides the  vendor edit Route
 router
      .route("/:id/account/edit")
-     .put( authenticateVendor,upload.single("image") ,updateVendorById);
+     .put( authenticateVendor,upload.single("image"), parseFormData, validate(editVendorValidation) ,updateVendorById);
 
 
 // provides the  vendor booking delete Route
